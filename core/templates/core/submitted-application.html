@@ -1,0 +1,1182 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Submitted Applications | Stalwart Business Solutions</title>
+
+    <link rel="icon"
+          href="{% static 'core/assets/images/favicon.png' %}"
+          type="image/x-icon">
+
+    <link type="text/css"
+          href="{% static 'core/assets/css/master.css' %}"
+          rel="stylesheet">
+
+    <link type="text/css"
+          href="{% static 'core/assets/css/style.css' %}"
+          rel="stylesheet">
+
+</head>
+
+
+<body>
+
+<div class="wrapper">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    {% include "core/sidebar.html" %}
+<div id="main-content"
+         class="flex-grow-1">
+
+
+        <!-- HEADER -->
+
+        <header class="header header-light">
+
+            <div class="container-fluid px-4 py-2">
+
+                <div class="d-flex align-items-center justify-content-between">
+
+
+                    <!-- SIDEBAR TOGGLE -->
+
+                    <div>
+
+                        <a href="javascript:void(0)"
+                           class="toggle-sidebar-btn"
+                           onclick="toggleSidebar()">
+
+                            <i class="bi bi-list toggle-sidebar-btn"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- PROFILE -->
+
+                    <div>
+
+                        <nav class="header-nav ms-auto">
+
+                            <ul class="d-flex align-items-center">
+
+                                {% include "core/notification-bell.html" %}
+                                {% if role == "candidate" %}
+                                <li class="nav-item ms-2"><button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#referFriendModal"><i class="bi bi-people me-1"></i>Refer Your Friend</button></li>
+                                {% endif %}
+
+                            <li class="nav-item dropdown">
+
+
+                                    <a class="nav-link nav-profile d-flex align-items-center pe-0"
+                                       href="javascript:void(0)"
+                                       data-bs-toggle="dropdown">
+
+
+                                        <img
+                                            src="{% static 'core/assets/images/profile.png' %}"
+                                            alt="Profile"
+                                            class="rounded-circle" width="40" height="40" style="width:40px;height:40px;object-fit:cover;">
+
+
+                                        <span class="d-none d-md-block dropdown-toggle ps-2">
+
+                                            {{ request.user.first_name|default:request.user.username }}
+
+                                        </span>
+
+
+                                    </a>
+
+
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+
+
+                                        <li class="dropdown-header border-bottom">
+
+                                            <p class="text-extra-small text-dark font-weight-500">
+
+                                                {{ request.user.get_full_name|default:request.user.username }}
+
+                                            </p>
+
+                                            <small>
+
+                                                {{ request.user.email }}
+
+                                            </small>
+
+                                        </li>
+
+
+                                        <li class="border-bottom">
+
+                                            <a class="dropdown-item d-flex align-items-center"
+                                               href="{% url 'myprofile' %}">
+
+                                                <i class="bi bi-person"></i>
+
+                                                <span>My Profile</span>
+
+                                            </a>
+
+                                        </li>
+
+
+                                        <li class="border-bottom">
+
+                                            <a class="dropdown-item d-flex align-items-center"
+                                               href="{% url 'security' %}">
+
+                                                <i class="bi bi-lock"></i>
+
+                                                <span>Security</span>
+
+                                            </a>
+
+                                        </li>
+
+
+                                        <li>
+
+                                            <a class="dropdown-item d-flex align-items-center"
+                                               href="{% url 'logout' %}">
+
+                                                <i class="bi bi-box-arrow-right"></i>
+
+                                                <span>Sign Out</span>
+
+                                            </a>
+
+                                        </li>
+
+
+                                    </ul>
+
+                                </li>
+
+                            </ul>
+
+                        </nav>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+
+        <div class="content-wrapper">
+
+            <div class="container-fluid px-4">
+
+                <div class="py-4">
+
+                    <section class="page-container">
+
+
+                        <!-- PAGE TITLE -->
+
+                        <div class="pagetitle pt-2 mb-3">
+
+                            <p class="text-medium font-weight-500">
+
+                                Submitted Application
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- CONTENT SECTION -->
+
+                        <div class="content-section">
+
+                            <div class="row">
+
+                                <div class="col-12">
+
+
+                                    <div class="card card-box">
+
+
+                                        <!-- CARD HEADER -->
+
+                                        <div class="card-header border-bottom">
+
+                                            <p class="text-medium font-weight-600">
+
+                                                Submitted Application
+
+                                            </p>
+
+
+                                            <p class="text-extra-small font-weight-400 text-muted">
+
+                                                Below are your submitted applications.
+                                                Please review the status of each application.
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <!-- CARD BODY -->
+
+                                        <div class="card-body p-4">
+
+
+                                            <div class="table-responsive-lg">
+
+
+                                                <table
+                                                    class="table table-borderless table-striped table-hover text-nowrap w-100 mb-0"
+                                                    id="data-table-1">
+
+
+                                                    <!-- TABLE HEADER -->
+
+                                                    <thead class="table-dark">
+
+                                                        <tr>
+
+                                                            <th scope="col">
+                                                                Date
+                                                            </th>
+
+                                                            <th scope="col">
+                                                                Application ID
+                                                            </th>
+
+{% if role != "candidate" %}
+                                                            <th scope="col">
+                                                                Applicant Name
+                                                            </th>
+
+                                                            <th scope="col">
+                                                                Email
+                                                            </th>
+{% endif %}
+
+                                                            <th scope="col">
+                                                                Company Name
+                                                            </th>
+
+                                                            <th scope="col">
+                                                                Status
+                                                            </th>
+
+{% if role != "candidate" %}
+                                                            
+                                                            
+                                                            <th scope="col">
+                                                                Audit
+                                                            </th>
+{% endif %}
+
+
+                                                            <th scope="col">
+                                                                Actions
+                                                            </th>
+
+                                                        </tr>
+
+                                                    </thead>
+
+
+                                                    <!-- TABLE BODY -->
+
+                                                    <tbody>
+
+
+                                                    {% for app in applications %}
+
+
+                                                        <tr id="application-row-{{ app.id }}">
+
+
+                                                            <!-- DATE -->
+
+                                                            <td>
+
+                                                                {% if app.submitted_at %}
+
+                                                                    {{ app.submitted_at|date:"d/m/Y" }}
+
+                                                                {% else %}
+
+                                                                    -
+
+                                                                {% endif %}
+
+                                                            </td>
+
+
+                                                            <!-- APPLICATION ID -->
+
+                                                            <td>
+
+                                                                {% if app.company.name|lower == "insitemy" %}
+
+                                                                    INM-{{ app.id|stringformat:"03d" }}
+
+                                                                {% elif app.company.name|lower == "macro kiosk" %}
+
+                                                                    MAK-{{ app.id|stringformat:"03d" }}
+
+                                                                {% else %}
+
+                                                                    APP-{{ app.id|stringformat:"03d" }}
+
+                                                                {% endif %}
+
+                                                            </td>
+
+
+{% if role != "candidate" %}
+                                                            <!-- APPLICANT NAME -->
+
+                                                            <td>
+
+                                                                {{ app.candidate.full_name|default:"Candidate" }}
+
+                                                            </td>
+
+
+                                                            <!-- EMAIL -->
+
+                                                            <td>
+
+                                                                {{ app.candidate.email }}
+
+                                                            </td>
+{% endif %}
+
+
+                                                            <!-- COMPANY -->
+
+                                                            <td>
+
+                                                                {{ app.company }}
+
+                                                            </td>
+
+
+                                                            <!-- STATUS -->
+
+                                                            <td>
+
+{% if role == "candidate" %}
+                                                                {% if app.hr_viewed %}
+                                                                    <span class="badge bg-primary">Viewed</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-success">Submitted</span>
+                                                                {% endif %}
+{% else %}
+                                                                {% if app.status == "submitted" %}
+                                                                    <span class="badge bg-success">{{ app.get_status_display }}</span>
+                                                                {% elif app.status == "reviewed" %}
+                                                                    <span class="badge bg-primary">{{ app.get_status_display }}</span>
+                                                                {% elif app.status == "invited" %}
+                                                                    <span class="badge bg-warning text-dark">{{ app.get_status_display }}</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-secondary">{{ app.get_status_display }}</span>
+                                                                {% endif %}
+{% endif %}
+
+                                                            </td>
+
+
+                                                            <!-- AUDIT TRAIL -->
+                                                            <td>
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-outline-primary"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#auditModal{{ app.id }}"
+                                                                >
+                                                                    <i class="bi bi-diagram-3 me-1"></i>
+                                                                </button>
+                                                            </td>
+
+
+                                                            <!-- ACTIONS -->
+
+                                                            <td>
+
+
+                                                                <div class="navigation-icon-split">
+
+                                                                    <ul>
+
+
+                                                                        {% if role == "agent" %}
+                                                                        <li data-bs-toggle="tooltip" data-bs-placement="top" title="Forward to HR">
+
+</li>
+                                                                        {% endif %}
+
+                                                                        <!-- VIEW -->
+
+                                                                        <li
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-placement="top"
+                                                                            title="View">
+
+
+                                                                            {% if role == "agent" %}
+                                                                                {% if app.agent_access_request and app.agent_access_request.status == "approved" %}
+                                                                                <a href="{% url 'application_detail' app.id %}" title="View approved application"><i class="bi bi-eye"></i></a>
+                                                                                {% elif app.agent_access_request and app.agent_access_request.status == "pending" %}
+                                                                                <span title="Waiting for candidate approval"><i class="bi bi-hourglass-split"></i></span>
+                                                                                {% else %}
+                                                                                <form method="post" action="{% url 'request_application_access' app.id %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-link p-0 border-0" title="Request candidate access"><i class="bi bi-eye"></i></button></form>
+                                                                                {% endif %}
+                                                                            {% else %}
+                                                                            <a href="{% url 'application_detail' app.id %}"><i class="bi bi-eye"></i></a>
+                                                                            {% endif %}
+
+
+                                                                        </li>
+
+
+{% if role == "hr" or role == "administration" %}
+                                                                        <!-- DELETE -->
+
+                                                                        <li
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-placement="top"
+                                                                            title="Delete">
+
+
+                                                                            <form
+                                                                                method="POST"
+                                                                                action="{% url 'delete_application' app.id %}"
+                                                                                style="display:inline;">
+
+
+                                                                                {% csrf_token %}
+
+
+                                                                                <button
+                                                                                    type="submit"
+                                                                                    style="border:0;background:none;padding:0;cursor:pointer;"
+                                                                                    onclick="return confirm('Are you sure you want to delete this application?');">
+
+
+                                                                                    <i class="bi bi-trash text-danger"></i>
+
+
+                                                                                </button>
+
+
+                                                                            </form>
+
+
+                                                                        </li>
+{% endif %}
+
+
+                                                                    </ul>
+
+                                                                </div>
+
+
+                                                            </td>
+
+
+                                                        </tr>
+
+
+                                                    {% endfor %}
+
+
+                                                    </tbody>
+
+
+                                                </table>
+
+
+                                            </div>
+
+
+                                                {% for app in applications %}
+                                                   <!-- AUDIT TRAIL MODAL -->
+<div class="modal fade"
+     id="auditModal{{ app.id }}"
+     tabindex="-1"
+     aria-labelledby="auditModalLabel{{ app.id }}"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <!-- MODAL HEADER -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="auditModalLabel{{ app.id }}">
+                    Audit Trail - Application #{{ app.id }}
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+
+            <!-- MODAL BODY -->
+            <div class="modal-body">
+
+                <style>
+                    /* =========================================================
+                       PREMIUM AUDIT TRAIL TIMELINE
+                       ========================================================= */
+
+                    .audit-timeline {
+                        position: relative;
+                        padding: 10px 8px;
+                    }
+
+                    .audit-timeline::before {
+                        content: "";
+                        position: absolute;
+                        left: 27px;
+                        top: 28px;
+                        bottom: 28px;
+                        width: 3px;
+                        background: linear-gradient(
+                            to bottom,
+                            #0d6efd,
+                            #6f42c1,
+                            #20c997
+                        );
+                        border-radius: 10px;
+                    }
+
+                    .audit-step {
+                        position: relative;
+                        display: flex;
+                        gap: 18px;
+                        margin-bottom: 18px;
+                    }
+
+                    .audit-step:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    .audit-icon {
+                        position: relative;
+                        z-index: 2;
+                        width: 40px;
+                        height: 40px;
+                        min-width: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #fff;
+                        font-size: 17px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,.16);
+                        border: 3px solid #fff;
+                    }
+
+                    .audit-icon.blue {
+                        background: linear-gradient(135deg, #0d6efd, #2563eb);
+                    }
+
+                    .audit-icon.purple {
+                        background: linear-gradient(135deg, #6f42c1, #8b5cf6);
+                    }
+
+                    .audit-icon.orange {
+                        background: linear-gradient(135deg, #fd7e14, #f59e0b);
+                    }
+
+                    .audit-icon.green {
+                        background: linear-gradient(135deg, #198754, #20c997);
+                    }
+
+                    .audit-icon.dark {
+                        background: linear-gradient(135deg, #212529, #495057);
+                    }
+
+                    .audit-card {
+                        flex: 1;
+                        background: #fff;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 14px;
+                        padding: 14px 17px;
+                        box-shadow: 0 5px 18px rgba(0,0,0,.07);
+                        transition: all .2s ease;
+                    }
+
+                    .audit-card:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 24px rgba(0,0,0,.11);
+                    }
+
+                    .audit-card-header {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 12px;
+                        margin-bottom: 5px;
+                    }
+
+                    .audit-title {
+                        font-weight: 700;
+                        font-size: 14px;
+                        color: #212529;
+                    }
+
+                    .audit-date {
+                        font-size: 12px;
+                        color: #6c757d;
+                        white-space: nowrap;
+                    }
+
+                    .audit-description {
+                        font-size: 12px;
+                        color: #6c757d;
+                    }
+
+                    .audit-details {
+                        display: grid;
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                        gap: 10px;
+                        margin-top: 12px;
+                    }
+
+                    .audit-detail-box {
+                        background: #f8f9fa;
+                        border: 1px solid #e9ecef;
+                        border-radius: 10px;
+                        padding: 10px 12px;
+                    }
+
+                    .audit-detail-label {
+                        display: block;
+                        font-size: 10px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: .4px;
+                        color: #6c757d;
+                        margin-bottom: 3px;
+                    }
+
+                    .audit-detail-value {
+                        display: block;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #212529;
+                        word-break: break-word;
+                    }
+
+                    @media (max-width: 600px) {
+                        .audit-card-header {
+                            align-items: flex-start;
+                            flex-direction: column;
+                            gap: 3px;
+                        }
+
+                        .audit-details {
+                            grid-template-columns: 1fr;
+                        }
+                    }
+                </style>
+
+
+                <!-- AUDIT TIMELINE -->
+                <div class="audit-timeline">
+
+
+                    <!-- 1. HR INVITE RECEIVED -->
+                    <div class="audit-step">
+
+                        <div class="audit-icon blue">
+                            <i class="bi bi-envelope-check"></i>
+                        </div>
+
+                        <div class="audit-card">
+
+                            <div class="audit-card-header">
+
+                                <span class="audit-title">
+                                    HR Invite Received / Opened
+                                </span>
+
+                                <span class="audit-date">
+                                    {% if app.created_at %}
+                                        {{ app.created_at|date:"d/m/Y H:i:s" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            <div class="audit-description">
+                                HR invitation was received and the application process was opened.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- 2. APPLICATION SUBMITTED -->
+                    <div class="audit-step">
+
+                        <div class="audit-icon purple">
+                            <i class="bi bi-file-earmark-check"></i>
+                        </div>
+
+                        <div class="audit-card">
+
+                            <div class="audit-card-header">
+
+                                <span class="audit-title">
+                                    Application Submitted
+                                </span>
+
+                                <span class="audit-date">
+                                    {% if app.submitted_at %}
+                                        {{ app.submitted_at|date:"d/m/Y H:i:s" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            <div class="audit-description">
+                                Candidate completed and submitted the application.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- 3. ACCESS REQUEST -->
+                    <div class="audit-step">
+
+                        <div class="audit-icon orange">
+                            <i class="bi bi-person-lock"></i>
+                        </div>
+
+                        <div class="audit-card">
+
+                            <div class="audit-card-header">
+
+                                <span class="audit-title">
+                                    Access Request Received
+                                </span>
+
+                                <span class="audit-date">
+
+                                    {% if app.latest_access_request and app.latest_access_request.requested_at %}
+                                        {{ app.latest_access_request.requested_at|date:"d/m/Y H:i:s" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                            <div class="audit-description">
+                                HR requested permission to access the candidate application.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- 4. CANDIDATE APPROVED -->
+                    <div class="audit-step">
+
+                        <div class="audit-icon green">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+                        <div class="audit-card">
+
+                            <div class="audit-card-header">
+
+                                <span class="audit-title">
+                                    Candidate Approved
+                                </span>
+
+                                <span class="audit-date">
+
+                                    {% if app.latest_access_request and app.latest_access_request.approved_at %}
+                                        {{ app.latest_access_request.approved_at|date:"d/m/Y H:i:s" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                            <div class="audit-description">
+                                Candidate approved HR access to the application.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- 5. APPLICATION VIEW / DOWNLOAD -->
+                    <div class="audit-step">
+
+                        <div class="audit-icon dark">
+                            <i class="bi bi-eye"></i>
+                        </div>
+
+                        <div class="audit-card">
+
+                            <div class="audit-card-header">
+
+                                <span class="audit-title">
+                                    Application Viewed / Download
+                                </span>
+
+                            </div>
+
+
+                            <div class="audit-details">
+
+                                <!-- VIEWED -->
+                                <div class="audit-detail-box">
+
+                                    <span class="audit-detail-label">
+                                        Viewed
+                                    </span>
+
+                                    <span class="audit-detail-value">
+
+                                        {% if app.latest_view_event and app.latest_view_event.created_at %}
+                                            {{ app.latest_view_event.created_at|date:"d/m/Y H:i:s" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- DOWNLOADED -->
+                                <div class="audit-detail-box">
+
+                                    <span class="audit-detail-label">
+                                        Downloaded
+                                    </span>
+
+                                    <span class="audit-detail-value">
+
+                                        {% if app.latest_download_event and app.latest_download_event.created_at %}
+                                            {{ app.latest_download_event.created_at|date:"d/m/Y H:i:s" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- HR LOCATION -->
+                                <div class="audit-detail-box">
+
+                                    <span class="audit-detail-label">
+                                        HR Location
+                                    </span>
+
+                                    <span class="audit-detail-value">
+
+                                        {% if app.latest_view_event and app.latest_view_event.location %}
+                                            {{ app.latest_view_event.location }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- HR IP ADDRESS -->
+                                <div class="audit-detail-box">
+
+                                    <span class="audit-detail-label">
+                                        HR IP Address
+                                    </span>
+
+                                    <span class="audit-detail-value">
+
+                                        {% if app.latest_view_event and app.latest_view_event.ip_address %}
+                                            {{ app.latest_view_event.ip_address }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- END AUDIT TIMELINE -->
+
+            </div>
+            <!-- END MODAL BODY -->
+
+
+        </div>
+        <!-- END MODAL CONTENT -->
+
+    </div>
+    <!-- END MODAL DIALOG -->
+
+</div>
+<!-- END AUDIT TRAIL MODAL -->
+
+
+{% endfor %}
+
+                        <!-- =====================================================
+                             FOOTER
+                        ====================================================== -->
+
+                        <footer id="footer"
+                                class="footer">
+
+
+                            <div class="container-fluid px-4">
+
+
+                                <div class="row">
+
+
+                                    <div class="col-12">
+
+
+                                        <div class="d-flex align-items-center justify-content-between">
+
+
+                                            <div>
+
+                                                <p class="text-extra-small font-weight-400">
+
+                                                    &copy;
+
+                                                    <span id="current-year"></span>
+
+                                                    Stalwart Business Solutions.
+
+                                                </p>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <p class="text-extra-small font-weight-400 backtotop"
+                                                   id="toTop">
+
+                                                    To top
+
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="24"
+                                                        height="24"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 16 16">
+
+                                                        <path
+                                                            fill-rule="evenodd"
+                                                            d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 1 0-.708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
+
+                                                    </svg>
+
+                                                </p>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </footer>
+
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script
+    src="{% static 'core/assets/js/bundle.js' %}"
+    type="text/javascript">
+</script>
+
+
+<script
+    src="{% static 'core/assets/js/scripts.js' %}"
+    type="text/javascript">
+</script>
+
+
+<script
+    src="{% static 'core/assets/js/dataTables.js' %}"
+    type="text/javascript">
+</script>
+
+
+<script
+    src="{% static 'core/assets/js/dataTables.bootstrap5.js' %}"
+    type="text/javascript">
+</script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const table = document.querySelector("#data-table-1");
+
+    if (table) {
+
+        new DataTable("#data-table-1", {
+
+            columnDefs: [
+
+                {
+                    targets: -1,
+                    orderable: false,
+                    searchable: false
+                }
+
+            ],
+
+            language: {
+
+                emptyTable: "No submitted applications yet."
+
+            }
+
+        });
+
+    }
+
+});
+
+
+</script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const yearElement = document.getElementById("current-year");
+
+    if (yearElement) {
+
+        yearElement.textContent = new Date().getFullYear();
+
+    }
+
+});
+
+
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const params = new URLSearchParams(window.location.search);
+  const highlight = params.get("highlight");
+  if (highlight) {
+    const row = document.getElementById("application-row-" + highlight);
+    if (row) {
+      row.scrollIntoView({behavior: "smooth", block: "center"});
+      row.classList.add("table-warning");
+      setTimeout(() => row.classList.remove("table-warning"), 5000);
+    }
+  }
+  document.querySelectorAll(".forward-application-btn").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const email = window.prompt("Enter the HR email address to forward this application to:");
+      if (!email) return;
+      const value = email.trim();
+      if (!value) return;
+      const form = document.createElement("form");
+      form.method = "post";
+      form.action = "{% url 'forward_application_to_hr' 0 %}".replace("/0/", "/" + button.dataset.applicationId + "/");
+      form.innerHTML = '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">' +
+                       '<input type="hidden" name="recipient_email" value="' + value.replace(/"/g, "&quot;") + '">' +
+                       '<input type="hidden" name="next" value="' + window.location.pathname + '">';
+      document.body.appendChild(form);
+      form.submit();
+    });
+  });
+});
+</script>
+
+{% if role == "candidate" %}
+<div class="modal fade" id="referFriendModal" tabindex="-1" aria-labelledby="referFriendModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><form method="post" action="{% url 'refer_friend' %}">{% csrf_token %}<div class="modal-header"><h5 class="modal-title" id="referFriendModalLabel">Refer Your Friend</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><label for="friendEmail" class="form-label">Friend's email address</label><input type="email" class="form-control" id="friendEmail" name="email" required placeholder="friend@example.com"><small class="text-muted">We'll send them a link to check and register.</small></div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Send Referral</button></div></form></div></div></div>
+{% endif %}
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+<li class="nav-item dropdown notification-item" style="margin-left: 27px;">
+    <a class="nav-link nav-icon d-flex align-items-center position-relative" href="javascript:void(0)" data-bs-toggle="dropdown" aria-label="Notifications">
+        <i class="bi bi-bell" style="font-size:20px;"></i>
+        {% if notification_count %}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:9px;">{{ notification_count }}</span>{% endif %}
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style="min-width:360px;max-width:420px;">
+        <li class="dropdown-header d-flex justify-content-between align-items-center"><span>You have {{ notification_count }} new notification{{ notification_count|pluralize }}.</span></li>
+        <li><hr class="dropdown-divider"></li>
+        {% for notification in notifications %}
+        <li>
+            {% if notification.target_url %}<a class="dropdown-item d-flex align-items-start gap-2 py-2" href="{% url 'open_notification' notification.id %}">{% else %}<span class="dropdown-item d-flex align-items-start gap-2 py-2">{% endif %}
+                <i class="bi bi-info-circle text-primary mt-1"></i>
+                <span class="text-wrap"><strong class="d-block">{{ notification.title }}</strong><small class="text-muted d-block">{{ notification.message }}</small><small class="text-secondary">{{ notification.created_at|timesince }} ago</small></span>
+            {% if notification.target_url %}</a>{% else %}</span>{% endif %}
+        </li>
+        {% empty %}<li><span class="dropdown-item-text text-muted py-3">No new notifications.</span></li>{% endfor %}
+        <li><hr class="dropdown-divider"></li>
+        <li class="px-3 pb-2"><form method="post" action="{% url 'mark_notifications_read' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button type="submit" class="btn btn-sm btn-outline-secondary w-100">Mark all as read</button></form></li>
+    </ul>
+</li>

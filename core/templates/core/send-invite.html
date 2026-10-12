@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Send Invite - Stalwart Business Solutions</title>
+<link rel="icon" href="{% static 'core/assets/images/favicon.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'core/assets/css/master.css' %}">
+<link rel="stylesheet" href="{% static 'core/assets/css/style.css' %}">
+</head>
+<body>
+<div class="wrapper">
+{% include "core/sidebar.html" %}
+<div id="main-content" class="flex-grow-1">
+<header class="header header-light"><div class="container-fluid px-4 py-2"><div class="d-flex align-items-center justify-content-between">
+<div><a href="javascript:void(0)" class="toggle-sidebar-btn" onclick="toggleSidebar()"><i class="bi bi-list"></i></a></div>
+<div><nav class="header-nav ms-auto"><ul class="d-flex align-items-center">{% include "core/notification-bell.html" %}</ul></nav></div>
+</div></div></header>
+<div class="content-wrapper"><div class="container-fluid px-4"><div class="py-4"><section class="page-container">
+<div class="pagetitle pt-2 mb-3"><p class="text-medium font-weight-500">Send Invite</p>
+<p class="text-extra-small text-muted">
+{% if role == "hr" %}Your HR account is permanently connected to {{ company_name }}.{% else %}Enter the email address to send an invitation.{% endif %}
+</p></div>
+{% if messages %}{% for message in messages %}<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">{{ message }}</div>{% endfor %}{% endif %}
+<div class="content-section"><div class="row"><div class="col-xxl-8 col-xl-9 col-lg-10 col-md-12 mx-auto"><div class="card card-box">
+<div class="card-header"><p class="text-extra-small font-weight-500 mb-0">Invitation</p></div>
+<div class="card-body"><form method="post" action="{% url 'send_invitation' %}">{% csrf_token %}
+<div class="mb-3"><label class="form-label mb-0"><sup class="text-danger">*</sup>Send To</label>
+</div>
+{% if role == "hr" %}<input type="hidden" name="company" value="{{ company_key }}">{% endif %}
+<div class="mb-3">
+<label class="form-label mb-0"><sup class="text-danger">*</sup>Email Address(es)</label>
+<textarea class="form-control" name="emails" rows="5" placeholder="one@example.com&#10;another@example.com" required></textarea>
+<div class="form-text">Candidate invitations open the selected company application. Agent invitations contain the registration link for this application.</div>
+</div>
+<div class="d-flex justify-content-end"><button class="brand-button" type="submit"><i class="bi bi-send me-1"></i>Send Invitation</button></div>
+</form></div></div></div></div></div>
+</section></div></div></div></div>
+<script src="{% static 'core/assets/js/bundle.js' %}"></script><script src="{% static 'core/assets/js/scripts.js' %}"></script>
+
+</body></html>

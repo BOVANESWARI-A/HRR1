@@ -1,0 +1,59 @@
+STALWART BUSINESS SOLUTIONS - UPDATED WORKFLOW
+
+This update preserves the existing application pages/styles and changes only the requested workflow:
+
+HR LOGIN
+- Removed the standalone Send Invite item from the HR sidebar.
+- Under Job Application, the HR account's company (InsiteMy or Macro Kiosk) now has Send an Invite.
+- HR can invite Candidate or Agent.
+- The Send an Invite form no longer asks for Name or Phone Number.
+- HR -> Candidate sends the selected company's actual application link.
+- HR -> Agent sends an account registration invitation so the Agent can register for the app.
+- Invitation email failures are logged to EmailLog with the SMTP error.
+
+HR RECEIVED APPLICATIONS
+- Removed Delete from Received Applications.
+- Added Archive instead; archived applications remain in the database/audit history and disappear from the active Received Applications list.
+- Added a separate Audit column next to Actions.
+- Audit opens the existing audit flow page and now shows invitation viewed, application filled, submitted, IP address and location when recorded.
+
+AGENT LOGIN
+- Removed Audit from Agent Submitted/Received Application UI and disabled the Agent audit route.
+- Sidebar now includes Submitted Applications and Received Applications.
+- Agent Submitted Applications show applications belonging to candidates linked to that Agent.
+- Agent Received Applications use the same Agent -> Candidate relationship.
+- Agent Submitted Applications keep the Forward button to send the candidate/application link to the matching HR account.
+- When an Agent sends a Candidate invitation, the Agent-Candidate relationship is automatically created so the application appears in that Agent's lists.
+
+SEND INVITE FORM
+- Name and Phone fields are removed for every login type.
+- Candidate invitations use the company application flow.
+- Agent invitations use the registration/account invitation flow.
+
+DATABASE / MIGRATION
+- Added migration: 0016_jobapplication_archived_audit_events.py
+- Adds JobApplication.archived and JobApplication.archived_at.
+- Adds AuditTrail events for Invitation Viewed, Application Filled and Application Archived.
+
+IMPORTANT:
+Django is not installed in this execution environment and the project's PostgreSQL database is not available here, so the migration could not be applied to your real database in this environment. Python syntax and template-tag balance were checked, and the migration file is included in the ZIP.
+
+On your Windows machine, from the folder containing manage.py, run:
+
+    .\venv\Scripts\Activate.ps1
+    python manage.py migrate
+    python manage.py check
+    python manage.py runserver
+
+EMAIL:
+The project continues to use the EMAIL_* values in .env. If an invitation fails, check the EmailLog record and the displayed error message for the exact SMTP problem.
+
+
+Workflow update notes (2026-10-09)
+1. Send Invite no longer shows an Application Company selector; non-HR invitations resolve to the account's configured application type (Macro Kiosk fallback). HR remains company-scoped.
+2. Audit action labels now include HR view/download with timestamp, IP and best-effort IP location; audit trail is available to agents as well as candidates and HR.
+3. Candidate application notifications link to the corresponding application row.
+4. Candidate Submitted Applications includes Refer Your Friend, which sends a registration invitation to the entered email.
+5. New migration: core.0018_audittrail_workflow_events. Run `python manage.py migrate` after extracting and activating the virtual environment.
+
+Important: This package was syntax-compiled, but Django's runtime check could not be executed in the build environment because Django is not installed in that environment. After migration, run `python manage.py check` locally and verify SMTP credentials in your local .env.
