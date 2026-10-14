@@ -184,7 +184,7 @@
                           <p class="text-medium font-weight-600"><span>INM-001</span> - <span>Java Developer</span></p>
                           <p class="text-extra-small font-weight-400 text-muted">{{ application.candidate.full_name|default:"Candidate" }}</p>
                         </div>
-                        <div><a href="javascript:void(0)" class="brand-button-alt btn-sm"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a> </div>
+                        <div><a class="brand-button-alt btn-sm" href="{% url 'application_detail' application.id %}?download=pdf" rel="noopener" target="_blank"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a> </div>
                       </div>
                     </div>
                   </div>
@@ -1162,9 +1162,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // The old InsiteMy receiving HTML contains sample/demo answers. Never show
   // those values to HR; the saved application.data renderer below is the source
   // of truth for this application.
-  document.querySelectorAll(".content-section").forEach(function (section) {
-    section.style.display = "none";
-  });
+  // document.querySelectorAll(".content-section").forEach(function (section) {
+  //   section.style.display = "none";
+  // });
 
   const dataNode = document.getElementById("application-detail-data");
   const positionNode = document.getElementById("dynamic-position-summary");

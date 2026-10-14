@@ -26,6 +26,8 @@ class Candidate(models.Model):
         blank=True,
     )
 
+    archived = models.BooleanField(default=False)
+
     profile_data = models.JSONField(
         default=dict,
         blank=True,
@@ -518,6 +520,8 @@ class AuditTrail(models.Model):
         ("forwarded", "Forwarded to HR by Agent"),
         ("hr_viewed", "Application Viewed by HR"),
         ("hr_downloaded", "Application Downloaded by HR"),
+        ("agent_viewed", "Application Viewed by Agent"),
+        ("agent_downloaded", "Application Downloaded by Agent"),
         ("archived", "Application Archived"),
     ]
 

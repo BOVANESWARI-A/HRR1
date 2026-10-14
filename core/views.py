@@ -238,6 +238,21 @@ def _record_hr_audit(request, app, action):
         location=location,
     )
 
+
+def _record_agent_audit(request, app, action):
+    """Save an agent view or download. Other audit actions stay unchanged."""
+    if get_role(request.user) != "agent":
+        return None
+    ip_address = _client_ip(request)
+    location = _ip_location(ip_address)
+    return AuditTrail.objects.create(
+        application=app,
+        user=request.user,
+        action=action,
+        ip_address=ip_address or None,
+        location=location,
+    )
+
 def get_insitemy_company():
     return get_object_or_404(
         Company,
@@ -263,31 +278,7 @@ def user_application_type(user):
     return None
 
 
-def active_candidate_application(user):
-    candidate = candidate_for_user(user)
-    if not candidate:
-        return None
-    return (
-        JobApplication.objects
-        .filter(
-            candidate=candidate,
-            invitation__active=True,
-            status__in={"draft", "invited"},
-        )
-        .select_related("invitation", "company")
-        .order_by("-updated_at", "-id")
-        .first()
-    )
-
-
 def role_landing_url(user):
-    role = get_role(user)
-    if role == "hr":
-        return reverse("dashboard")
-    if role == "candidate":
-        app = active_candidate_application(user)
-        if app and hasattr(app, "invitation"):
-            return reverse("candidate_application", kwargs={"token": app.invitation.token})
     return reverse("dashboard")
 
 
@@ -2186,6 +2177,318 @@ def candidate_application(request, token):
             ],
         },
     )
+def _safe_invitation(app):
+    try:
+        return app.invitation
+    except Invitation.DoesNotExist:
+        return None
+
+
+def _latest_audit_event(events, actions, user=None, fallback=False):
+    """Return the newest matching event. Events are ordered newest first."""
+    fallback_event = None
+    for event in events:
+        if event.action not in actions:
+            continue
+        if fallback_event is None:
+            fallback_event = event
+        if user is not None and event.user_id != user.id:
+            continue
+        return event
+    if user is not None and fallback:
+        return fallback_event
+    if user is None:
+        return fallback_event
+    return None
+
+
+def _access_request_for(app, role_name, user=None, fallback=False):
+    requests = list(app.access_requests.all())
+    if user is not None:
+        for access_request in requests:
+            if access_request.requested_by_id == user.id:
+                return access_request
+        if not fallback:
+            return None
+    for access_request in requests:
+        if get_role(access_request.requested_by) == role_name:
+            return access_request
+    return None
+
+
+def _invite_received_at(app, events):
+    invitation = _safe_invitation(app)
+    if invitation and (invitation.opened_at or invitation.sent_at):
+        return invitation.opened_at or invitation.sent_at
+    opened = _latest_audit_event(events, {"invite_viewed"})
+    sent = _latest_audit_event(events, {"invite_sent"})
+    event = opened or sent
+    return event.created_at if event else None
+
+
+def _audit_step(title, icon, color, date=None, description="", details=None):
+    return {
+        "title": title,
+        "icon": icon,
+        "color": color,
+        "date": date,
+        "description": description,
+        "details": details,
+    }
+
+
+def _view_detail_boxes(view_event, download_event, location_label, ip_label, ip_from_view_only=False):
+    if ip_from_view_only:
+        source = view_event
+    elif view_event and (view_event.location or view_event.ip_address):
+        source = view_event
+    else:
+        source = download_event or view_event
+    location = source.location if source and source.location else ""
+    ip_address = str(source.ip_address) if source and source.ip_address else ""
+    return [
+        {"label": "Viewed", "date": view_event.created_at if view_event else None, "text": ""},
+        {"label": "Downloaded", "date": download_event.created_at if download_event else None, "text": ""},
+        {"label": location_label, "date": None, "text": location},
+        {"label": ip_label, "date": None, "text": ip_address},
+    ]
+
+
+def _forward_recipient_email(app, event):
+    if not event:
+        return ""
+    prefix = f"Application #{app.id} was forwarded to "
+    best_email = ""
+    best_gap = None
+    for note in app.notification_set.all():
+        message = (note.message or "").strip()
+        if not message.startswith(prefix):
+            continue
+        email = message[len(prefix):].strip().rstrip(".")
+        gap = abs((note.created_at - event.created_at).total_seconds())
+        if best_gap is None or gap < best_gap:
+            best_gap = gap
+            best_email = email
+    return best_email
+
+
+def _forward_and_hr_access_steps(app, events, user=None, scope_forward=False):
+    forward_event = _latest_audit_event(
+        events,
+        {"forwarded"},
+        user if scope_forward else None,
+    )
+    hr_view = _latest_audit_event(events, {"hr_viewed", "view"})
+    hr_download = _latest_audit_event(events, {"hr_downloaded", "download"})
+    recipient = _forward_recipient_email(app, forward_event)
+    if recipient:
+        forward_description = f"The agent forwarded this application to {recipient}."
+    else:
+        forward_description = "The agent forwarded this application to HR."
+    return [
+        _audit_step(
+            "Forwarding to HR by Agent",
+            "bi-share",
+            "blue",
+            forward_event.created_at if forward_event else None,
+            forward_description,
+        ),
+        _audit_step(
+            "Application viewed / downloaded by HR Access",
+            "bi-eye",
+            "dark",
+            details=_view_detail_boxes(
+                hr_view,
+                hr_download,
+                "HR Location",
+                "HR IP Address",
+            ),
+        ),
+    ]
+
+
+def _hr_audit_steps(app, events, user, scoped):
+    access_request = _access_request_for(app, "hr", user if scoped else None, fallback=True)
+    view_event = _latest_audit_event(
+        events, {"hr_viewed", "view"}, user if scoped else None, fallback=True
+    )
+    download_event = _latest_audit_event(
+        events, {"hr_downloaded", "download"}, user if scoped else None, fallback=True
+    )
+    return [
+        _audit_step(
+            "Invite Received",
+            "bi-envelope-check",
+            "blue",
+            _invite_received_at(app, events),
+            "The invitation was received and the application process was opened.",
+        ),
+        _audit_step(
+            "Application Submitted to HR",
+            "bi-file-earmark-check",
+            "purple",
+            app.submitted_at,
+            "Candidate completed and submitted the application to HR.",
+        ),
+        _audit_step(
+            "Access Request Received",
+            "bi-person-lock",
+            "orange",
+            access_request.requested_at if access_request else None,
+            "HR requested permission to access the candidate application.",
+        ),
+        _audit_step(
+            "Access Granted",
+            "bi-shield-check",
+            "green",
+            access_request.approved_at if access_request else None,
+            "Candidate approved HR access to the application.",
+        ),
+        _audit_step(
+            "Application Viewed / Download",
+            "bi-eye",
+            "dark",
+            details=_view_detail_boxes(
+                view_event,
+                download_event,
+                "HR Location",
+                "HR IP Address",
+            ),
+        ),
+    ]
+
+
+def _agent_audit_steps(app, events, user, scoped):
+    access_request = _access_request_for(app, "agent", user if scoped else None, fallback=False)
+    view_event = _latest_audit_event(events, {"agent_viewed"}, user if scoped else None)
+    download_event = _latest_audit_event(events, {"agent_downloaded"}, user if scoped else None)
+    steps = [
+        _audit_step(
+            "Invite Received",
+            "bi-envelope-check",
+            "blue",
+            _invite_received_at(app, events),
+            "The invitation was received and the application process was opened.",
+        ),
+        _audit_step(
+            "Application Submitted to Agent",
+            "bi-file-earmark-check",
+            "purple",
+            app.submitted_at,
+            "Candidate completed and submitted the application to the agent.",
+        ),
+        _audit_step(
+            "Request Received",
+            "bi-person-lock",
+            "orange",
+            access_request.requested_at if access_request else None,
+            "The agent requested permission to access the candidate application.",
+        ),
+        _audit_step(
+            "Access Granted",
+            "bi-shield-check",
+            "green",
+            access_request.approved_at if access_request else None,
+            "Candidate approved agent access to the application.",
+        ),
+        _audit_step(
+            "Application Viewed / Download by Agent",
+            "bi-eye",
+            "dark",
+            details=_view_detail_boxes(
+                view_event,
+                download_event,
+                "Agent Location",
+                "Agent IP Address",
+            ),
+        ),
+    ]
+    steps.extend(_forward_and_hr_access_steps(app, events, user, scope_forward=scoped))
+    return steps
+
+
+def _candidate_audit_steps(app, events):
+    access_requests = list(app.access_requests.all())
+    latest_request = access_requests[0] if access_requests else None
+    view_event = _latest_audit_event(events, {"view", "hr_viewed"})
+    download_event = _latest_audit_event(events, {"download", "hr_downloaded"})
+    steps = [
+        _audit_step(
+            "HR Invite Received / Opened",
+            "bi-envelope-check",
+            "blue",
+            app.created_at,
+            "HR invitation was received and the application process was opened.",
+        ),
+        _audit_step(
+            "Application Submitted",
+            "bi-file-earmark-check",
+            "purple",
+            app.submitted_at,
+            "Candidate completed and submitted the application.",
+        ),
+        _audit_step(
+            "Access Request Received",
+            "bi-person-lock",
+            "orange",
+            latest_request.requested_at if latest_request else None,
+            "HR requested permission to access the candidate application.",
+        ),
+        _audit_step(
+            "Candidate Approved",
+            "bi-shield-check",
+            "green",
+            latest_request.approved_at if latest_request else None,
+            "Candidate approved HR access to the application.",
+        ),
+        # _audit_step(
+        #     "Application Viewed / Download",
+        #     "bi-eye",
+        #     "dark",
+        #     details=_view_detail_boxes(
+        #         view_event,
+        #         download_event,
+        #         "HR Location",
+        #         "HR IP Address",
+        #         ip_from_view_only=True,
+        #     ),
+        # ),
+    ]
+    steps.extend(_forward_and_hr_access_steps(app, events))
+    return steps
+
+
+def _audit_modal_steps(app, role, user):
+    events = list(app.audit_trails.all())
+    if role == "candidate":
+        return _candidate_audit_steps(app, events)
+    if role == "agent":
+        return _agent_audit_steps(app, events, user, scoped=True)
+    if role == "hr":
+        return _hr_audit_steps(app, events, user, scoped=True)
+    invitation = _safe_invitation(app)
+    inviter_role = get_role(invitation.invited_by) if invitation and invitation.invited_by_id else None
+    if inviter_role == "agent":
+        return _agent_audit_steps(app, events, user, scoped=False)
+    steps = _hr_audit_steps(app, events, user, scoped=False)
+    if any(event.action == "forwarded" for event in events):
+        steps.extend(_forward_and_hr_access_steps(app, events))
+    return steps
+
+
+def _prepare_application_audit(app, role, user):
+    events = list(app.audit_trails.all())
+    app.hr_viewed = any(event.action in {"view", "hr_viewed"} for event in events)
+    access_requests = list(app.access_requests.all())
+    app.latest_access_request = access_requests[0] if access_requests else None
+    app.audit_events = events
+    app.latest_view_event = _latest_audit_event(events, {"view", "hr_viewed"})
+    app.latest_download_event = _latest_audit_event(events, {"download", "hr_downloaded"})
+    if role == "agent":
+        app.agent_access_request = _access_request_for(app, "agent", user, fallback=False)
+    app.audit_steps = _audit_modal_steps(app, role, user)
+
+
 @login_required(login_url="/login/")
 def submitted_applications(request):
 
@@ -2205,8 +2508,13 @@ def submitted_applications(request):
             "candidate",
             "company",
             "invitation",
+            "invitation__invited_by",
         )
-        .prefetch_related("access_requests", "audit_trails__user")
+        .prefetch_related(
+            "access_requests__requested_by",
+            "audit_trails__user",
+            "notification_set",
+        )
         .order_by("-submitted_at")
     )
 
@@ -2243,6 +2551,7 @@ def submitted_applications(request):
 
         if not app.candidate:
             app.display_name = "Candidate"
+            _prepare_application_audit(app, role, request.user)
             continue
 
         display_name = ""
@@ -2276,14 +2585,7 @@ def submitted_applications(request):
 
         app.display_name = display_name
 
-        # Audit data used by the client-facing Submitted Applications page.
-        app.hr_viewed = app.audit_trails.filter(action__in=["view", "hr_viewed"]).exists()
-        app.latest_access_request = app.access_requests.order_by("-requested_at").first()
-        app.audit_events = list(app.audit_trails.select_related("user").all())
-        app.latest_view_event = next((event for event in app.audit_events if event.action in {"view", "hr_viewed"}), None)
-        app.latest_download_event = next((event for event in app.audit_events if event.action in {"download", "hr_downloaded"}), None)
-        if role == "agent":
-            app.agent_access_request = app.access_requests.filter(requested_by=request.user).order_by("-requested_at").first()
+        _prepare_application_audit(app, role, request.user)
 
     return render(
         request,
@@ -2304,8 +2606,13 @@ def received_applications(request):
             status__in={"submitted", "reviewed", "shortlisted", "rejected"},
             archived=False,
         )
-        .select_related("candidate", "company")
-        .prefetch_related("files", "access_requests", "audit_trails__user")
+        .select_related("candidate", "company", "invitation", "invitation__invited_by")
+        .prefetch_related(
+            "files",
+            "access_requests__requested_by",
+            "audit_trails__user",
+            "notification_set",
+        )
         .order_by("-submitted_at")
     )
 
@@ -2330,7 +2637,7 @@ def received_applications(request):
                 .first()
             )
 
-        app.audit_events = list(app.audit_trails.select_related("user").all())
+        _prepare_application_audit(app, role, request.user)
 
     return render(
         request,
@@ -2610,69 +2917,162 @@ def application_access_approval(request, token):
 
 
 def _application_pdf_response(app):
-    """Create a simple downloadable PDF containing the saved application data."""
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER
-    from reportlab.lib.units import mm
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-    from reportlab.lib import colors
-    from io import BytesIO
+    from .application_pdf import build_application_pdf
 
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(
-        buffer, pagesize=A4,
-        rightMargin=15*mm, leftMargin=15*mm,
-        topMargin=15*mm, bottomMargin=15*mm,
-        title=f"Application {app.id}",
+    context = _application_display_context(app)
+    context.update({
+        "application": app,
+        "uploaded_files": list(app.files.all().order_by("-uploaded_at")),
+    })
+    return build_application_pdf(app, context)
+
+
+def _stringify_app_value(value):
+    if value is True:
+        return "Yes"
+    if value is False:
+        return "No"
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        parts = [_stringify_app_value(item) for item in value]
+        return ", ".join(part for part in parts if part)
+    if isinstance(value, dict):
+        return ""
+    text = str(value).strip()
+    if text.lower() in {"please select", "select"}:
+        return ""
+    return text
+
+
+class SafeDisplayDict(dict):
+    """Template-safe mapping: missing keys render as empty, not as an error."""
+
+    def __missing__(self, key):
+        return ""
+
+
+def _flatten_application_data(data):
+    flat = SafeDisplayDict()
+    if not isinstance(data, dict):
+        return flat
+
+    def walk(obj):
+        if not isinstance(obj, dict):
+            return
+        for key, val in obj.items():
+            if isinstance(val, dict):
+                walk(val)
+            else:
+                flat[key] = _stringify_app_value(val)
+
+    walk(data)
+    return flat
+
+
+def _section_values(data, name):
+    raw = data.get(name) if isinstance(data, dict) else None
+    if not isinstance(raw, dict):
+        return SafeDisplayDict()
+    return SafeDisplayDict(
+        {
+            key: _stringify_app_value(val)
+            for key, val in raw.items()
+            if not isinstance(val, dict)
+        }
     )
-    styles = getSampleStyleSheet()
-    title = ParagraphStyle('AppTitle', parent=styles['Title'], alignment=TA_CENTER, spaceAfter=10)
-    heading = ParagraphStyle('SectionHeading', parent=styles['Heading2'], spaceBefore=8, spaceAfter=5)
-    normal = styles['BodyText']
-    story = [Paragraph('Stalwart Business Solutions', title),
-             Paragraph(f'{app.company.name} - Job Application', styles['Heading1']),
-             Paragraph(f'Application ID: {app.id} &nbsp;&nbsp; Candidate: {normalize_person_name(app.candidate.full_name) or "Candidate"}', normal),
-             Paragraph(f'Email: {app.candidate.email or ""} &nbsp;&nbsp; Status: {app.get_status_display()}', normal), Spacer(1, 8)]
 
+
+def _yes_no_details(answer, details):
+    answer = (answer or "").strip()
+    details = (details or "").strip()
+    if answer.lower() == "yes" and details:
+        return f"Yes, {details}"
+    return answer
+
+
+def _files_by_field(app):
+    mapping = SafeDisplayDict()
+    for uploaded in app.files.all().order_by("uploaded_at", "id"):
+        mapping[uploaded.field_name] = uploaded
+    return mapping
+
+
+def _occupation_label(flat):
+    parts = [
+        flat.get(f"macro_1_checkbox_{index}")
+        for index in range(1, 9)
+        if flat.get(f"macro_1_checkbox_{index}")
+    ]
+    if parts:
+        return ", ".join(parts)
+    position = flat.get("position_applied") or ""
+    others = flat.get("others") or ""
+    if position and others and "other" in position.lower():
+        return f"{position} ({others})"
+    return position or others
+
+
+def _residence_label(flat):
+    parts = [
+        flat.get(key)
+        for key in (
+            "macro_1_checkbox_9",
+            "macro_1_checkbox_10",
+            "macro_1_checkbox_11",
+            "macro_1_checkbox_12",
+        )
+        if flat.get(key)
+    ]
+    extra = flat.get("others_2") or ""
+    if extra:
+        parts.append(extra)
+    return ", ".join(parts)
+
+
+def _last_nonempty_part(value):
+    text = (value or "").strip()
+    if not text:
+        return ""
+    parts = [part.strip() for part in text.split(",") if part.strip()]
+    return parts[-1] if parts else text
+
+
+def _application_display_context(app):
     data = app.data if isinstance(app.data, dict) else {}
-    labels = {
-        'personal_information':'Personal Particulars','macro_section_1':'Personal Particulars / Family Information',
-        'macro_section_2':'Employment History','macro_section_3':'Education / Continuing Education / Languages',
-        'macro_section_4':'General Information / Availability / References','macro_section_5':'Personal Data Consent',
-        'macro_section_6':'General Assignment','macro_section_7':'HR PDPA Consent',
-        'employment_expectations':'Employment Expectations','reference':'References','declaration':'Applicant Declaration',
-        'consent':'Consent','documents':'Documents'
+    fields = _flatten_application_data(data)
+    section3 = _section_values(data, "macro_section_3")
+    fields["lang_other"] = (
+        section3.get("lang_other")
+        or _last_nonempty_part(section3.get("others"))
+        or fields.get("lang_other")
+    )
+    fields["lang_other_2"] = (
+        section3.get("lang_other_2")
+        or _last_nonempty_part(section3.get("others_2"))
+        or fields.get("lang_other_2")
+    )
+    personal = _section_values(data, "personal_information")
+    personal["medical_display"] = _yes_no_details(
+        personal.get("medical_condition"),
+        personal.get("medical_condition_details"),
+    )
+    personal["criminal_display"] = _yes_no_details(
+        personal.get("criminal_offence"),
+        personal.get("criminal_offence_details"),
+    )
+    return {
+        "fields": fields,
+        "pi": personal,
+        "iq": _section_values(data, "iq_test"),
+        "consent": _section_values(data, "consent"),
+        "emp": _section_values(data, "employment_expectations"),
+        "ref": _section_values(data, "reference"),
+        "decl": _section_values(data, "declaration"),
+        "files_by_field": _files_by_field(app),
+        "occupation_label": _occupation_label(fields),
+        "residence_label": _residence_label(fields),
     }
-    def text(v):
-        if isinstance(v, list): return ', '.join(text(x) for x in v)
-        if isinstance(v, dict): return '; '.join(f'{k}: {text(x)}' for k,x in v.items())
-        if v is True: return 'Yes'
-        if v is False: return 'No'
-        return '' if v is None else str(v)
-    for section, values in data.items():
-        if not values: continue
-        story.append(Paragraph(labels.get(section, section.replace('_',' ').title()), heading))
-        rows=[]
-        if isinstance(values, dict):
-            for key,val in values.items():
-                if key == 'documents': continue
-                rows.append([Paragraph(str(key).replace('_',' ').title(), normal), Paragraph(text(val).replace('&','&amp;').replace('<','&lt;').replace('>','&gt;'), normal)])
-        else:
-            rows.append(['', Paragraph(text(values), normal)])
-        if rows:
-            table=Table(rows, colWidths=[55*mm, 115*mm], repeatRows=0)
-            table.setStyle(TableStyle([('GRID',(0,0),(-1,-1),0.35,colors.grey),('VALIGN',(0,0),(-1,-1),'TOP'),('BACKGROUND',(0,0),(0,-1),colors.whitesmoke),('LEFTPADDING',(0,0),(-1,-1),5),('RIGHTPADDING',(0,0),(-1,-1),5),('TOPPADDING',(0,0),(-1,-1),4),('BOTTOMPADDING',(0,0),(-1,-1),4)]))
-            story.append(table)
-    files=list(app.files.all().order_by('-uploaded_at'))
-    if files:
-        story.append(Paragraph('Uploaded Documents / Images', heading))
-        for f in files:
-            story.append(Paragraph(f'- {f.field_name or "Document"}: {f.file.name}', normal))
-    doc.build(story)
-    response=HttpResponse(buffer.getvalue(), content_type='application/pdf')
-    response['Content-Disposition']=f'attachment; filename="application_{app.id}.pdf"'
-    return response
 
 
 def _valid_forward_access(request, app):
@@ -2804,6 +3204,12 @@ def application_detail(request, pk):
             request,
             app,
             "hr_downloaded" if request.GET.get("download", "").lower() == "pdf" else "hr_viewed",
+        )
+    elif role == "agent":
+        _record_agent_audit(
+            request,
+            app,
+            "agent_downloaded" if request.GET.get("download", "").lower() == "pdf" else "agent_viewed",
         )
 
     if app.candidate:
