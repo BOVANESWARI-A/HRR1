@@ -1,0 +1,1615 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Stalwart Business Solutions</title>
+
+    <link rel="icon"
+          href="{% static 'core/assets/images/favicon.png' %}"
+          type="image/x-icon">
+
+    <link type="text/css"
+          href="{% static 'core/assets/css/master.css' %}"
+          rel="stylesheet">
+
+    <link type="text/css"
+          href="{% static 'core/assets/css/style.css' %}"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ========================================================= -->
+<!-- MESSAGES -->
+<!-- ========================================================= -->
+
+{% if messages %}
+
+<div class="position-fixed top-0 end-0 p-3"
+     style="z-index:9999;">
+
+    {% for message in messages %}
+
+    <div class="alert alert-info shadow-sm">
+
+        {{ message }}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+
+<div class="wrapper">
+
+
+<!-- ========================================================= -->
+<!-- SIDEBAR -->
+<!-- ========================================================= -->
+
+{% include "core/sidebar.html" %}
+<div id="main-content"
+     class="flex-grow-1">
+
+
+    <!-- ========================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================= -->
+
+    <header class="header header-light">
+
+        <div class="container-fluid px-4 py-2">
+
+            <div class="d-flex align-items-center justify-content-between">
+
+
+                <!-- MENU -->
+
+                <div>
+
+                    <a href="javascript:void(0)"
+                       class="toggle-sidebar-btn"
+                       onclick="toggleSidebar()">
+
+                        <i class="bi bi-list"></i>
+
+                    </a>
+
+                </div>
+
+
+<!-- ADD CLIENT BUTTON - AGENT ONLY -->
+{% if role == "agent" %}
+<style>
+    .agent-add-client-btn { border:0; border-radius:10px; padding:.72rem 1.15rem; font-weight:650;
+        color:#fff; background:linear-gradient(135deg,#315ce8,#6746d8); box-shadow:0 5px 14px rgba(49,92,232,.25);
+        transition:transform .18s ease,box-shadow .18s ease; }
+    .agent-add-client-btn:hover { color:#fff; transform:translateY(-1px); box-shadow:0 8px 20px rgba(49,92,232,.32); }
+    .client-modal .modal-content { border:0; border-radius:16px; overflow:hidden; box-shadow:0 18px 55px rgba(20,35,70,.22); }
+    .client-modal .modal-header { padding:1.2rem 1.35rem; color:#fff; border:0; background:linear-gradient(120deg,#2449b8,#6545d4); }
+    .client-modal .modal-title { font-weight:700; }
+    .client-modal .modal-body { padding:1.35rem; }
+    .client-modal .form-control { min-height:44px; border-radius:9px; border-color:#d7deea; }
+    .client-modal .form-control:focus { border-color:#637ff0; box-shadow:0 0 0 .2rem rgba(99,127,240,.14); }
+    .client-search-results { max-height:220px; overflow:auto; border-radius:9px; }
+    .client-search-results .list-group-item { padding:.75rem .9rem; border-color:#edf0f6; }
+    .client-search-results .list-group-item.active { background:#eef2ff; color:#243c9c; border-color:#dbe3ff; }
+    .client-help { color:#667085; font-size:.88rem; }
+    .client-invite-preview { background:#f6f8ff; border:1px solid #e0e6ff; border-radius:12px; padding:1rem; color:#28334c; line-height:1.65; }
+</style>
+<div class="ms-auto me-3">
+    <button type="button" class="btn agent-add-client-btn" data-bs-toggle="modal" data-bs-target="#addClientModal">
+        <i class="bi bi-person-plus-fill me-1"></i> Add Client
+    </button>
+</div>
+
+{{ request.user.profile.company_name|default:request.user.get_full_name|default:request.user.username|json_script:"agency-name-data" }}
+<div class="modal fade client-modal" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><h5 class="modal-title" id="addClientModalLabel"><i class="bi bi-building-add me-2"></i>Add New Client</h5>
+                <small class="opacity-75">Connect with a registered company or invite a new one.</small></div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <label for="clientSearch" class="form-label fw-semibold">Client's name</label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text bg-white" style="border-radius:9px 0 0 9px"><i class="bi bi-search"></i></span>
+                    <input type="text" id="clientSearch" class="form-control" style="border-radius:0 9px 9px 0" placeholder="Search company name or HR email..." autocomplete="off">
+                </div>
+                <div class="client-help mb-3">Search existing eDocs HR accounts. If the company is not registered, you can send an invitation.</div>
+                <div id="clientSuggestions" class="list-group client-search-results"></div>
+                <div id="clientMessage" class="small mt-2" aria-live="polite"></div>
+                <div id="newClientFields" class="mt-3 p-3 rounded-3" style="background:#f8f9fc;border:1px solid #edf0f6" hidden>
+                    <div class="fw-semibold mb-3"><i class="bi bi-envelope-plus me-1"></i> Invite a new client</div>
+                    <label for="newClientName" class="form-label">Company name</label>
+                    <input type="text" id="newClientName" class="form-control mb-3" placeholder="Enter company name">
+                    <label for="newClientEmail" class="form-label">Company HR email</label>
+                    <input type="email" id="newClientEmail" class="form-control" placeholder="hr@company.com">
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light border" id="notNowBtn">Not now</button>
+                    <button type="button" class="btn btn-primary px-4" id="addClientBtn" disabled><i class="bi bi-check2-circle me-1"></i>Add</button>
+                    <button type="button" class="btn btn-primary px-3" id="sendClientInviteBtn" hidden><i class="bi bi-send me-1"></i>Send an Invite</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade client-modal" id="clientInvitePreviewModal" tabindex="-1" aria-labelledby="clientInvitePreviewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><h5 class="modal-title" id="clientInvitePreviewLabel"><i class="bi bi-envelope-paper me-2"></i>Invitation preview</h5>
+                <small class="opacity-75">Review the message before sending.</small></div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="clientInvitePreviewText" class="client-invite-preview mb-3"></div>
+                <div class="small text-muted mb-3">To: <span id="clientInvitePreviewEmail"></span></div>
+                <div id="clientInviteStatus" class="small mb-2" aria-live="polite"></div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light border" id="cancelClientInviteBtn" data-bs-dismiss="modal">Not now</button>
+                    <button type="button" class="btn btn-primary px-4" id="confirmClientInviteBtn"><i class="bi bi-send me-1"></i>Send invitation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+                <!-- PROFILE -->
+
+                <div>
+
+                    <nav class="header-nav ms-auto">
+
+                        <ul class="d-flex align-items-center">
+
+                            {% include "core/notification-bell.html" %}
+
+                            <li class="nav-item dropdown">
+
+                                <a class="nav-link nav-profile d-flex align-items-center pe-0"
+                                   href="javascript:void(0)"
+                                   data-bs-toggle="dropdown">
+
+                                    <img src="{% static 'core/assets/images/profile.png' %}"
+                                         alt="Profile"
+                                         class="rounded-circle">
+
+                                    <span class="d-none d-md-block dropdown-toggle ps-2">
+
+                                        {{ request.user.first_name|default:request.user.username }}
+
+                                    </span>
+
+                                </a>
+
+
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+
+
+                                    <li class="dropdown-header border-bottom">
+
+                                        <p class="text-extra-small text-dark font-weight-500">
+
+                                            {{ request.user.get_full_name|default:request.user.username }}
+
+                                        </p>
+
+                                        <small>
+                                            {{ request.user.email }}
+                                        </small>
+
+                                        <br>
+
+                                        <small class="text-muted">
+
+                                            Role:
+                                            {{ role|title }}
+
+                                        </small>
+
+                                    </li>
+
+
+                                    <li class="border-bottom">
+
+                                        <a class="dropdown-item d-flex align-items-center"
+                                           href="{% url 'myprofile' %}">
+
+                                            <i class="bi bi-person"></i>
+
+                                            <span>My Profile</span>
+
+                                        </a>
+
+                                    </li>
+
+                            
+
+                                    <li class="border-bottom">
+
+                                        <a class="dropdown-item d-flex align-items-center"
+                                           href="{% url 'security' %}">
+
+                                            <i class="bi bi-lock"></i>
+
+                                            <span>Security</span>
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <a class="dropdown-item d-flex align-items-center"
+                                           href="javascript:void(0)"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#logoutModal">
+
+                                            <i class="bi bi-box-arrow-right"></i>
+
+                                            <span>Sign Out</span>
+
+                                        </a>
+
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                        </ul>
+
+                    </nav>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================================= -->
+    <!-- CONTENT -->
+    <!-- ========================================================= -->
+
+    <div class="content-wrapper">
+
+        <div class="container-fluid px-4">
+
+            <div class="py-4">
+
+                <section class="page-container">
+
+                    <div class="content-section">
+
+
+                        <!-- ================================================= -->
+                        <!-- DASHBOARD IMAGE -->
+                        <!-- ALL -->
+                        <!-- ================================================= -->
+
+                        <div class="row">
+
+                            <div class="col-12 mb-4">
+
+                                <div class="text-center">
+
+                                    <img src="{% static 'core/assets/images/dashboard.png' %}"
+                                         alt="Stalwart Business Solutions"
+                                         width="768"
+                                         class="img-fluid">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- CANDIDATE DASHBOARD -->
+                        <!-- ================================================= -->
+
+                        {% if role == "candidate" %}
+
+                        <div class="row">
+
+
+                            <!-- ACCOUNT TYPE -->
+
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-pink rounded p-4 h-100">
+
+                                            <div class="number-box text-pink mb-3">
+
+                                                <i class="bi bi-coin"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Account Type
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="account_type">
+
+                                                    {{ account_type|default:"Free" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Your current account plan and subscription details.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- VALID TILL -->
+
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-indigo rounded p-4 h-100">
+
+                                            <div class="number-box text-indigo mb-3">
+
+                                                <i class="bi bi-calendar2-week"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Valid Till
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="remaining_days">
+
+                                                    {{ remaining_days|default:"0" }}
+
+                                                </span>
+
+                                                Days Left
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Your account remains active for the available subscription period.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- APPLICATIONS -->
+
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-neon rounded p-4 h-100">
+
+                                            <div class="number-box text-neon mb-3">
+
+                                                <i class="bi bi-file-text"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Applications Submitted
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="application_submitted">
+
+                                                    {{ application_submitted|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Total applications successfully submitted through the system.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- Candidate application actions -->
+
+                        <div class="row">
+
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body">
+
+                                        <h5>
+
+                                            <i class="bi bi-file-earmark-text me-2"></i>
+
+                                            Job Applications
+
+                                        </h5>
+
+                                        <p class="text-muted">
+
+                                            Apply for available opportunities.
+
+                                        </p>
+
+                                        <div class="bg-silver rounded p-3">
+                                            <p class="text-small mb-0">
+                                                Application links are provided securely by HR through your invitation email.
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body">
+
+                                        <h5>
+
+                                            <i class="bi bi-journal-check me-2"></i>
+
+                                            My Applications
+
+                                        </h5>
+
+                                        <p class="text-muted">
+
+                                            View your submitted applications.
+
+                                        </p>
+
+                                        <a href="{% url 'submitted_applications' %}"
+                                           class="brand-button-alt">
+
+                                            View Applications
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        {% endif %}
+
+                    
+
+
+                        <!-- ================================================= -->
+                        <!-- AGENT DASHBOARD -->
+                        <!-- ================================================= -->
+
+                        {% if role == "agent" %}
+
+                        <div class="row">
+
+
+                            <!-- CLIENTS -->
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-purple rounded p-4 h-100">
+
+                                            <div class="number-box text-purple mb-3">
+
+                                                <i class="bi bi-people"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Number of Clients
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="client_count">
+
+                                                    {{ client_count|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Total clients currently assigned to this agent.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- SUBMITTED -->
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-violet rounded p-4 h-100">
+
+                                            <div class="number-box text-violet mb-3">
+
+                                                <i class="bi bi-file-text"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Applications Submitted
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="submitted_count">
+
+                                                    {{ submitted_count|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Applications submitted by candidates assigned to this agent.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        {% endif %}
+
+
+
+                        <!-- ================================================= -->
+                        <!-- HR DASHBOARD -->
+                        <!-- ================================================= -->
+
+                        {% if role == "hr" %}
+
+                        <div class="row">
+
+
+                            <!-- RECEIVED -->
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-blue rounded p-4 h-100">
+
+                                            <div class="number-box text-blue mb-3">
+
+                                                <i class="bi bi-arrow-down-square"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Applications Received
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="received_count">
+
+                                                    {{ received_count|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-4">
+
+                                                Applications received from candidates through the recruitment process.
+
+                                            </p>
+
+                                            <a href="{% url 'received_applications' %}"
+                                               class="light-button">
+
+                                                Visit Now
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- INVITE -->
+
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-green rounded p-4 h-100">
+
+                                            <div class="number-box text-green mb-3">
+
+                                                <i class="bi bi-person-plus"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Send Invite
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                Send online invitations to new candidates.
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-4">
+
+                                                Enter the candidate's email address to send an application invitation link.
+
+                                            </p>
+
+                                            <button type="button"
+                                                    class="light-button"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#inviteModal">
+
+                                                Invite Now
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        {% endif %}
+
+
+
+                        <!-- ================================================= -->
+                        <!-- ADMINISTRATION DASHBOARD -->
+                        <!-- ================================================= -->
+{% if role == "administration" %}
+
+                        
+                        <div class="row">
+
+
+                            <!-- TOTAL CANDIDATES -->
+
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-sky rounded p-4 h-100">
+
+                                            <div class="number-box text-sky mb-3">
+
+                                                <i class="bi bi-person"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Total Candidates
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="total_candidates">
+
+                                                    {{ total_candidates|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Total candidates currently registered in the recruitment system.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- PAID SUBSCRIPTIONS -->
+
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-red rounded p-4 h-100">
+
+                                            <div class="number-box text-red mb-3">
+
+                                                <i class="bi bi-coin"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Paid Subscriptions
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="paid_subscriptions">
+
+                                                    {{ paid_subscriptions|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Total active paid subscription plans.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- RECEIVED -->
+
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-teal rounded p-4 h-100">
+
+                                            <div class="number-box text-teal mb-3">
+
+                                                <i class="bi bi-arrow-down-square"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Applications Received
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="received_count">
+
+                                                    {{ received_count|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Total candidate applications received in the system.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- FEEDBACK -->
+
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+
+                                <div class="card card-box h-100">
+
+                                    <div class="card-body p-0">
+
+                                        <div class="bg-orange rounded p-4 h-100">
+
+                                            <div class="number-box text-orange mb-3">
+
+                                                <i class="bi bi-star"></i>
+
+                                            </div>
+
+                                            <p class="text-medium font-weight-600 text-white lh-1 mb-1">
+
+                                                Received Feedback
+
+                                            </p>
+
+                                            <p class="text-small text-white font-weight-500 mb-3">
+
+                                                <span data-dashboard-stat="feedback_count">
+
+                                                    {{ feedback_count|default:"0" }}
+
+                                                </span>
+
+                                            </p>
+
+                                            <p class="text-extra-small text-white font-weight-500 mb-0">
+
+                                                Feedback received from candidates and clients.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        {% endif %}
+
+
+
+                        
+
+                        <!-- ================================================= -->
+                        <!-- FOOTER -->
+                        <!-- ================================================= -->
+
+                        <footer id="footer"
+                                class="footer">
+
+                            <div class="container-fluid px-4">
+
+                                <div class="row">
+
+                                    <div class="col-12">
+
+                                        <div class="d-flex align-items-center justify-content-between">
+
+
+                                            <div>
+
+                                                <p class="text-extra-small font-weight-400">
+
+                                                    &copy;
+
+                                                    <span id="current-year"></span>
+
+                                                    Stalwart Business Solutions.
+
+                                                </p>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <p class="text-extra-small font-weight-400"
+                                                   id="toTop"
+                                                   style="cursor:pointer;">
+
+                                                    To top
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         width="24"
+                                                         height="24"
+                                                         fill="currentColor"
+                                                         viewBox="0 0 16 16">
+
+                                                        <path fill-rule="evenodd"
+                                                              d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
+
+                                                    </svg>
+
+                                                </p>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </footer>
+
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- INVITATION MODAL -->
+<!-- HR + ADMIN -->
+<!-- ========================================================= -->
+
+{% if role == "hr" or role == "administration" %}
+
+<div class="custom-modal">
+
+    <div class="modal fade"
+         id="inviteModal"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+
+            <form method="POST"
+                  action="{% url 'send_invitation' %}"
+                  class="w-100">
+
+                {% csrf_token %}
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Send Invitation{% if role == "hr" %} — {{ hr_company_name }}{% endif %}
+                        </h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        {% if role == "administration" %}
+                        <div class="mb-3">
+                            <label for="inviteCompany" class="form-label">
+                                <sup class="text-danger">*</sup> Select Company
+                            </label>
+                            <select class="form-select"
+                                    id="inviteCompany"
+                                    name="company"
+                                    required>
+                                <option value="" selected disabled>Select Company</option>
+                                <option value="InsiteMy">InsiteMy</option>
+                                <option value="Macro Kiosk">Macro Kiosk</option>
+                            </select>
+                        </div>
+                        {% else %}
+                            <input type="hidden"
+                                   name="company"
+                                   value="{{ hr_company_name }}">
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="inviteEmails" class="form-label">
+                                <sup class="text-danger">*</sup>
+                                Candidate Email Address(es)
+                            </label>
+                            <textarea class="form-control"
+                                      id="inviteEmails"
+                                      name="emails"
+                                      rows="5"
+                                      placeholder="candidate1@example.com&#10;candidate2@example.com&#10;candidate3@example.com"
+                                      required></textarea>
+                            <div class="form-text">
+                                Enter one or more email addresses. Use a new line, comma or semicolon.
+                                Each candidate receives a separate secure invitation.
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="inviteName" class="form-label">Candidate Name</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="inviteName"
+                                       name="name"
+                                       placeholder="Optional">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="invitePhone" class="form-label">Phone Number</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="invitePhone"
+                                       name="phone"
+                                       placeholder="Optional">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="brand-button"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
+
+                        <button type="submit"
+                                class="brand-button-alt">
+                            Send Invitation
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+<!-- ========================================================= -->
+<!-- LOGOUT MODAL -->
+<!-- ALL ROLES -->
+<!-- ========================================================= -->
+
+<div class="custom-modal">
+
+    <div class="modal fade"
+         id="logoutModal"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+
+                <div class="modal-header">
+
+                    <h1 class="modal-title fs-5">
+
+                        Confirm
+
+                    </h1>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <div class="py-3">
+
+                        <p class="text-small font-weight-400">
+
+                            Are you sure you want to log out?
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="brand-button"
+                            data-bs-dismiss="modal">
+
+                        Stay Connected
+
+                    </button>
+
+
+                    <form method="post"
+                          action="{% url 'logout' %}"
+                          style="display:inline;">
+
+                        {% csrf_token %}
+
+                        <button type="submit"
+                                class="brand-button-alt">
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script src="{% static 'core/assets/js/bundle.js' %}"
+        type="text/javascript">
+</script>
+
+<script src="{% static 'core/assets/js/scripts.js' %}"
+        type="text/javascript">
+</script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const yearElement =
+            document.getElementById(
+                "current-year"
+            );
+
+        if (yearElement) {
+
+            yearElement.textContent =
+                new Date().getFullYear();
+
+        }
+
+
+        const toTop =
+            document.getElementById(
+                "toTop"
+            );
+
+        if (toTop) {
+
+            toTop.addEventListener(
+                "click",
+                function () {
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+
+<!-- ========================================================= -->
+<!-- LIVE DASHBOARD -->
+<!-- ========================================================= -->
+
+<script>
+
+(function () {
+
+    const endpoint =
+        "{% url 'dashboard_data' %}";
+
+
+    function updateDashboard(data) {
+
+        if (!data) {
+            return;
+        }
+
+        Object.keys(data).forEach(
+            function (key) {
+
+                document
+                    .querySelectorAll(
+                        '[data-dashboard-stat="' + key + '"]'
+                    )
+                    .forEach(
+                        function (element) {
+
+                            element.textContent =
+                                data[key] ?? 0;
+
+                        }
+                    );
+
+            }
+        );
+
+    }
+
+
+    function refreshDashboard() {
+
+        fetch(
+            endpoint,
+            {
+                method: "GET",
+
+                headers: {
+                    "X-Requested-With":
+                        "XMLHttpRequest"
+                },
+
+                credentials: "same-origin"
+            }
+        )
+        .then(
+            function (response) {
+
+                if (!response.ok) {
+                    return null;
+                }
+
+                return response.json();
+
+            }
+        )
+        .then(
+            function (data) {
+
+                updateDashboard(data);
+
+            }
+        )
+        .catch(
+            function () {
+
+                // Ignore temporary network errors.
+
+            }
+        );
+
+    }
+
+
+    // Refresh every 5 seconds.
+    setInterval(
+        refreshDashboard,
+        5000
+    );
+
+
+})();
+
+</script>
+
+{% if role == "agent" %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("clientSearch");
+    const suggestions = document.getElementById("clientSuggestions");
+    const message = document.getElementById("clientMessage");
+    const newFields = document.getElementById("newClientFields");
+    const nameInput = document.getElementById("newClientName");
+    const emailInput = document.getElementById("newClientEmail");
+    const addButton = document.getElementById("addClientBtn");
+    const inviteButton = document.getElementById("sendClientInviteBtn");
+    const notNowButton = document.getElementById("notNowBtn");
+    const modalElement = document.getElementById("addClientModal");
+    const previewElement = document.getElementById("clientInvitePreviewModal");
+    const previewText = document.getElementById("clientInvitePreviewText");
+    const previewEmail = document.getElementById("clientInvitePreviewEmail");
+    const inviteStatus = document.getElementById("clientInviteStatus");
+    const confirmInviteButton = document.getElementById("confirmClientInviteBtn");
+    const csrfInput = modalElement.querySelector('[name="csrfmiddlewaretoken"]');
+    if (!searchInput || !suggestions || !csrfInput) return;
+
+    const csrfToken = csrfInput.value;
+    const searchUrl = "{% url 'search_agent_clients' %}";
+    const addUrl = "{% url 'add_agent_client' %}";
+    const inviteUrl = "{% url 'invite_agent_client' %}";
+    let selectedClientId = null, searchTimer = null, latestSearch = 0;
+    // Keep both Bootstrap modals outside header/layout containers.
+if (modalElement && modalElement.parentElement !== document.body) {
+    document.body.appendChild(modalElement);
+}
+
+if (previewElement && previewElement.parentElement !== document.body) {
+    document.body.appendChild(previewElement);
+}
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    const previewModal = bootstrap.Modal.getOrCreateInstance(previewElement);
+
+
+    function resetModal() {
+        searchInput.value = ""; suggestions.replaceChildren(); message.textContent = "";
+        newFields.hidden = true; nameInput.value = ""; emailInput.value = "";
+        addButton.disabled = true; inviteButton.hidden = true; selectedClientId = null;
+        addButton.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Add';
+        inviteButton.innerHTML = '<i class="bi bi-send me-1"></i>Send an Invite';
+    }
+    function showMessage(text, isError = false) {
+        message.textContent = text;
+        message.className = isError ? "small mt-2 text-danger" : "small mt-2 text-muted";
+    }
+    function agencyName() {
+        const node = document.getElementById("agency-name-data");
+        if (node) { try { return JSON.parse(node.textContent); } catch (_) {} }
+        return "{{ request.user.get_full_name|default:request.user.username|escapejs }}";
+    }
+
+    searchInput.addEventListener("input", function () {
+        clearTimeout(searchTimer);
+        const query = searchInput.value.trim();
+        selectedClientId = null; addButton.disabled = true;
+        suggestions.replaceChildren(); newFields.hidden = true; inviteButton.hidden = true; message.textContent = "";
+        if (!query) return;
+        showMessage("Searching registered companies...");
+        const requestId = ++latestSearch;
+        searchTimer = setTimeout(async function () {
+            try {
+                const response = await fetch(searchUrl + "?q=" + encodeURIComponent(query), {headers: {"X-Requested-With":"XMLHttpRequest"}, credentials:"same-origin"});
+                if (!response.ok) throw new Error("Search failed.");
+                const data = await response.json();
+                if (requestId !== latestSearch) return;
+                const results = data.results || []; suggestions.replaceChildren();
+                if (results.length) {
+                    showMessage("Choose the correct company, then select Add.");
+                    results.forEach(function (client) {
+                        const button = document.createElement("button"); button.type = "button";
+                        button.className = "list-group-item list-group-item-action";
+                        button.innerHTML = '<span class="d-flex align-items-center gap-2"><i class="bi bi-building text-primary"></i><span class="flex-grow-1"></span><i class="bi bi-check-circle"></i></span>';
+                        button.querySelector(".flex-grow-1").textContent = client.name + (client.email ? " — " + client.email : "");
+                        button.addEventListener("click", function () {
+                            selectedClientId = client.id;
+                            suggestions.querySelectorAll("button").forEach(item => item.classList.remove("active"));
+                            button.classList.add("active"); addButton.disabled = false; newFields.hidden = true; inviteButton.hidden = true;
+                            showMessage("Selected: " + client.name);
+                        });
+                        suggestions.appendChild(button);
+                    });
+                } else {
+                    showMessage("No registered company found. Enter the company HR details to send an invitation.");
+                    newFields.hidden = false; inviteButton.hidden = false;
+                    nameInput.value = query.includes("@") ? "" : query;
+                    if (query.includes("@")) emailInput.value = query;
+                }
+            } catch (_) { showMessage("Could not search companies. Please try again.", true); }
+        }, 250);
+    });
+
+    addButton.addEventListener("click", async function () {
+        if (!selectedClientId) return showMessage("Please select a registered client first.", true);
+        addButton.disabled = true; showMessage("Adding client...");
+        try {
+            const response = await fetch(addUrl, {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8","X-CSRFToken":csrfToken,"X-Requested-With":"XMLHttpRequest"}, body:new URLSearchParams({client_id:String(selectedClientId),csrfmiddlewaretoken:csrfToken}), credentials:"same-origin"});
+            let data;
+            const responseText = await response.text();
+            try {
+                data = responseText ? JSON.parse(responseText) : {};
+            } catch (_) {
+                // Surface a readable message instead of the confusing
+                // "JSON" parse error if Django returns an HTML error page.
+                throw new Error(response.status === 403
+                    ? "Your session/CSRF token expired. Refresh the page and try again."
+                    : "The server returned an unexpected response. Please check the Django server log.");
+            }
+            if (!response.ok || !data.success) throw new Error(data.message || "Could not add client.");
+            showMessage(data.message || "Client added successfully.");
+            addButton.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Added';
+            suggestions.replaceChildren(); selectedClientId = null;
+            setTimeout(() => { resetModal(); modal.hide(); }, 1100);
+        } catch (error) { showMessage(error.message || "Could not add client. Please try again.", true); addButton.disabled = false; }
+    });
+
+    inviteButton.addEventListener("click", function () {
+        const name = nameInput.value.trim(), email = emailInput.value.trim();
+        if (!name) { showMessage("Please enter the company name.", true); nameInput.focus(); return; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMessage("Please enter a valid HR email address.", true); emailInput.focus(); return; }
+        previewText.replaceChildren();
+        const agency = agencyName();
+        const p = document.createElement("p"); p.className = "fw-semibold mb-2"; p.textContent = agency + " has invited you to join eDocs";
+        const desc = document.createElement("p"); desc.className = "mb-2"; desc.textContent = "A secure way to share and manage candidate’s documents.";
+        const join = document.createElement("p"); join.className = "mb-0"; join.textContent = "Join here: [Link]";
+        previewText.append(p, desc, join); previewEmail.textContent = email; inviteStatus.textContent = "";
+        previewElement.dataset.companyName = name; previewElement.dataset.email = email;
+        modal.hide(); previewModal.show();
+    });
+
+    confirmInviteButton.addEventListener("click", async function () {
+        const companyName = previewElement.dataset.companyName, email = previewElement.dataset.email;
+        confirmInviteButton.disabled = true; inviteStatus.className = "small mb-2 text-muted"; inviteStatus.textContent = "Sending invitation...";
+        try {
+            const response = await fetch(inviteUrl, {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8","X-CSRFToken":csrfToken,"X-Requested-With":"XMLHttpRequest"}, body:new URLSearchParams({company_name:companyName,email:email,csrfmiddlewaretoken:csrfToken}), credentials:"same-origin"});
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || "Could not send invitation.");
+            inviteStatus.className = "small mb-2 text-success"; inviteStatus.textContent = data.message || "Invitation sent.";
+            confirmInviteButton.innerHTML = '<i class="bi bi-check-circle me-1"></i>Sent';
+            setTimeout(() => { previewModal.hide(); resetModal(); }, 1300);
+        } catch (error) { inviteStatus.className = "small mb-2 text-danger"; inviteStatus.textContent = error.message || "Could not send invitation."; }
+        finally { confirmInviteButton.disabled = false; }
+    });
+
+    notNowButton.addEventListener("click", function () { resetModal(); });
+    modalElement.addEventListener("hidden.bs.modal", resetModal);
+    previewElement.addEventListener("hidden.bs.modal", function () { confirmInviteButton.disabled = false; confirmInviteButton.innerHTML = '<i class="bi bi-send me-1"></i>Send invitation'; });
+});
+</script>
+{% endif %}
+
+</body>
+
+</html>

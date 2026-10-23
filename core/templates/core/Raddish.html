@@ -1,0 +1,270 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Stalwart Business Solutions</title>
+<!-- favicons-->
+<link href="{% static 'core/assets/images/favicon.png' %}" rel="icon" type="image/x-icon"/>
+<!-- favicons-->
+<!-- css -->
+<link href="{% static 'core/assets/css/master.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'core/assets/css/style.css' %}" rel="stylesheet" type="text/css"/>
+<!-- css -->
+<!--[if lt IE 9]>
+<script src="{% static 'core/assets/js/html5shiv.js' %}" type="text/javascript" defer></script>
+<script src="{% static 'core/assets/js/css3-mediaqueries.js' %}" type="text/javascript" defer></script>
+<script src="{% static 'core/assets/js/respond.min.js' %}" type="text/javascript" defer></script>
+<![endif]-->
+<style id="macro-enterprise-validation-style">
+#myTab .macro-step-locked{opacity:.45;cursor:not-allowed;pointer-events:none}
+#myTab .macro-step-locked:after{content:"  🔒";font-size:.78em}
+.macro-invalid{border-color:#dc3545!important;box-shadow:0 0 0 .12rem rgba(220,53,69,.12)!important}
+.macro-field-error{color:#dc3545;font-size:.78rem;margin-top:.25rem}
+.macro-save-done{opacity:.75;pointer-events:none}
+</style></head>
+<body>{% if messages %}<div class="position-fixed top-0 end-0 p-3" style="z-index:9999">{% for message in messages %}<div class="alert alert-info shadow-sm">{{ message }}</div>{% endfor %}</div>{% endif %}
+<div class="wrapper">
+<!-- Sidebar -->
+{% include "core/sidebar.html" %}
+<!-- Main -->
+<div class="flex-grow-1" id="main-content">
+<!-- Header -->
+<header class="header header-light">
+<div class="container-fluid px-4 py-2">
+<div class="d-flex align-items-center justify-content-between">
+<div> <a class="toggle-sidebar-btn" href="javascript:void(0)" onclick="toggleSidebar()"> <i class="bi bi-list toggle-sidebar-btn"></i> </a> </div>
+<div>
+<!-- PROFILE -->
+<div>
+<nav class="header-nav ms-auto">
+<ul class="d-flex align-items-center">
+{% include "core/notification-bell.html" %}
+<li class="nav-item dropdown">
+<a class="nav-link nav-profile d-flex align-items-center pe-0" data-bs-toggle="dropdown" href="javascript:void(0)">
+<img alt="Profile" class="rounded-circle" height="40" src="{% static 'core/assets/images/profile.png' %}" style="width:40px;height:40px;object-fit:cover;" width="40"/>
+<span class="d-none d-md-block dropdown-toggle ps-2">
+
+                                            {{ request.user.first_name|default:request.user.username }}
+
+                                        </span>
+</a>
+<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+<li class="dropdown-header border-bottom">
+<p class="text-extra-small text-dark font-weight-500">
+
+                                                {{ request.user.get_full_name|default:request.user.username }}
+
+                                            </p>
+<small>
+
+                                                {{ request.user.email }}
+
+                                            </small>
+</li>
+<li class="border-bottom">
+<a class="dropdown-item d-flex align-items-center" href="{% url 'myprofile' %}">
+<i class="bi bi-person"></i>
+<span>My Profile</span>
+</a>
+</li>
+<li class="border-bottom">
+<a class="dropdown-item d-flex align-items-center" href="{% url 'security' %}">
+<i class="bi bi-lock"></i>
+<span>Security</span>
+</a>
+</li>
+<li>
+<a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
+<i class="bi bi-box-arrow-right"></i>
+<span>Sign Out</span>
+</a>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+</div></header>
+<!-- Header -->
+ <!-- Content Body -->
+<div class="content-wrapper">
+<div class="container-fluid px-4">
+<div class="py-4">
+<form enctype="multipart/form-data" method="post" novalidate>
+{% csrf_token %}
+<input id="application-section" name="section" type="hidden" value=""/>
+<section class="page-container">
+<!-- Title -->
+<div class="pagetitle pt-2 mb-3">
+<p class="text-medium font-weight-500">Job Application</p>
+<p class="text-extra-small font-weight-400 text-muted">Complete this application to showcase your skills and experience for the suitable position. Provide details to help us understand your unique fit for our team!</p>
+</div>
+<!-- progress bar -->
+<div class="MyProgress mb-3">
+<div aria-label="Success example" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress" role="progressbar">
+<div class="progress-bar bg-green" style="width: 14.5%"></div>
+</div>
+</div>
+{% load static edocs_extras %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ application.company.name }} | Job Application Form</title><link href="{% static 'core/assets/css/master.css' %}" rel="stylesheet"><link href="{% static 'core/assets/css/style.css' %}" rel="stylesheet">
+        <style>body{background:#f3f6fb}.form-shell{max-width:1050px;margin:32px auto;padding:0 16px}.form-header,.form-section{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:24px;margin-bottom:18px;box-shadow:0 8px 24px rgba(15,23,42,.04)}.form-header{border-top:5px solid #1d4ed8}.form-section h3{font-size:18px;margin:0 0 18px;color:#0f172a}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#334155}.field input,.field select,.field textarea{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:10px;background:#fff}.field textarea{min-height:80px}.submit{background:#1d4ed8;color:#fff;border:0;padding:13px 22px;border-radius:9px;font-weight:700;cursor:pointer}@media(max-width:650px){.grid{grid-template-columns:1fr}.form-section,.form-header{padding:17px}}</style>
+    </head>
+    <body>
+        <main class="form-shell">
+            <header class="form-header">
+                <p style="font-size:12px;letter-spacing:1.4px;color:#64748b;margin:0 0 6px">PRIVATE & CONFIDENTIAL</p>
+                <h1 style="font-size:26px;margin:0 0 8px">{{ application.company.name }} — Job Application Form</h1><p style="color:#64748b;margin:0">Complete the employment application below. Fields are saved securely to your company application record.</p></header>
+                <form method="post">{% csrf_token %}<section class="form-section"><h3>1. Position & Personal Details</h3><div class="grid">{% for key,label in personal_fields %}<div class="field"><label for="{{ key }}">{{ label }}</label>
+                    <input id="{{ key }}" name="{{ key }}" value="{{ saved_data|get_item:key|default:'' }}" {% if key == 'email' %}type="email"{% elif key == 'date_of_birth' %}type="date"{% else %}type="text"{% endif %} {% if key == 'full_name' or key == 'email' or key == 'position_applied' %}required{% endif %}></div>{% endfor %}</div></section><section class="form-section"><h3>2. Family Details</h3><div class="grid">{% for key,label in family_fields %}<div class="field"><label>{{ label }}</label><input name="{{ key }}" value="{{ saved_data|get_item:key|default:'' }}"></div>{% endfor %}</div></section><section class="form-section">
+                        <h3>3. Education & Qualifications</h3><div class="grid">{% for key,label in education_fields %}<div class="field"><label>{{ label }}</label>
+                            <input name="{{ key }}" value="{{ saved_data|get_item:key|default:'' }}"></div>{% endfor %}</div><div class="field" style="margin-top:14px">
+                                <label>Other academic or professional qualifications / training</label><textarea name="other_qualifications">{{ saved_data.other_qualifications|default:'' }}</textarea></div><div class="field" style="margin-top:14px"><label>Professional memberships</label>
+                                    <textarea name="professional_memberships">{{ saved_data.professional_memberships|default:'' }}</textarea></div><div class="field" style="margin-top:14px">
+                                        <label>Language proficiency (Bahasa Malaysia, English, Mandarin, others)</label><textarea name="language_proficiency">{{ saved_data.language_proficiency|default:'' }}</textarea></div></section><section class="form-section"><h3>4. Employment History & References</h3><div class="field"><label>Employment history (employer, job title, dates, salary, reason for leaving)</label><textarea name="employment_history">{{ saved_data.employment_history|default:'' }}</textarea>
+                                        </div><div class="field">
+                                            <label>Current / most recent job responsibilities</label>
+                                            <textarea name="job_responsibilities">{{ saved_data.job_responsibilities|default:'' }}</textarea></div><div class="field">
+                                            <label>Reference 1 (name, job title/employer, telephone/email, relationship, address)</label><textarea name="reference_1">{{ saved_data.reference_1|default:'' }}</textarea></div><div class="field"><label>Reference 2 (name, job title/employer, telephone/email, relationship, address)</label><textarea name="reference_2">{{ saved_data.reference_2|default:'' }}</textarea></div><div class="field"><label>Leisure activities</label><textarea name="leisure_activities">{{ saved_data.leisure_activities|default:'' }}</textarea>
+                                            </div>
+                                        </section>
+                                        <section class="form-section">
+                                            <h3>5. Additional & Other Information</h3>
+                                            <div class="field"><label>Relevant information supporting your application</label>
+                                                <textarea name="additional_information">{{ saved_data.additional_information|default:'' }}
+
+                                                </textarea>
+                                            </div>
+                                            <div class="field">
+                                                <label>What do you know about {{ application.company.name }}?</label>
+                                                <textarea name="company_knowledge">{{ saved_data.company_knowledge|default:'' }}</textarea>
+                                            </div><div class="field">
+                                                <label>Friends or relatives employed by the company (if any)</label>
+                                                <textarea name="company_relatives">{{ saved_data.company_relatives|default:'' }}</textarea>
+                                            </div>
+                                            <div class="grid">{% for key,label in other_fields %}<div class="field"><label>{{ label }}</label><input name="{{ key }}" value="{{ saved_data|get_item:key|default:'' }}"></div>{% endfor %}</div><div class="field" style="margin-top:14px"><label>Declaration</label><p style="font-size:13px;color:#475569">I confirm that the information stated above is true and accurate. I understand that false information may be grounds for not hiring me or for termination if employed.</p><label><input type="checkbox" name="declaration_confirmed" value="Yes" required style="width:auto"> I agree to the declaration.</label>
+                                                </div>
+                                                <div class="grid" style="margin-top:14px"><div class="field"><label>Applicant signature (type full name)</label><input name="applicant_signature" required></div><div class="field"><label>Date</label><input name="signature_date" type="date" required></div><div class="field"><label>Applicant name</label><input name="declaration_name" required>
+                                                </div>
+                                                <div class="field"><label>NRIC / Passport</label><input name="declaration_id"></div>
+                                            </div>
+                                        </section><button class="submit" type="submit" name="final_submit" value="1">Submit Employment Application</button>
+                                    </form>
+                                </main>
+                            </body>
+                            </html>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    if (!form) return;
+
+    const submitButton = form.querySelector(
+        'button[name="final_submit"]'
+    );
+
+    // Clear field errors when the user corrects an input.
+    form.querySelectorAll("input, select, textarea").forEach(function (field) {
+        field.addEventListener("input", function () {
+            field.classList.remove("macro-invalid");
+            field.removeAttribute("aria-invalid");
+
+            const error = field.parentElement.querySelector(
+                ".macro-field-error"
+            );
+            if (error) error.remove();
+        });
+
+        field.addEventListener("change", function () {
+            field.classList.remove("macro-invalid");
+            field.removeAttribute("aria-invalid");
+        });
+    });
+
+    form.addEventListener("submit", function (event) {
+        // Avoid processing the same submission more than once.
+        if (form.dataset.submitting === "true") {
+            event.preventDefault();
+            return;
+        }
+
+        let firstInvalid = null;
+
+        // Remove old validation messages.
+        form.querySelectorAll(".macro-field-error").forEach(function (el) {
+            el.remove();
+        });
+
+        form.querySelectorAll(".macro-invalid").forEach(function (el) {
+            el.classList.remove("macro-invalid");
+            el.removeAttribute("aria-invalid");
+        });
+
+        // Check required fields.
+        form.querySelectorAll("[required]").forEach(function (field) {
+            let valid = field.type === "checkbox"
+                ? field.checked
+                : field.value.trim() !== "";
+
+            if (field.type === "email" && field.value.trim() !== "") {
+                valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                    field.value.trim()
+                );
+            }
+
+            if (!valid) {
+                field.classList.add("macro-invalid");
+                field.setAttribute("aria-invalid", "true");
+
+                const error = document.createElement("div");
+                error.className = "macro-field-error";
+                error.textContent = field.type === "checkbox"
+                    ? "Please accept the declaration."
+                    : field.type === "email"
+                    ? "Please enter a valid email address."
+                    : "This field is required.";
+
+                field.parentElement.appendChild(error);
+
+                if (!firstInvalid) firstInvalid = field;
+            }
+        });
+
+        if (firstInvalid) {
+            event.preventDefault();
+            firstInvalid.focus();
+            firstInvalid.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+            return;
+        }
+
+        // Ask for confirmation before sending the application.
+        if (!window.confirm(
+            "Are you sure you want to submit your Raddish employment application? Please check your details before continuing."
+        )) {
+            event.preventDefault();
+            return;
+        }
+
+        // Allow the first submission to proceed normally.
+        form.dataset.submitting = "true";
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Submitting Application...";
+        }
+    });
+});
+</script>
+</body>
+</html>

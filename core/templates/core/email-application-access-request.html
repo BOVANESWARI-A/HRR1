@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"></head>
+<body style="margin:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#202733;">
+<div style="max-width:620px;margin:35px auto;background:#fff;border-radius:14px;padding:32px;box-shadow:0 8px 25px rgba(20,35,60,.08);">
+    <h2 style="margin-top:0;">Stalwart Business Solutions</h2>
+    <p>Dear {{ candidate_name }},</p>
+    <p>
+        An HR representative has requested permission to view your
+        <strong>{{ company_name }}</strong> job application (Application #{{ application_id }}).
+    </p>
+    <p>Please review the request and approve access using the button below.</p>
+    <p style="margin:28px 0 12px;">
+        <a href="{{ approval_url }}" style="display:inline-block;padding:12px 22px;background:#0d6efd;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">
+            Review &amp; Approve Access
+        </a>
+    </p>
+    <p style="margin:0 0 28px;">
+        <a href="{{ deny_url }}" style="display:inline-block;padding:11px 22px;background:#fff;color:#dc3545;text-decoration:none;border:1px solid #dc3545;border-radius:8px;font-weight:600;">
+            Deny Access
+        </a>
+    </p>
+    <p style="font-size:13px;color:#6c757d;">
+        If you did not expect this request, you can use the Deny Access option above. No application data is shared with the requesting HR user unless you approve.
+    </p>
+</div>
+</body>
+</html>

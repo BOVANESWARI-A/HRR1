@@ -1,0 +1,99 @@
+<div class="modal fade"
+     id="auditModal{{ app.id }}"
+     tabindex="-1"
+     aria-labelledby="auditModalLabel{{ app.id }}"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="auditModalLabel{{ app.id }}">
+                    Audit Trail - Application #{{ app.id }}
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="audit-timeline">
+
+                    {% for step in app.audit_steps %}
+                    <div class="audit-step">
+
+                        <div class="audit-icon {{ step.color }}">
+                            <i class="bi {{ step.icon }}"></i>
+                        </div>
+
+                        <div class="audit-card">
+
+                            <div class="audit-card-header">
+
+                                <span class="audit-title">
+                                    {{ step.title }}
+                                </span>
+
+                                {% if not step.details %}
+                                <span class="audit-date">
+                                    {% if step.date %}
+                                        {{ step.date|date:"d/m/Y H:i:s" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                                {% endif %}
+
+                            </div>
+
+                            {% if step.description %}
+                            <div class="audit-description">
+                                {{ step.description }}
+                            </div>
+                            {% endif %}
+
+                            {% if step.details %}
+                            <div class="audit-details">
+
+                                {% for detail in step.details %}
+                                <div class="audit-detail-box">
+
+                                    <span class="audit-detail-label">
+                                        {{ detail.label }}
+                                    </span>
+
+                                    <span class="audit-detail-value">
+                                        {% if detail.date %}
+                                            {{ detail.date|date:"d/m/Y H:i:s" }}
+                                        {% elif detail.text %}
+                                            {{ detail.text }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

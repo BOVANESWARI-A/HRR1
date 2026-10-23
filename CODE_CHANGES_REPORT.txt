@@ -1,0 +1,73 @@
+eDocs / Stalwart project — Code Changes Report
+Date: 16 October 2026
+
+IMPORTANT PRESERVATION NOTE
+The existing project was used as the base. Existing pages, CSS assets, models and workflows were preserved wherever possible. Changes are limited to the onboarding/admin/agent-company workflow and the new Raddish employment form integration.
+
+1. REGISTRATION AND LOGIN
+- core/templates/core/signup.html
+  * Added Admin role selection.
+  * Added live email availability checking against existing email/username records.
+  * Added Company Onboarding section after Confirm Password for Employer (HR).
+  * Added required Employment Form upload (PDF/DOC/DOCX), Add More supporting-document uploads, and the existing Create Account submit action.
+  * Added a restricted Admin Registration Code field.
+- core/views.py
+  * Added the email-check endpoint.
+  * Added validation for onboarding file extensions and 15 MB per-file limit.
+  * HR accounts are created inactive and cannot log in until admin activates the completed company form.
+  * Admin role registration is validated against EDOCS_ADMIN_REGISTRATION_CODE.
+- stalwart_project/settings.py and .env.example
+  * Added EDOCS_ADMIN_REGISTRATION_CODE and EDOCS_ADMIN_EMAIL settings.
+- .env
+  * Added a private generated registration code for this project. Do not share this file publicly.
+
+2. COMPANY ONBOARDING / ADMIN WORKFLOW
+- core/models.py
+  * Added onboarding status, connected form slug, admin notes and ready timestamp.
+  * Added HROnboardingDocument to store extra uploaded documents.
+  * Added pending/approved/denied status to AgentHRClient.
+- core/migrations/0022_company_onboarding_workflow.py
+  * Adds the database fields and supporting-document model.
+- core/templates/core/admin-company-onboarding.html (new)
+  * Admin can open uploaded files, add notes, mark implementation in progress/needs changes, select the connected form and activate HR login.
+- core/views.py and core/urls.py
+  * Added admin onboarding review endpoint.
+  * Admin receives an in-app notification and an email with uploaded files attached when email is configured.
+  * When admin marks a connected form Ready, the HR account is activated and an email/in-app notification is sent to HR.
+  * The 36-hour period is an expected implementation target; it does not automatically activate the HR account.
+
+3. RADDISH TECHNOLOGY FORM
+- core/templates/core/raddish-application.html (new)
+  * Added a responsive HTML employment application based on the supplied four-page RTSB/Raddish PDF, including personal details, family details, education, employment history, references, additional information and declaration.
+- core/views.py
+  * Connected the Raddish form to the candidate invitation/application flow.
+  * Submitted values are stored in the associated JobApplication data and the application is marked Submitted.
+- company_form_references/Raddish_Technology_Job_Application_Form_Reference.pdf (new)
+  * Preserves the supplied PDF as a reference within the project.
+
+4. AGENT ↔ HR PERMISSION WORKFLOW
+- core/views.py
+  * Add Client now sends an access request instead of silently granting access.
+  * HR can approve or decline requests from the dashboard.
+  * Agent company search/listing includes connected and ready company forms, plus the existing built-in Macro Kiosk/InsiteMy forms.
+  * Candidate invitations resolve to an approved HR company's form.
+  * HR application scoping uses the registered company name rather than assuming every HR account is Macro Kiosk or InsiteMy.
+- core/templates/core/send-invite.html
+  * Company choices for agents are populated from approved company links instead of hard-coded company options.
+- core/templates/core/index.html and core/templates/core/sidebar.html
+  * Added HR request approval controls and an Admin Company Onboarding navigation link.
+  * Ready HR accounts see their status rather than an unnecessary second upload form.
+
+5. SETUP
+From the project folder containing manage.py, in PowerShell:
+  .\venv\Scripts\Activate.ps1
+  python manage.py migrate
+  python manage.py check
+  python manage.py runserver
+
+Register the Admin account first. Use the EDOCS_ADMIN_REGISTRATION_CODE value in the local .env file. Set EDOCS_ADMIN_EMAIL in .env if you want a separate notification address before the first admin account exists. Keep both values private.
+
+6. VALIDATION LIMITATION
+- Python source files passed AST/bytecode compilation checks.
+- Basic Django template block-balance checks passed for the changed templates.
+- A full Django runtime check and database migration could not be run in this build environment because Django is not installed here and package downloads are unavailable. Run the commands above in the project's Windows virtual environment and existing database before using the workflow in production.

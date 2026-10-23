@@ -1,0 +1,130 @@
+{% with nv=saved_data.nevigate_application %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nevigate Employment Application Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: Inter, sans-serif; background: #f4f6f9; color: #1e293b; }
+        .read-val { min-height: 2.25rem; padding: .55rem .7rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: .375rem; overflow-wrap: anywhere; }
+        .label-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: .25rem; letter-spacing: .025em; }
+        @media print { .no-print { display:none!important; } body { background:white!important; padding:0!important; } .card-container { box-shadow:none!important; break-inside:avoid; } }
+    </style>
+</head>
+<body class="py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto mb-6 flex justify-between items-center gap-4 no-print">
+        <a href="javascript:history.back()" class="px-3 py-2 bg-white border rounded-lg text-sm"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <button type="button" onclick="window.print()" class="px-5 py-2.5 bg-slate-900 text-white rounded-lg text-sm"><i class="fa-solid fa-print"></i> Print Application / PDF</button>
+    </div>
+
+    <main class="max-w-5xl mx-auto space-y-6">
+        <header class="bg-slate-900 text-white rounded-xl shadow-xl p-6 sm:p-8 border-b-4 border-amber-500 card-container">
+            <div class="flex flex-col sm:flex-row justify-between gap-4">
+                <div>
+                    <p class="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2">Nevigate Global Network</p>
+                    <h1 class="text-2xl font-bold">Employment Application</h1>
+                    <p class="text-slate-300 text-sm mt-1">Application review record</p>
+                </div>
+                <div class="sm:text-right text-sm text-slate-300">
+                    <p>Application ID: <strong class="text-white">{{ application.pk }}</strong></p>
+                    <p>Submitted: <strong class="text-white">{% if application.submitted_at %}{{ application.submitted_at|date:"d M Y, h:i A" }}{% endif %}</strong></p>
+                    <p>Status: <strong class="text-white">{{ application.get_status_display }}</strong></p>
+                </div>
+            </div>
+        </header>
+
+        <section class="bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-5 card-container">
+            <div class="border-b pb-3">
+                <h2 class="text-base font-bold text-slate-900 uppercase tracking-wider"><i class="fa-solid fa-briefcase text-amber-600 mr-2"></i>Application Details</h2>
+            </div>
+            <div>
+                <div class="label-title">Company Name</div>
+                <div class="read-val">{{ nv.company_name|default_if_none:"" }}</div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-5 card-container">
+            <div class="border-b pb-3">
+                <h2 class="text-base font-bold text-slate-900 uppercase tracking-wider"><i class="fa-solid fa-graduation-cap text-amber-600 mr-2"></i>Further Education</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <div class="label-title">Currently pursuing further education?</div>
+                    <div class="read-val">{{ nv.pursuing_edu|default_if_none:"" }}</div>
+                </div>
+                <div>
+                    <div class="label-title">Intend to pursue further education in future?</div>
+                    <div class="read-val">{{ nv.future_edu|default_if_none:"" }}</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-5 card-container">
+            <div class="border-b pb-3">
+                <h2 class="text-base font-bold text-slate-900 uppercase tracking-wider"><i class="fa-solid fa-language text-amber-600 mr-2"></i>Language Skills</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead><tr class="bg-slate-900 text-white"><th class="p-3 text-left">Language</th><th class="p-3 text-left">Spoken</th><th class="p-3 text-left">Written</th></tr></thead>
+                    <tbody>
+                        <tr class="border-b"><td class="p-3 font-semibold">English</td><td class="p-3">{{ nv.sp_eng|default_if_none:"" }}</td><td class="p-3">{{ nv.wr_eng|default_if_none:"" }}</td></tr>
+                        <tr class="border-b bg-slate-50"><td class="p-3 font-semibold">Bahasa Malaysia</td><td class="p-3">{{ nv.sp_bm|default_if_none:"" }}</td><td class="p-3">{{ nv.wr_bm|default_if_none:"" }}</td></tr>
+                        <tr class="border-b"><td class="p-3 font-semibold">Mandarin</td><td class="p-3">{{ nv.sp_mand|default_if_none:"" }}</td><td class="p-3">{{ nv.wr_mand|default_if_none:"" }}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-5 card-container">
+            <div class="border-b pb-3">
+                <h2 class="text-base font-bold text-slate-900 uppercase tracking-wider"><i class="fa-solid fa-laptop-code text-amber-600 mr-2"></i>Computer Skills</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div><div class="label-title">MS Word</div><div class="read-val">{{ nv.ms_word|default_if_none:"" }}</div></div>
+                <div><div class="label-title">MS Excel</div><div class="read-val">{{ nv.ms_excel|default_if_none:"" }}</div></div>
+                <div><div class="label-title">MS PowerPoint</div><div class="read-val">{{ nv.ms_ppt|default_if_none:"" }}</div></div>
+                <div><div class="label-title">MS Access</div><div class="read-val">{{ nv.ms_access|default_if_none:"" }}</div></div>
+                <div class="sm:col-span-2"><div class="label-title">Email / Internet</div><div class="read-val">{{ nv.email_net|default_if_none:"" }}</div></div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-5 card-container">
+            <div class="border-b pb-3">
+                <h2 class="text-base font-bold text-slate-900 uppercase tracking-wider"><i class="fa-solid fa-clipboard-check text-amber-600 mr-2"></i>Declarations</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div><div class="label-title">Own transport</div><div class="read-val">{{ nv.own_trans|default_if_none:"" }}</div></div>
+                <div><div class="label-title">Willing to travel / relocate</div><div class="read-val">{{ nv.travel_reloc|default_if_none:"" }}</div></div>
+                <div><div class="label-title">Criminal offence declaration</div><div class="read-val">{{ nv.criminal|default_if_none:"" }}</div></div>
+                <div><div class="label-title">Disciplinary action declaration</div><div class="read-val">{{ nv.disciplinary|default_if_none:"" }}</div></div>
+                <div class="sm:col-span-2"><div class="label-title">Medical condition declaration</div><div class="read-val">{{ nv.medical|default_if_none:"" }}</div></div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-5 card-container">
+            <div class="border-b pb-3">
+                <h2 class="text-base font-bold text-slate-900 uppercase tracking-wider"><i class="fa-solid fa-signature text-amber-600 mr-2"></i>Signatures & Consent</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <div class="label-title">Applicant Signature</div>
+                    {% if nv.app_signature_data %}
+                        <img src="{{ nv.app_signature_data }}" alt="Applicant signature" class="max-h-28 max-w-full border rounded p-2">
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="label-title">PDPA Consent Signature</div>
+                    {% if nv.pdpa_signature_data %}
+                        <img src="{{ nv.pdpa_signature_data }}" alt="PDPA consent signature" class="max-h-28 max-w-full border rounded p-2">
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+{% endwith %}

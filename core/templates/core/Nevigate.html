@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employment Application & PDPA Consent Form - Nevigate Global Network</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+        function prepareNevigateSubmission() {
+            const app = document.getElementById('appSigCanvas');
+            const pdpa = document.getElementById('pdpaSigCanvas');
+            if (app) document.getElementById('appSignatureData').value = app.toDataURL('image/png');
+            if (pdpa) document.getElementById('pdpaSignatureData').value = pdpa.toDataURL('image/png');
+            return true;
+        }
+   </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#1e3a8a',
+                            900: '#0f172a',
+                            950: '#0a0f1d'
+                        },
+                        brand: {
+                            blue: '#0284c7',
+                            dark: '#0f2942',
+                            accent: '#2563eb'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    
+        function prepareNevigateSubmission() {
+            const app = document.getElementById('appSigCanvas');
+            const pdpa = document.getElementById('pdpaSigCanvas');
+            if (app) document.getElementById('appSignatureData').value = app.toDataURL('image/png');
+            if (pdpa) document.getElementById('pdpaSignatureData').value = pdpa.toDataURL('image/png');
+            return true;
+        }
+  </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Canvas styling for smooth signatures */
+        .sig-canvas {
+            touch-action: none;
+            cursor: crosshair;
+            background-color: #ffffff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.5rem;
+        }
+        .sig-canvas:hover {
+            border-color: #3b82f6;
+        }
+
+        /* Custom Table Inputs Styling */
+        .form-table input, .form-table select {
+            width: 100%;
+            padding: 0.375rem 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.15s ease-in-out;
+        }
+        .form-table input:focus, .form-table select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Print Optimization */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .card-container {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+            }
+            input, select, textarea {
+                border: 1px solid #94a3b8 !important;
+                background-color: transparent !important;
+            }
+            .sig-canvas {
+                border: 1px solid #000 !important;
+            }
+            /* Ensure background colors on badges print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="py-8 px-4 sm:px-6 lg:px-8">
+
+    <!-- Top Action Bar (Floating / Fixed) -->
+    <div class="max-w-5xl mx-auto mb-6 flex justify-between items-center no-print">
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+            <span class="text-sm font-medium text-slate-600">Official Interactive Application Form</span>
+        </div>
+        <div class="flex gap-3">
+            <button type="button" onclick="window.print()" class="px-5 py-2.5 bg-brand-dark hover:bg-navy-900 text-white font-medium rounded-lg shadow-md transition flex items-center gap-2 text-sm">
+                <i class="fa-solid fa-print"></i> Print / Save as PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-5xl mx-auto space-y-8">
+        
+        <form id="employmentForm" method="post" onsubmit="return prepareNevigateSubmission();">           {% csrf_token %}
+
+            <!-- SECTION 1: HEADER & APPLICATION DETAILS -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden card-container">
+                <!-- Top Corporate Banner -->
+                <div class="bg-brand-dark text-white p-6 sm:p-8 border-b border-slate-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+                            <i class="fa-solid fa-globe text-brand-blue"></i>
+                            NEVIGATE GLOBAL NETWORK SDN. BHD.
+                        </h1>
+                        <p class="text-blue-300 text-sm font-medium tracking-wide mt-1">
+                            CONNECTING YOU GLOBALLY <span class="text-xs opacity-75">(Co. No. 1038208M)</span>
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-block bg-blue-900/60 border border-blue-400/30 text-blue-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Strictly Private & Confidential
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-briefcase text-brand-accent"></i> Application Details
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <!-- Left Info Fields -->
+                        <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Company Name</label>
+                                <input type="text" name="company_name" value="NEVIGATE GLOBAL NETWORK SDN. BHD." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-medium text-slate-800" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Position Applied For <span class="text-red-500">*</span></label>
+                                <input type="text" required placeholder="e.g. Senior Network Engineer" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Head Office / Branch <span class="text-red-500">*</span></label>
+                                <input type="text" required placeholder="e.g. Headquarters - Kuala Lumpur" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload Box -->
+                        <div class="md:col-span-1 flex flex-col items-center justify-center">
+                            <div class="w-36 h-44 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center bg-slate-50 overflow-hidden relative group cursor-pointer" id="photoPreviewContainer" onclick="document.getElementById('photoInput').click()">
+                                <img id="photoPreview" class="w-full h-full object-cover hidden" alt="Passport Photo">
+                                <div id="photoPlaceholder" class="text-center p-3">
+                                    <i class="fa-solid fa-user-tie text-3xl text-slate-400 mb-2"></i>
+                                    <p class="text-xs font-semibold text-slate-600">Attach Passport Photo</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Click to upload</p>
+                                </div>
+                            </div>
+                            <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="previewPassportPhoto(event)">
+                            <button type="button" onclick="document.getElementById('photoInput').click()" class="mt-2 text-xs text-brand-blue hover:underline font-semibold no-print">
+                                <i class="fa-solid fa-upload"></i> Upload Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: PERSONAL PARTICULARS -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-6 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-id-card text-brand-accent"></i> Personal Particulars
+                    </h2>
+                    <span class="text-xs text-slate-500 italic">Please enter block letters where applicable</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name (as in NRIC/Passport) <span class="text-red-500">*</span></label>
+                        <input type="text" required uppercase class="w-full uppercase border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Identity Card No. (NRIC) <span class="text-red-500">*</span></label>
+                        <input type="text" required placeholder="e.g. 900101-14-5566" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Passport No. <span class="text-xs font-normal text-slate-500">(Applicable to Non-Malaysian)</span></label>
+                        <input type="text" placeholder="e.g. A12345678" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                        <input type="date" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Residence Address <span class="text-red-500">*</span></label>
+                        <textarea rows="2" required placeholder="Full residential street address..." class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Place of Birth</label>
+                        <input type="text" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile No. <span class="text-red-500">*</span></label>
+                        <input type="tel" required placeholder="+60 12-345 6789" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Residence Contact No.</label>
+                        <input type="tel" placeholder="+60 3-1234 5678" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Race</label>
+                        <input type="text" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Religion</label>
+                        <input type="text" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">E-mail Address <span class="text-red-500">*</span></label>
+                        <input type="email" required placeholder="applicant@email.com" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Gender <span class="text-red-500">*</span></label>
+                        <select required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Marital Status <span class="text-red-500">*</span></label>
+                        <select required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">Select Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Height (cm) / Weight (kg)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" placeholder="cm" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            <input type="number" placeholder="kg" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">E.P.F No.</label>
+                        <input type="text" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Income Tax No.</label>
+                        <input type="text" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">SOCSO No.</label>
+                        <input type="text" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: FAMILY PARTICULARS -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-4 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-users text-brand-accent"></i> Family Particulars
+                    </h2>
+                    <button type="button" onclick="addRow('familyTableBody', familyRowTemplate)" class="px-3 py-1.5 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1 transition no-print">
+                        <i class="fa-solid fa-plus"></i> Add Family Member
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200 w-1/5">Relationship</th>
+                                <th class="p-2 border border-slate-200">Name</th>
+                                <th class="p-2 border border-slate-200 w-20">Age</th>
+                                <th class="p-2 border border-slate-200">Occupation</th>
+                                <th class="p-2 border border-slate-200">Contact No.</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="familyTableBody">
+                            <!-- Pre-filled default rows -->
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" value="Spouse" readonly class="bg-slate-50 font-semibold"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Full Name"></td>
+                                <td class="p-2 border border-slate-200"><input type="number" placeholder="Age"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Occupation"></td>
+                                <td class="p-2 border border-slate-200"><input type="tel" placeholder="Contact No"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" value="Father" readonly class="bg-slate-50 font-semibold"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Full Name"></td>
+                                <td class="p-2 border border-slate-200"><input type="number" placeholder="Age"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Occupation"></td>
+                                <td class="p-2 border border-slate-200"><input type="tel" placeholder="Contact No"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" value="Mother" readonly class="bg-slate-50 font-semibold"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Full Name"></td>
+                                <td class="p-2 border border-slate-200"><input type="number" placeholder="Age"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Occupation"></td>
+                                <td class="p-2 border border-slate-200"><input type="tel" placeholder="Contact No"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 4: EDUCATIONAL BACKGROUND -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-6 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-brand-accent"></i> Educational Background
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Please list in chronological order and attach copies of relevant certificates</p>
+                    </div>
+                    <button type="button" onclick="addRow('eduTableBody', eduRowTemplate)" class="px-3 py-1.5 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1 transition no-print">
+                        <i class="fa-solid fa-plus"></i> Add Education
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200 w-32">From (MM/YY)</th>
+                                <th class="p-2 border border-slate-200 w-32">To (MM/YY)</th>
+                                <th class="p-2 border border-slate-200">School / College / University</th>
+                                <th class="p-2 border border-slate-200">Highest Qualification</th>
+                                <th class="p-2 border border-slate-200">Course Studied</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eduTableBody">
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="09/18"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="06/22"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="University Name"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Bachelor's Degree"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Computer Science"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase">Are you currently pursuing further education?</label>
+                        <div class="flex items-center gap-4 text-sm font-medium">
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="pursuing_edu" value="Yes" class="text-brand-accent" onclick="toggleEduDetails(true)"> Yes
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="pursuing_edu" value="No" checked class="text-brand-accent" onclick="toggleEduDetails(false)"> No
+                            </label>
+                        </div>
+                        <div id="pursuingEduContainer" class="hidden mt-2">
+                            <input type="text" placeholder="State course studying & university..." class="w-full border border-slate-300 rounded-lg p-2 text-xs">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase">Do you intend to pursue other courses/qualifications in future?</label>
+                        <div class="flex items-center gap-4 text-sm font-medium">
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="future_edu" value="Yes" class="text-brand-accent" onclick="toggleFutureEduDetails(true)"> Yes
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="future_edu" value="No" checked class="text-brand-accent" onclick="toggleFutureEduDetails(false)"> No
+                            </label>
+                        </div>
+                        <div id="futureEduContainer" class="hidden mt-2">
+                            <input type="text" placeholder="Please give reasons and details..." class="w-full border border-slate-300 rounded-lg p-2 text-xs">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: TECHNICAL / PROFESSIONAL QUALIFICATION -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-4 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-certificate text-brand-accent"></i> Technical / Professional Qualification
+                    </h2>
+                    <button type="button" onclick="addRow('techTableBody', techRowTemplate)" class="px-3 py-1.5 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1 transition no-print">
+                        <i class="fa-solid fa-plus"></i> Add Qualification
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200 w-32">From (MM/YY)</th>
+                                <th class="p-2 border border-slate-200 w-32">To (MM/YY)</th>
+                                <th class="p-2 border border-slate-200">Title of Course</th>
+                                <th class="p-2 border border-slate-200">College / Institution Attended</th>
+                                <th class="p-2 border border-slate-200 w-32">Year Granted</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="techTableBody">
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Course Title"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Institution"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="2022"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 6: MEMBERSHIP OF PROFESSIONAL BODIES & INTERESTS -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-6 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-users-rectangle text-brand-accent"></i> Memberships, Societies & Clubs
+                    </h2>
+                    <button type="button" onclick="addRow('clubTableBody', clubRowTemplate)" class="px-3 py-1.5 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1 transition no-print">
+                        <i class="fa-solid fa-plus"></i> Add Membership
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200">Name of Society / Club / Association</th>
+                                <th class="p-2 border border-slate-200 w-32">From (MM/YY)</th>
+                                <th class="p-2 border border-slate-200 w-32">To (MM/YY)</th>
+                                <th class="p-2 border border-slate-200">Position Held</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clubTableBody">
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Society/Club Name"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="e.g. Member / Secretary"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hobbies & Interests</label>
+                    <input type="text" placeholder="e.g. Badminton, Reading, Open-Source Coding..." class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+            </div>
+
+            <!-- SECTION 7: LANGUAGES & SKILLS -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-6 card-container">
+                <div class="border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-laptop-code text-brand-accent"></i> Languages & Computer Skills
+                    </h2>
+                </div>
+
+                <!-- Languages Grid -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-700 uppercase mb-3">Languages / Dialects Proficiency</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-semibold uppercase">
+                                    <th class="p-2 border border-slate-200 text-left">Language / Dialect</th>
+                                    <th class="p-2 border border-slate-200" colspan="3">Spoken</th>
+                                    <th class="p-2 border border-slate-200" colspan="3">Written</th>
+                                </tr>
+                                <tr class="bg-slate-50 text-slate-600 font-medium text-[11px]">
+                                    <th class="p-1 border border-slate-200"></th>
+                                    <th class="p-1 border border-slate-200 w-16">Good</th>
+                                    <th class="p-1 border border-slate-200 w-16">Average</th>
+                                    <th class="p-1 border border-slate-200 w-16">Limited</th>
+                                    <th class="p-1 border border-slate-200 w-16">Good</th>
+                                    <th class="p-1 border border-slate-200 w-16">Average</th>
+                                    <th class="p-1 border border-slate-200 w-16">Limited</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 border border-slate-200 text-left font-medium">English</td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_eng" value="Good"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_eng" value="Average"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_eng" value="Limited"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_eng" value="Good"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_eng" value="Average"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_eng" value="Limited"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-slate-200 text-left font-medium">Bahasa Malaysia</td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_bm" value="Good"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_bm" value="Average"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_bm" value="Limited"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_bm" value="Good"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_bm" value="Average"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_bm" value="Limited"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-slate-200 text-left font-medium">Mandarin / Other Dialects</td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_mand" value="Good"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_mand" value="Average"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="sp_mand" value="Limited"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_mand" value="Good"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_mand" value="Average"></td>
+                                    <td class="p-2 border border-slate-200"><input type="radio" name="wr_mand" value="Limited"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Computer Skills Checklist -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-700 uppercase mb-3">Computer / Software Skills Competency</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs">
+                        <!-- MS Word -->
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-800">Microsoft Word</span>
+                            <div class="flex gap-3 text-slate-600">
+                                <label><input type="radio" name="ms_word" value="Good"> Good</label>
+                                <label><input type="radio" name="ms_word" value="Moderate"> Moderate</label>
+                                <label><input type="radio" name="ms_word" value="Poor"> Poor</label>
+                            </div>
+                        </div>
+
+                        <!-- MS Excel -->
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-800">Microsoft Excel</span>
+                            <div class="flex gap-3 text-slate-600">
+                                <label><input type="radio" name="ms_excel" value="Good"> Good</label>
+                                <label><input type="radio" name="ms_excel" value="Moderate"> Moderate</label>
+                                <label><input type="radio" name="ms_excel" value="Poor"> Poor</label>
+                            </div>
+                        </div>
+
+                        <!-- MS PowerPoint -->
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-800">Microsoft PowerPoint</span>
+                            <div class="flex gap-3 text-slate-600">
+                                <label><input type="radio" name="ms_ppt" value="Good"> Good</label>
+                                <label><input type="radio" name="ms_ppt" value="Moderate"> Moderate</label>
+                                <label><input type="radio" name="ms_ppt" value="Poor"> Poor</label>
+                            </div>
+                        </div>
+
+                        <!-- MS Access -->
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-800">Microsoft Access</span>
+                            <div class="flex gap-3 text-slate-600">
+                                <label><input type="radio" name="ms_access" value="Good"> Good</label>
+                                <label><input type="radio" name="ms_access" value="Moderate"> Moderate</label>
+                                <label><input type="radio" name="ms_access" value="Poor"> Poor</label>
+                            </div>
+                        </div>
+
+                        <!-- Email / Internet -->
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-800">Email / Internet</span>
+                            <div class="flex gap-3 text-slate-600">
+                                <label><input type="radio" name="email_net" value="Good"> Good</label>
+                                <label><input type="radio" name="email_net" value="Moderate"> Moderate</label>
+                                <label><input type="radio" name="email_net" value="Poor"> Poor</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Other Specialized Software Experience <span class="font-normal text-slate-500">(e.g. Audit / Tax / Secretarial / ERP / Network Tools)</span></label>
+                    <textarea rows="2" placeholder="List software applications and your experience level..." class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+            </div>
+
+            <!-- SECTION 8: AWARDS & ACHIEVEMENTS -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-4 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-brand-accent"></i> Awards & Special Recognition
+                    </h2>
+                    <button type="button" onclick="addRow('awardTableBody', awardRowTemplate)" class="px-3 py-1.5 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1 transition no-print">
+                        <i class="fa-solid fa-plus"></i> Add Award
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200 w-24">Year</th>
+                                <th class="p-2 border border-slate-200">Title / Description / Basis for Award</th>
+                                <th class="p-2 border border-slate-200">Organization / Country</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="awardTableBody">
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="2021"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Award Title or Scholarship"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Issuing Body"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 9: EMPLOYMENT RECORD -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-6 card-container">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-business-time text-brand-accent"></i> Employment Record
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">List history in chronological order (including industrial training & part-time). Start with current employer.</p>
+                    </div>
+                    <button type="button" onclick="addRow('empTableBody', empRowTemplate)" class="px-3 py-1.5 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1 transition no-print">
+                        <i class="fa-solid fa-plus"></i> Add Employment History
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200 w-28">From (MM/YY)</th>
+                                <th class="p-2 border border-slate-200 w-28">To (MM/YY)</th>
+                                <th class="p-2 border border-slate-200">Company Name, Address & Principal Activities</th>
+                                <th class="p-2 border border-slate-200">Designation (1. Joining / 2. Leaving)</th>
+                                <th class="p-2 border border-slate-200 w-32">Monthly Salary (Starting / Last)</th>
+                                <th class="p-2 border border-slate-200">Reason for Leaving</th>
+                                <th class="p-2 border border-slate-200 w-12 text-center no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="empTableBody">
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="01/21"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Present"></td>
+                                <td class="p-2 border border-slate-200"><textarea rows="2" placeholder="Company Details..."></textarea></td>
+                                <td class="p-2 border border-slate-200 space-y-1">
+                                    <input type="text" placeholder="1. Joining Designation">
+                                    <input type="text" placeholder="2. Leaving Designation">
+                                </td>
+                                <td class="p-2 border border-slate-200 space-y-1">
+                                    <input type="text" placeholder="Start: MYR">
+                                    <input type="text" placeholder="Last: MYR">
+                                </td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Career Advancement"></td>
+                                <td class="p-2 border border-slate-200 text-center no-print">
+                                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Resignation Notice Period Required</label>
+                        <input type="text" placeholder="e.g. 1 Month / 2 Months" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Earliest Commencement Date <span class="text-red-500">*</span></label>
+                        <input type="date" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 10: REFEREES -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-4 card-container">
+                <div class="border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-user-check text-brand-accent"></i> Referees
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">
+                        Provide details of responsible persons in business/professional capacity. At least <strong>one referee must be Malaysian</strong>. Minimum acquaintance: 3 years. Do not list relatives.
+                    </p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse form-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-semibold">
+                                <th class="p-2 border border-slate-200">Full Name</th>
+                                <th class="p-2 border border-slate-200">Occupation</th>
+                                <th class="p-2 border border-slate-200">Company Name</th>
+                                <th class="p-2 border border-slate-200">Contact No.</th>
+                                <th class="p-2 border border-slate-200 w-28">Years Known</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Referee 1 Name" required></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Occupation"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Company"></td>
+                                <td class="p-2 border border-slate-200"><input type="tel" placeholder="Contact No" required></td>
+                                <td class="p-2 border border-slate-200"><input type="number" min="3" placeholder="Yrs"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Referee 2 Name" required></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Occupation"></td>
+                                <td class="p-2 border border-slate-200"><input type="text" placeholder="Company"></td>
+                                <td class="p-2 border border-slate-200"><input type="tel" placeholder="Contact No" required></td>
+                                <td class="p-2 border border-slate-200"><input type="number" min="3" placeholder="Yrs"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info mt-0.5 text-brand-accent"></i>
+                    <span>By providing referee details above, you grant permission for contact. To protect confidentiality, current employers will only be contacted upon job offer acceptance.</span>
+                </div>
+            </div>
+
+            <!-- SECTION 11: ADDITIONAL INFORMATION & DECLARATION -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 space-y-6 card-container">
+                <div class="border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question text-brand-accent"></i> Additional Information
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">1. Expected Remuneration / Salary <span class="text-red-500">*</span></label>
+                        <input type="text" required placeholder="e.g. MYR 5,500 / month" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">2. Career Goals</label>
+                        <input type="text" placeholder="Short and long term goals..." class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block font-bold text-slate-700 uppercase mb-1">3. Names of Friends or Relatives Working in Nevigate Global Network</label>
+                        <input type="text" placeholder="State Name & Designation (or 'N/A')" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block font-bold text-slate-700 uppercase mb-1">4. Other Useful Information to Support Application</label>
+                        <textarea rows="2" placeholder="Key strengths, special project experience, etc." class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">5. Own Transport Availability?</label>
+                        <div class="flex items-center gap-4 py-1">
+                            <label><input type="radio" name="own_trans" value="Yes"> Yes</label>
+                            <label><input type="radio" name="own_trans" value="No"> No</label>
+                            <input type="text" placeholder="Type: Car / Motorcycle" class="border border-slate-300 rounded p-1 text-xs w-40">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">6. Willing to travel outstation or be relocated?</label>
+                        <div class="flex items-center gap-4 py-1">
+                            <label><input type="radio" name="travel_reloc" value="Yes"> Yes</label>
+                            <label><input type="radio" name="travel_reloc" value="No"> No</label>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block font-bold text-slate-700 uppercase mb-1">7. Any criminal record or bankruptcy action?</label>
+                        <div class="flex items-center gap-4 py-1">
+                            <label><input type="radio" name="criminal" value="Yes"> Yes</label>
+                            <label><input type="radio" name="criminal" value="No" checked> No</label>
+                            <input type="text" placeholder="If yes, please state details..." class="border border-slate-300 rounded p-1 text-xs flex-1">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block font-bold text-slate-700 uppercase mb-1">8. Issued warning letter, suspended, or dismissed from work?</label>
+                        <div class="flex items-center gap-4 py-1">
+                            <label><input type="radio" name="disciplinary" value="Yes"> Yes</label>
+                            <label><input type="radio" name="disciplinary" value="No" checked> No</label>
+                            <input type="text" placeholder="If yes, please give reasons..." class="border border-slate-300 rounded p-1 text-xs flex-1">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block font-bold text-slate-700 uppercase mb-1">9. Currently undergoing long-term medical treatment?</label>
+                        <div class="flex items-center gap-4 py-1">
+                            <label><input type="radio" name="medical" value="Yes"> Yes</label>
+                            <label><input type="radio" name="medical" value="No" checked> No</label>
+                            <input type="text" placeholder="If yes, please give details..." class="border border-slate-300 rounded p-1 text-xs flex-1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Checklist Attachment -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
+                    <span class="block text-xs font-bold text-slate-700 uppercase">Documents Attached Checklist (Photocopies / Non-returnable):</span>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-slate-700">
+                        <label class="flex items-center gap-2"><input type="checkbox"> Passport Size Photo</label>
+                        <label class="flex items-center gap-2"><input type="checkbox"> Testimonials / References</label>
+                        <label class="flex items-center gap-2"><input type="checkbox"> Academic Transcripts</label>
+                        <label class="flex items-center gap-2"><input type="checkbox"> Updated Resume</label>
+                        <label class="flex items-center gap-2"><input type="checkbox"> Degree / Diploma / Certs</label>
+                    </div>
+                </div>
+
+                <!-- Terms & Declaration Box -->
+                <div class="border-t border-slate-200 pt-6 space-y-4">
+                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Applicant Declaration</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        I certify that the above information is correct and can be treated as part of any subsequent contract of my employment made between the employer and me. I understand that should I have willfully suppressed or falsely stated any material information, my application would be disqualified, or if I am employed by the Company, I would be liable to dismissal immediately without any reason assigned. I undertake to inform the employer should there be any change in the above information after my employment.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <!-- Signature Canvas 1 -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Applicant Digital Signature <span class="text-red-500">*</span>
+                            </label>
+                            <canvas id="appSigCanvas" width="400" height="130" class="w-full sig-canvas"></canvas>
+                            <div class="flex justify-between items-center mt-1 no-print">
+                                <span class="text-[10px] text-slate-400">Draw signature using mouse or touch</span>
+                                <button type="button" onclick="clearSignature('appSigCanvas')" class="text-xs text-red-600 hover:underline">
+                                    <i class="fa-solid fa-eraser"></i> Clear Signature
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-end space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Date of Application <span class="text-red-500">*</span></label>
+                                <input type="date" required id="appDate" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- PAGE BREAK FOR CLEAN PRINTING -->
+            <div class="page-break"></div>
+
+
+            <!-- SECTION 12: PDPA APPLICANT CONSENT FORM -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden card-container">
+                <!-- PDPA Header -->
+                <div class="bg-slate-900 text-white p-6 sm:p-8 border-b border-slate-700">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-xl font-bold tracking-tight text-white uppercase">
+                                Personal Data Protection Act (PDPA 2010)
+                            </h2>
+                            <p class="text-slate-300 text-xs mt-1">Applicant Consent Form for Collection of Personal Data from Third Parties</p>
+                        </div>
+                        <span class="bg-blue-600 text-white text-[10px] font-bold px-2.5 py-1 rounded tracking-wider uppercase">
+                            Legal Consent
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6 text-xs text-slate-700 leading-relaxed">
+                    <div class="p-4 bg-slate-50 border-l-4 border-brand-accent rounded-r-lg space-y-2">
+                        <p class="font-bold text-slate-900">NEVIGATE GLOBAL NETWORK SDN. BHD. (Co. No. 1038208M)</p>
+                        <p>
+                            The purpose of this document is to explicitly inform you and obtain your express consent to the collection of your personal data, including sensitive personal data (as defined under the Personal Data Protection Act 2010 ("PDPA")) ("Personal Data") by <strong>NEVIGATE GLOBAL NETWORK SDN. BHD.</strong> from third parties in the course of or in relation to your application for recruitment or employment with us ("Collection").
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <p>
+                            <strong>NEVIGATE GLOBAL NETWORK SDN. BHD.</strong> may obtain your Personal Data by conducting searches and verification on your background information, which may include information concerning your employment details and employment history, civil and criminality records, local language media information, credit records, driving license offence records, driving license verification, education and credential verification, and any other background information on you as may be required by us (the "Collected Personal Data") for purposes in relation to the processing and evaluation of your application for recruitment or employment by us.
+                        </p>
+
+                        <p>
+                            You hereby authorize <strong>NEVIGATE GLOBAL NETWORK SDN. BHD.</strong> and/or agents engaged by NEVIGATE GLOBAL NETWORK SDN. BHD. (the "Agent") to contact various government agencies, relevant corporations, former employers, educational institutions, consumer credit information agencies, law enforcement agencies, the courts, and other Contributors ("Contributors") in order to obtain the Collected Personal Data for the purposes as set out above.
+                        </p>
+
+                        <p>
+                            <strong>NEVIGATE GLOBAL NETWORK SDN. BHD.</strong> may release this consent form (as signed by you) to the Contributors and such other persons as may be necessary for the purposes of performing such searches and verification. The Agents may further to their collection of the Collected Information on our behalf, furnish to us a report containing the collected Personal Data (the "Report"). The Report shall be the property of NEVIGATE GLOBAL NETWORK SDN. BHD.
+                        </p>
+
+                        <p class="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i>
+                            In signing this form, you confirm that your consent to the Collection is given voluntarily and shall remain valid and effective until and unless it is withdrawn by you by written notice. You are advised to obtain independent legal advice on your rights under the PDPA and the legal effect of this letter before signing.
+                        </p>
+                    </div>
+
+                    <!-- PDPA Applicant Confirmation Fields -->
+                    <div class="border-t border-slate-200 pt-6 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold text-slate-800 uppercase mb-1">Full Name of Applicant <span class="text-red-500">*</span></label>
+                                <input type="text" required placeholder="Full Name as in NRIC" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-800 uppercase mb-1">NRIC / Passport No. <span class="text-red-500">*</span></label>
+                                <input type="text" required placeholder="NRIC or Passport Number" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Signature Canvas 2 (PDPA) -->
+                            <div>
+                                <label class="block font-bold text-slate-800 uppercase mb-1">
+                                    PDPA Authorization Signature <span class="text-red-500">*</span>
+                                </label>
+                                <canvas id="pdpaSigCanvas" width="400" height="130" class="w-full sig-canvas"></canvas>
+                                <div class="flex justify-between items-center mt-1 no-print">
+                                    <span class="text-[10px] text-slate-400">Draw signature using mouse or touch</span>
+                                    <button type="button" onclick="clearSignature('pdpaSigCanvas')" class="text-xs text-red-600 hover:underline">
+                                        <i class="fa-solid fa-eraser"></i> Clear Signature
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col justify-end">
+                                <label class="block font-bold text-slate-800 uppercase mb-1">Dated This <span class="text-red-500">*</span></label>
+                                <input type="date" required id="pdpaDate" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Action Controls -->
+            <div class="mt-8 flex justify-end gap-4 no-print pb-12">
+                <button type="submit" class="px-8 py-3 bg-brand-dark hover:bg-navy-900 text-white font-bold rounded-lg shadow-lg transition flex items-center gap-2"><i class="fa-solid fa-paper-plane"></i> Submit Employment Application</button>           <button type="button" onclick="window.print()" class="px-8 py-3 bg-brand-dark hover:bg-navy-900 text-white font-bold rounded-lg shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Print / Save Completed Application
+                </button>
+            </div>
+
+        <input type="hidden" name="app_signature_data" id="appSignatureData"><input type="hidden" name="pdpa_signature_data" id="pdpaSignatureData"></form>
+    </div>
+
+    <!-- JavaScript Handlers -->
+    <script>
+        // Set Default Dates to Today
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appDate').value = today;
+            document.getElementById('pdpaDate').value = today;
+
+            // Initialize Signatures
+            initSignaturePad('appSigCanvas');
+            initSignaturePad('pdpaSigCanvas');
+        });
+
+        // Passport Photo Preview Handler
+        function previewPassportPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('photoPreview');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    document.getElementById('photoPlaceholder').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Toggle Dynamic Radios logic
+        function toggleEduDetails(show) {
+            const el = document.getElementById('pursuingEduContainer');
+            if (show) el.classList.remove('hidden'); else el.classList.add('hidden');
+        }
+        function toggleFutureEduDetails(show) {
+            const el = document.getElementById('futureEduContainer');
+            if (show) el.classList.remove('hidden'); else el.classList.add('hidden');
+        }
+
+        // Table Templates for Add/Remove
+        const familyRowTemplate = `
+            <tr>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Sibling / Child"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Full Name"></td>
+                <td class="p-2 border border-slate-200"><input type="number" placeholder="Age"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Occupation"></td>
+                <td class="p-2 border border-slate-200"><input type="tel" placeholder="Contact No"></td>
+                <td class="p-2 border border-slate-200 text-center no-print">
+                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`;
+
+        const eduRowTemplate = `
+            <tr>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="School/University"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Qualification"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Course"></td>
+                <td class="p-2 border border-slate-200 text-center no-print">
+                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`;
+
+        const techRowTemplate = `
+            <tr>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Course Title"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="College Attended"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Year"></td>
+                <td class="p-2 border border-slate-200 text-center no-print">
+                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`;
+
+        const clubRowTemplate = `
+            <tr>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Society / Club Name"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Position Held"></td>
+                <td class="p-2 border border-slate-200 text-center no-print">
+                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`;
+
+        const awardRowTemplate = `
+            <tr>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Year"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Title/Description"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Organization"></td>
+                <td class="p-2 border border-slate-200 text-center no-print">
+                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`;
+
+        const empRowTemplate = `
+            <tr>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="MM/YY"></td>
+                <td class="p-2 border border-slate-200"><textarea rows="2" placeholder="Company Details..."></textarea></td>
+                <td class="p-2 border border-slate-200 space-y-1">
+                    <input type="text" placeholder="1. Joining Designation">
+                    <input type="text" placeholder="2. Leaving Designation">
+                </td>
+                <td class="p-2 border border-slate-200 space-y-1">
+                    <input type="text" placeholder="Start Salary">
+                    <input type="text" placeholder="Last Salary">
+                </td>
+                <td class="p-2 border border-slate-200"><input type="text" placeholder="Reason for leaving"></td>
+                <td class="p-2 border border-slate-200 text-center no-print">
+                    <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`;
+
+        function addRow(tbodyId, template) {
+            const tbody = document.getElementById(tbodyId);
+            tbody.insertAdjacentHTML('beforeend', template);
+        }
+
+        function removeRow(btn) {
+            const row = btn.closest('tr');
+            row.remove();
+        }
+
+        // Digital Signature Canvas Logic
+        function initSignaturePad(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            // Adjust canvas resolution dynamically
+            function resizeCanvas() {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                canvas.height = canvas.offsetHeight * ratio;
+                ctx.scale(ratio, ratio);
+                ctx.strokeStyle = "#0f2942";
+                ctx.lineWidth = 2;
+                ctx.lineCap = "round";
+            }
+            resizeCanvas();
+
+            // Mouse Events
+            canvas.addEventListener('mousedown', (e) => {
+                drawing = true;
+                ctx.beginPath();
+                const rect = canvas.getBoundingClientRect();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!drawing) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            });
+
+            window.addEventListener('mouseup', () => drawing = false);
+
+            // Touch Events (Mobile Support)
+            canvas.addEventListener('touchstart', (e) => {
+                drawing = true;
+                ctx.beginPath();
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                e.preventDefault();
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!drawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.stroke();
+                e.preventDefault();
+            });
+
+            canvas.addEventListener('touchend', () => drawing = false);
+        }
+
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    
+        function prepareNevigateSubmission() {
+            const app = document.getElementById('appSigCanvas');
+            const pdpa = document.getElementById('pdpaSigCanvas');
+            if (app) document.getElementById('appSignatureData').value = app.toDataURL('image/png');
+            if (pdpa) document.getElementById('pdpaSignatureData').value = pdpa.toDataURL('image/png');
+            return true;
+        }
+   </script>
+</body>
+</html>
