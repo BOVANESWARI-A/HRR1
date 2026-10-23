@@ -905,42 +905,9 @@ def _build_macro(styles, app, ctx):
         logo="contract.png",
     ))
     return story
-company = (
-        app.company.name if app.company else "Application"
-    ).strip()
 
-candidate = (
-        app.candidate.full_name if app.candidate else "Candidate"
-    )
 
-company_lower = company.lower()
 
-story = [
-        Paragraph("Stalwart Business Solutions", styles["brand"]),
-        Paragraph(
-            f"{_escape(company)} Job Application",
-            styles["subtitle"],
-        ),
-        Paragraph(
-            f"#{app.id} &nbsp;&nbsp; "
-            f"{_escape(ctx.get('occupation_label') or 'Application')} "
-            f"&nbsp;&nbsp; {_escape(candidate)} "
-            f"&nbsp;&nbsp; "
-            f"{_escape(app.candidate.email if app.candidate else '')} "
-            f"&nbsp;&nbsp; "
-            f"Status: {_escape(app.get_status_display())}",
-            styles["meta"],
-        ),
-    ]
-
-if "nevigate" in company_lower:
-        story.extend(_build_nevigate(styles, app, ctx))
-
-elif "insite" in company_lower:
-        story.extend(_build_insite(styles, app, ctx))
-
-else:
-        story.extend(_build_macro(styles, app, ctx))
 
 
 
