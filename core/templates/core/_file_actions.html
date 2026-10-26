@@ -1,0 +1,16 @@
+﻿{% if uploaded.file %}
+<div class="d-flex gap-2 flex-wrap">
+    <a href="{{ uploaded.file.url }}"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-eye"></i> View
+    </a>
+
+    <a href="{{ uploaded.file.url }}"
+       download
+       class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-download"></i> Download
+    </a>
+</div>
+{% endif %}

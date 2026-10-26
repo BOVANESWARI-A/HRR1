@@ -202,19 +202,19 @@
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name</p>
-                                <p class="text-extra-small font-weight-600 text-muted">{{ application.candidate.full_name|default:"Candidate" }}</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.name|default:application.candidate.full_name|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">NRIC/Passport No</p>
-                                <p class="text-extra-small font-weight-600 text-muted">ABC1234</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.passportnumber|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Nationality</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Malaysian</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.nationality|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -223,25 +223,25 @@
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date of Birth</p>
-                                <p class="text-extra-small font-weight-600 text-muted">10/10/1995</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.dob|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Age</p>
-                                <p class="text-extra-small font-weight-600 text-muted">29</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.age|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Gender</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Male</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.gender|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Marital Status</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Married</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.marital_status|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -268,31 +268,31 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Address</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Level 28, G Tower, #199 Jalan Tun Razak, </p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.residential_address|default:"—" }} </p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">City</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Kaula Lampur</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.residential_city|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">State</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Selangor </p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.residential_state|default:"—" }} </p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Country</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Malaysia</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.residential_country|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Pincode</p>
-                                <p class="text-extra-small font-weight-600 text-muted">5000</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.residential_pincode|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -303,31 +303,31 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Address</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Level 28, G Tower, #199 Jalan Tun Razak, </p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.permanent_address|default:"—" }} </p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">City</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Kaula Lampur</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.permanent_city|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">State</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Selangor </p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.permanent_state|default:"—" }} </p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Country</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Malaysia</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.permanent_country|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Pincode</p>
-                                <p class="text-extra-small font-weight-600 text-muted">5000</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.permanent_pincode|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -349,19 +349,19 @@
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Height (CMS)</p>
-                                <p class="text-extra-small font-weight-600 text-muted">82 CMS</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{% if pi.height %}{{ pi.height }} CMS{% else %}—{% endif %}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Weight (KG)</p>
-                                <p class="text-extra-small font-weight-600 text-muted">80 KG</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{% if pi.weight %}{{ pi.weight }} KG{% else %}—{% endif %}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">BMS (Body Mass Index)</p>
-                                <p class="text-extra-small font-weight-600 text-muted">24.9</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.bms|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -383,13 +383,13 @@
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
-                                <p class="text-extra-small font-weight-600 text-muted">easwar@yahoo.com</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.email|default:application.candidate.email|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-                                <p class="text-extra-small font-weight-600 text-muted">+603 2725 9216</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.phone|default:application.candidate.phone|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -411,14 +411,14 @@
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Do you have any special medical condition?</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Yes, Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.medical_display|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you been convicted of a criminal offene<br>
                                   (felony or mis-demeanour)?</p>
-                                <p class="text-extra-small font-weight-600 text-muted">No</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ pi.criminal_display|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -446,7 +446,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">1. At a conference, 12 members shook hands with each other before & after the meeting. How many total numbers of handshakes occurred?</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_q1|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -455,7 +455,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">2 (a). A fisherman has 5 fishes (namely A, B, C, D, E) each having a different weight.</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_q2|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -464,7 +464,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">2 (b). Which of the following is the lightest?</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_q3|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -473,7 +473,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">3. Which number should come next in the series 1, 3, 6, 10, 15, ......</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_q4|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -482,7 +482,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">4. If 10 people can do a piece of work in 5 days, working 2 hours a day; how long will 2 people take to do the same work, working 5 hours a day?</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_q5|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -491,7 +491,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">5. 87 kg of potatoes are distributed in two boxes. One box weighs 11 kg less than the other one. How many kilograms of potatoes does the lighter box contain?</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_1|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -513,7 +513,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">1. Please write a simple module using "do while…. Loop" to display the following result:</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_2|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -535,31 +535,31 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">1. Please write the SQL statement to display record with "Title" as "Pn".</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_3|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">2. Please write the SQL statement to display "Customer" name start with "H".</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_4|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">3. Please write the SQL statement to find the sum of all "OrderPrice" fields group individual customer.</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_5|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">4. Please write the SQL statement to display the records for "OrderDate" is belong to year 2009 only.</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_6|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-extra-small text-dark-85 font-weight-500 mb-0">5. Please write the SQL statement to display "Customer" name only and this query must avoid retrieving duplicate "Customer" name. </p>
-                                <p class="text-extra-small font-weight-600 text-muted">Answer will be displayed here</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ iq.iq_response_7|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -606,19 +606,19 @@
                               <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div>
                                   <label for="appname" class="form-label mb-0"><sup class="text-danger">*</sup>Applicant Name</label>
-                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant Name" value="{{ application.candidate.full_name|default:"Candidate" }}" disabled>
+                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant Name" value="{{ consent.appname|default:application.candidate.full_name|default:'' }}" disabled>
                                 </div>
                               </div>
                               <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div>
                                   <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup>Applicant NRIC</label>
-                                  <input type="text" class="form-control" id="nric" name="nric" placeholder="Applicant NRIC"  value="{{ application.data.personal_information.passportnumber|default:'' }}" disabled>
+                                  <input type="text" class="form-control" id="nric" name="nric" placeholder="Applicant NRIC"  value="{{ consent.nric|default:pi.passportnumber|default:'' }}" disabled>
                                 </div>
                               </div>
                               <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div>
                                   <label for="date" class="form-label mb-0"><sup class="text-danger">*</sup>Dated</label>
-                                  <input type="date" class="form-control" id="date" name="date" placeholder="Dated" disabled>
+                                  <input type="date" class="form-control" id="date" name="date" placeholder="Dated" value="{{ consent.date|default:'' }}" disabled>
                                 </div>
                               </div>
                             </div>
@@ -627,7 +627,7 @@
                       </form>
                     </div>
                   </div>
-                  <div class="card card-box">
+                    <div class="card card-box">
                     <div class="card-header">
                       <p class="text-extra-small font-weight-600">Documents Submission</p>
                     </div>
@@ -640,17 +640,32 @@
                           <div class="row">
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Personality Test Result</button>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-2">Personality Test Result</p>
+                                {% if files_by_field.personality_test_result %}
+                                {% include "core/_file_actions.html" with uploaded=files_by_field.personality_test_result %}
+                                {% else %}
+                                <button type="button" class="brand-button w-100" disabled>No file uploaded</button>
+                                {% endif %}
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Updated Resume</button>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-2">Updated Resume</p>
+                                {% if files_by_field.updated_resume %}
+                                {% include "core/_file_actions.html" with uploaded=files_by_field.updated_resume %}
+                                {% else %}
+                                <button type="button" class="brand-button w-100" disabled>No file uploaded</button>
+                                {% endif %}
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;MyKad/NRIC/Passport</button>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-2">MyKad/NRIC/Passport</p>
+                                {% if files_by_field.identity_document %}
+                                {% include "core/_file_actions.html" with uploaded=files_by_field.identity_document %}
+                                {% else %}
+                                <button type="button" class="brand-button w-100" disabled>No file uploaded</button>
+                                {% endif %}
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -658,7 +673,12 @@
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-2">Academic Certificate</p>
+                                {% if files_by_field.academic_certificate %}
+                                {% include "core/_file_actions.html" with uploaded=files_by_field.academic_certificate %}
+                                {% else %}
+                                <button type="button" class="brand-button w-100" disabled>No file uploaded</button>
+                                {% endif %}
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -678,7 +698,12 @@
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 1</button>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-2">Pay Slip 1</p>
+                                {% if files_by_field.payslips %}
+                                {% include "core/_file_actions.html" with uploaded=files_by_field.payslips %}
+                                {% else %}
+                                <button type="button" class="brand-button w-100" disabled>No file uploaded</button>
+                                {% endif %}
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -710,19 +735,19 @@
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Willing to Travel</p>
-                                <p class="text-extra-small font-weight-600 text-muted">No</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.willing_to_travel|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Willing to Relocates</p>
-                                <p class="text-extra-small font-weight-600 text-muted">No</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.willing_to_relocate|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Possess Own Transport</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Yes</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.own_transport|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -731,19 +756,19 @@
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Last Drawn Salary (RM)</p>
-                                <p class="text-extra-small font-weight-600 text-muted">5000RM</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.lastsalary|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Expected Salary (RM)</p>
-                                <p class="text-extra-small font-weight-600 text-muted">8000RM</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.expectedsalary|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Notice Period / Availability</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Immediate</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.notice_period|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -752,7 +777,7 @@
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">If you are refer by an Stalwart Business Solutions staff, please state his/her name:</p>
-                                <p class="text-extra-small font-weight-600 text-muted">No</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ emp.stalwart_referral|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -779,31 +804,31 @@
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Suresh</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref1name|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Position</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Team Lead</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref1pos|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Company</p>
-                                <p class="text-extra-small font-weight-600 text-muted">TCS</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref1com|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
-                                <p class="text-extra-small font-weight-600 text-muted">suresh@tcs.com</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref1email|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-                                <p class="text-extra-small font-weight-600 text-muted">+91 98800 98844</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref1phn|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -814,31 +839,31 @@
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Prakash</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref2name|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Position</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Developer</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref2pos|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Company</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Cognizant</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref2com|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
-                                <p class="text-extra-small font-weight-600 text-muted">Prakash@cts.com</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref2email|default:"—" }}</p>
                               </div>
                             </div>
                             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
                                 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-                                <p class="text-extra-small font-weight-600 text-muted">+91 944000 88444</p>
+                                <p class="text-extra-small font-weight-600 text-muted">{{ ref.ref2phn|default:"—" }}</p>
                               </div>
                             </div>
                           </div>
@@ -846,7 +871,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="card card-box">
+                   <div class="card card-box">
                     <div class="card-header">
                       <p class="text-extra-small font-weight-600">Applicant Declaration</p>
                     </div>
@@ -864,21 +889,25 @@
                               <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div class="mb-3">
                                   <label for="appname" class="form-label mb-0"><sup class="text-danger">*</sup>Applicant's Name</label>
-                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="{{ application.candidate.full_name|default:"Candidate" }}" disabled>
+                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="{{ decl.declaration_appname|default:decl.appname|default:application.candidate.full_name|default:'' }}" disabled>
                                 </div>
                                 <div>
                                   <label for="applicationForm" class="form-label mb-0"><sup class="text-danger">*</sup>Applicant's Signatory</label>
-                                  <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Download Signature</button>
+                                  {% if files_by_field.applicant_signature %}
+                                  {% include "core/_file_actions.html" with uploaded=files_by_field.applicant_signature %}
+                                  {% else %}
+                                  <button type="button" class="brand-button w-100" disabled>No signature uploaded</button>
+                                  {% endif %}
                                 </div>
                               </div>
                               <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div class="mb-3">
                                   <label for="appplace" class="form-label mb-0"><sup class="text-danger">*</sup>Applicant's Place</label>
-                                  <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="{{ application.data.personal_information.city|default:'' }}" disabled>
+                                  <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="{{ decl.appplace|default:'' }}" disabled>
                                 </div>
                                 <div>
                                   <label for="dateapplied" class="form-label mb-0"><sup class="text-danger">*</sup>Date Applied</label>
-                                  <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date Applied" disabled>
+                                  <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date Applied" value="{{ decl.dateapplied|default:'' }}" disabled>
                                 </div>
                               </div>
                             </div>
@@ -894,13 +923,16 @@
             <div class="card card-box mt-4">
   <div class="card-header"><p class="text-extra-small font-weight-500 mb-0">Uploaded Documents / Images</p></div>
   <div class="card-body">
-    {% if application.files.all %}
+    {% if uploaded_files %}
       <div class="list-group">
-        {% for uploaded in application.files.all %}
-          <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ uploaded.file.url }}" target="_blank" rel="noopener">
-            <span><i class="bi bi-paperclip me-2"></i>{{ uploaded.field_name|default:"Document" }} — {{ uploaded.file.name|cut:"applications/" }}</span>
-            <span class="text-muted small">{{ uploaded.uploaded_at|date:"d M Y H:i" }}</span>
-          </a>
+        {% for uploaded in uploaded_files %}
+          <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <span><i class="bi bi-paperclip me-2"></i>{{ uploaded.field_name|default:"Document" }} — {{ uploaded.file.name|cut:"applications/" }}</span>
+              <span class="text-muted small d-block">{{ uploaded.uploaded_at|date:"d M Y H:i" }}</span>
+            </div>
+            {% include "core/_file_actions.html" with uploaded=uploaded %}
+          </div>
         {% endfor %}
       </div>
     {% else %}
@@ -908,6 +940,7 @@
     {% endif %}
   </div>
 </div>
+
 
 <!-- ============================================================
      DYNAMIC SAVED APPLICATION DATA

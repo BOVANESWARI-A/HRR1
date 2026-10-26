@@ -3819,19 +3819,84 @@ def application_detail(request, pk):
             f"{app.company.name if app.company else 'No company assigned'}"
         )
 
-    # Render the application page.
+    
+    
+    saved_data = app.data if isinstance(app.data, dict) else {}
+
+    # Declaration details expected by the InsiteMy template
+    decl = saved_data.get("declaration", {})
+    if not isinstance(decl, dict):
+       decl = {}
+    
+    # Support the field name expected by the existing template
+    decl.setdefault(
+        "appname",
+        decl.get("declaration_appname", saved_data.get("consent", {}).get("appname", ""))
+    )
+
+
+    fields = {}
+
+    # Flatten nested MacroKiosk sections, if present.
+    for section_name, section_data in saved_data.items():
+        if section_name.startswith("macro_section_") and isinstance(section_data, dict):
+           fields.update(section_data)
+
+    # Also support applications saved directly as flat dictionaries.
+    fields.update({
+
+        key: value
+        for key, value in saved_data.items()
+        if not key.startswith("macro_section_")
+    })
+
+    # Map common template fields to existing saved values.
+    fields.setdefault("date", fields.get("macro_5_date") or fields.get("macro_7_date") or fields.get("dateapplied", ""))
+    
+    # Provide personal information expected by the InsiteMy template.
+    pi = saved_data.get("personal_information", {})
+
+    if not isinstance(pi, dict):
+       pi = {}
+
+    # Support legacy applications where personal information is stored flat.
+    for key in (
+        "name", "passportnumber", "nationality", "dob", "age",
+        "gender", "marital_status", "residential_address",
+        "residential_city", "residential_state", "residential_country",
+        "residential_pincode", "permanent_address", "permanent_city",
+        "permanent_state", "permanent_country", "permanent_pincode",
+        "height", "weight", "bms", "email", "phone",
+    ):
+        if not pi.get(key):
+            pi[key] = fields.get(key, "")
+
+    pi.setdefault("medical_display", pi.get("medical_condition", ""))
+    pi.setdefault("criminal_display", pi.get("criminal_offence", ""))
+    
+    # Prevent missing legacy checkbox fields from breaking application details.
+    for number in range(1, 21):
+        fields.setdefault(f"macro_4_checkbox_{number}", "")
+
+    
+
+
+
     return render(
         request,
         template,
         {
             "application": app,
             "role": role,
-            "saved_data": (
-                app.data if isinstance(app.data, dict) else {}
-            ),
+            "saved_data": saved_data,
+            "fields": fields,
+            "pi": pi,
+            "decl": decl,
             "uploaded_files": app.files.all().order_by("-uploaded_at"),
         },
     )
+
+
 
 @role_required("agent")
 def forward_application_to_hr(request, pk):

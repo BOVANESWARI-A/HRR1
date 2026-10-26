@@ -101,7 +101,7 @@ pip install -r requirements.txt
 
 Create a PostgreSQL database, for example:
 
-- Database: `stalwart_db`
+- Database: `valiant_db`
 - User: `postgres`
 - Password: your PostgreSQL password
 - Host: `127.0.0.1`
@@ -132,7 +132,7 @@ DEFAULT_FROM_EMAIL=your-address@gmail.com
 HR_NOTIFICATION_EMAIL=hr-address@example.com
 ```
 
-Do not commit an SMTP password to Git.
+
 
 ### 6. Run migrations
 

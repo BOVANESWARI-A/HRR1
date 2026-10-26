@@ -1,0 +1,23 @@
+{% if uploaded and uploaded.file %}
+{% with filename=uploaded.file.name|lower %}
+<div class="uploaded-file-preview">
+  <div class="upload-preview-main">
+    {% if filename|slice:"-4:" == ".jpg" or filename|slice:"-5:" == ".jpeg" or filename|slice:"-4:" == ".png" or filename|slice:"-5:" == ".webp" or filename|slice:"-4:" == ".gif" %}
+    <img alt="Uploaded file" src="{{ uploaded.file.url }}">
+    {% elif filename|slice:"-4:" == ".pdf" %}
+    <i class="bi bi-file-earmark-pdf upload-preview-icon"></i>
+    {% else %}
+    <i class="bi bi-paperclip upload-preview-icon"></i>
+    {% endif %}
+    <div class="upload-preview-copy">
+      <div class="upload-preview-name">{{ uploaded.file.name|cut:"applications/" }}</div>
+      <div class="upload-preview-hint">Uploaded{% if uploaded.uploaded_at %} {{ uploaded.uploaded_at|date:"d M Y H:i" }}{% endif %}. Choose another file to replace it.</div>
+    </div>
+  </div>
+  <div class="upload-preview-actions">
+    <a class="brand-button-alt btn-sm" href="{{ uploaded.file.url }}" rel="noopener" target="_blank">View</a>
+    <button class="btn btn-sm btn-outline-danger" formaction="{% url 'delete_application_file' application.id uploaded.id %}" formmethod="post" type="submit">Remove</button>
+  </div>
+</div>
+{% endwith %}
+{% endif %}

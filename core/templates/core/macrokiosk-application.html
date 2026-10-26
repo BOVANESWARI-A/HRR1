@@ -121,7 +121,7 @@
 <div class="card-body">
 <div class="d-flex align-items-center justify-content-between">
 <div>
-<p class="text-medium font-weight-600"><span>Application #{{ application.id }}</span></p>
+<p class="text-medium font-weight-600"><span>#{{ application.id }}</span> - <span>{{ occupation_label|default:"—" }}</span></p>
 <p class="text-extra-small font-weight-400 text-muted">{{ application.candidate.full_name|default:"" }}</p>
 </div>
 <div><a class="brand-button-alt btn-sm" href="{% url 'application_detail' application.id %}?download=pdf" rel="noopener" target="_blank"><i class="bi bi-download"></i>  PDF</a> </div>
@@ -135,11 +135,11 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/personal-details.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/personal-details.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
-<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3"> <img src="{% static 'core/assets/images/profile.png' %}" alt="Stalwart Business Solutions" class="rounded-circle" width="100"/> </div>
+<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3"> <img src="{% static "core/assets/images/profile.png" %}" alt="Stalwart Business Solutions" class="rounded-circle" width="100"> </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name</p>
@@ -149,79 +149,79 @@
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Permanent Home Address</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="address">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="address">{{ fields.address|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Current Home Address</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="address_2">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="address_2">{{ fields.address_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date of Birth</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="dob">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="dob">{{ fields.dob|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Age</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="age">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="age">{{ fields.age|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Gender</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="gender">{{ fields.gender|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Place of Birth</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="dob_2">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="dob_2">{{ fields.dob_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="email">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="email">{{ fields.email|default:application.candidate.email|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Identity Card No.</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="passportnumber">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="passportnumber">{{ fields.passportnumber|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Marital Status</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="marital">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="marital">{{ fields.marital|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Nationality</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="nationality">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="nationality">{{ fields.nationality|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
-<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn">—</p>
+<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">House Phone No.</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="nationality_2">{{ fields.nationality_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
-<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn">—</p>
+<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Office Phone No.</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="nationality_3">{{ fields.nationality_3|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
-<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn">—</p>
+<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Handphone No.</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="nationality_4">{{ fields.nationality_4|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -236,50 +236,50 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/family.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/family.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Father</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="father">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="father">{{ fields.father|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Mother</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="mother">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="mother">{{ fields.mother|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Spouse</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="spouse">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="spouse">{{ fields.spouse|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Children</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="children">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="children">{{ fields.children|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Brothers</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="brothers">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="brothers">{{ fields.brothers|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Sisters</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="sisters">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="sisters">{{ fields.sisters|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">How do you stay?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ residence_label|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -294,7 +294,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/experience.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/experience.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="bg-silver p-4 rounded mb-3">
@@ -302,61 +302,61 @@
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date From</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="datefrom">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="datefrom">{{ fields.datefrom|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date To</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="dateto">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="dateto">{{ fields.dateto|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Employer</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="height">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="height">{{ fields.height|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Location</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="location">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="location">{{ fields.location|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Immediate Superior</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="superior">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="superior">{{ fields.superior|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Position</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="position">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="position">{{ fields.position|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Start Salary</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ssalary">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ssalary">{{ fields.ssalary|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">End Salary</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="esalary">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="esalary">{{ fields.esalary|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Reasons For Leaving</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">{{ fields.reasons|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Brief Job Description</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">{{ fields.reasons|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -366,61 +366,61 @@
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date From</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="datefrom">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="datefrom">{{ fields.datefrom|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date To</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="dateto">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="dateto">{{ fields.dateto|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Employer</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="height">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="height">{{ fields.height|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Location</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="location">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="location">{{ fields.location|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Immediate Superior</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="superior">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="superior">{{ fields.superior|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Position</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="position">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="position">{{ fields.position|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Start Salary</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ssalary">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ssalary">{{ fields.ssalary|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">End Salary</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="esalary">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="esalary">{{ fields.esalary|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Reasons For Leaving</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">{{ fields.reasons|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Brief Job Description</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="reasons">{{ fields.reasons|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -436,7 +436,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/college.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/college.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="bg-silver p-4 rounded mb-3">
@@ -444,31 +444,31 @@
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">College / University</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.height_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Location</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="location">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="location">{{ fields.location|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year From</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="yearfrom">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="yearfrom">{{ fields.yearfrom|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year To</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="yearto">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="yearto">{{ fields.yearto|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Qualification</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="qualification">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="qualification">{{ fields.qualification|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -478,31 +478,31 @@
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">College / University</p>
-<p class="text-extra-small font-weight-600 text-muted">University of Selangor</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.height_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Location</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="location">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="location">{{ fields.location|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year From</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="yearfrom">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="yearfrom">{{ fields.yearfrom|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year To</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="yearto">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="yearto">{{ fields.yearto|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Qualification</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="qualification">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="qualification">{{ fields.qualification|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -518,7 +518,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/education.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/education.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="bg-silver p-4 rounded mb-3">
@@ -526,31 +526,31 @@
 <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">College / University</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.height_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Location</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="location">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.location_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year start</p>
-<p class="text-extra-small font-weight-600 text-muted">10/05/2024</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.yearfrom_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year End</p>
-<p class="text-extra-small font-weight-600 text-muted">10/05/2026</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.yearto_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Qualification</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="qualification">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.qualification_2|default:fields.qualification|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -566,14 +566,14 @@
 <div class="card-body">
 <div class="row align-items-center">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/membership.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/membership.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div class="bg-silver p-4 rounded mb-0">
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Membership (Professional Bodies, Social, Sport etc)</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.height_3|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -588,14 +588,14 @@
 <div class="card-body">
 <div class="row align-items-center">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/certificate.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/certificate.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div class="bg-silver p-4 rounded mb-0">
-<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Major —s Attended (with date)</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Major Training Courses Attended (with date)</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.height_4|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -610,7 +610,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/language.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/language.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
@@ -628,34 +628,42 @@
 <tbody>
 <tr>
 <th scope="row">English</th>
-<td>Fair</td>
-<td>Fair</td>
-<td>Fair</td>
+<td>{{ fields.lang|default:"—" }}</td>
+<td>{{ fields.lang_2|default:"—" }}</td>
+<td>{{ fields.lang_3|default:"—" }}</td>
 </tr>
 <tr>
 <th scope="row">Malay</th>
-<td>Slight</td>
-<td>Slight</td>
-<td>Slight</td>
+<td>{{ fields.lang_4|default:"—" }}</td>
+<td>{{ fields.lang_5|default:"—" }}</td>
+<td>{{ fields.lang_6|default:"—" }}</td>
 </tr>
 <tr>
 <th scope="row">Chinese</th>
-<td>Slight</td>
-<td>Slight</td>
-<td>Slight</td>
+<td>{{ fields.lang_7|default:"—" }}</td>
+<td>{{ fields.lang_8|default:"—" }}</td>
+<td>{{ fields.lang_9|default:"—" }}</td>
 </tr>
 <tr>
 <th scope="row">Tamil</th>
-<td>Fair</td>
-<td>Fair</td>
-<td>Fair</td>
+<td>{{ fields.lang_10|default:"—" }}</td>
+<td>{{ fields.lang_11|default:"—" }}</td>
+<td>{{ fields.lang_12|default:"—" }}</td>
 </tr>
 <tr>
-<th scope="row">Telugu</th>
-<td>Fair</td>
-<td>Fair</td>
-<td>Fair</td>
+<th scope="row">{{ fields.lang_other|default:"Others" }}</th>
+<td>{{ fields.lang_13|default:"—" }}</td>
+<td>{{ fields.lang_14|default:"—" }}</td>
+<td>{{ fields.lang_15|default:"—" }}</td>
 </tr>
+{% if fields.lang_other_2 or fields.lang_16 or fields.lang_17 or fields.lang_18 %}
+<tr>
+<th scope="row">{{ fields.lang_other_2|default:"Others" }}</th>
+<td>{{ fields.lang_16|default:"—" }}</td>
+<td>{{ fields.lang_17|default:"—" }}</td>
+<td>{{ fields.lang_18|default:"—" }}</td>
+</tr>
+{% endif %}
 </tbody>
 </table>
 </div>
@@ -672,14 +680,14 @@
 <div class="card-body">
 <div class="row align-items-center">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/hobbies.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/hobbies.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Activities / Interest / Hobbies</p>
-<p class="text-extra-small font-weight-600 text-muted">Football Player, Listening Music,  Watching Movies</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.height_5|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -694,68 +702,68 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/others.png' %}" alt="Stalwart Business Solutions" width="100"/></div>
+<div><img src="{% static "core/assets/images/others.png" %}" alt="Stalwart Business Solutions" width="100"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Do you have any physical impairment?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_1|default:fields.macro_4_checkbox_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you had any serious or contagious illness prior to this application?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_3|default:fields.macro_4_checkbox_4|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you ever been in the service of this Company or its subsidiaries?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_5|default:fields.macro_4_checkbox_6|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Are you related to anyone working in this Company or its subsidiaries?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_7|default:fields.macro_4_checkbox_8|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you ever been dismissed or suspended from any position?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_9|default:fields.macro_4_checkbox_10|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you ever been convicted of criminal offences in the Court of Law?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_11|default:fields.macro_4_checkbox_12|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you ever been declared bankrupt?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_13|default:fields.macro_4_checkbox_14|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Are you currently engaged in any private businesses?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_15|default:fields.macro_4_checkbox_16|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Have you ever been involved with the use of any illegal drugs?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_17|default:fields.macro_4_checkbox_18|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Do you have a valid driving licence? What class?</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.macro_4_checkbox_19|default:fields.macro_4_checkbox_20|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -770,26 +778,26 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/interview.png' %}" alt="Stalwart Business Solutions" width="100"/></div>
+<div><img src="{% static "core/assets/images/interview.png" %}" alt="Stalwart Business Solutions" width="100"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">By which date would you be available to take up this new appointment?</p>
-<p class="text-extra-small font-weight-600 text-muted">15/11/2024</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.lastsalary|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Expected Salary</p>
-<p class="text-extra-small font-weight-600 text-muted">5000RM</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.lastsalary_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Expected Benefits</p>
-<p class="text-extra-small font-weight-600 text-muted">—</p>
+<p class="text-extra-small font-weight-600 text-muted">{{ fields.expectedsalary|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -809,7 +817,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/reference-details.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/reference-details.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
@@ -821,31 +829,31 @@
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Referee</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1name">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1name">{{ fields.ref1name|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Occupation</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1pos">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1pos">{{ fields.ref1pos|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Company</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1com">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1com">{{ fields.ref1com|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="email">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1email">{{ fields.ref1email|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn">{{ fields.ref1phn|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -856,31 +864,31 @@
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Referee</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1name">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1name_2">{{ fields.ref1name_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Occupation</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1pos">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1pos_2">{{ fields.ref1pos_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Company</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1com">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1com_2">{{ fields.ref1com_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="email">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1email_2">{{ fields.ref1email_2|default:"—" }}</p>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
-<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn">—</p>
+<p class="text-extra-small font-weight-600 text-muted" data-field="ref1phn_2">{{ fields.ref1phn_2|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -895,7 +903,7 @@
 <div class="card-body">
 <div class="row align-items-center">
 <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div class="text-center"><img src="{% static 'core/assets/images/declaration.png' %}" alt="Stalwart Business Solutions" width="450"/></div>
+<div class="text-center"><img src="{% static "core/assets/images/declaration.png" %}" alt="Stalwart Business Solutions" width="450"></div>
 </div>
 <div class="col-xxl-7 col-xl-7 col-lg-7 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
@@ -906,13 +914,13 @@
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
 <div>
 <label class="form-label mb-0" for="appname"><sup class="text-danger">*</sup>Signature of Applicant</label>
-<input candidate"="" class="form-control" data-field="appname" disabled="disabled" id="appname" name="appname" placeholder="Signature of Applicant" type="text" value="" }}"=""/>
+<input candidate"="" class="form-control" data-field="appname" disabled="disabled" id="appname" name="appname" placeholder="Signature of Applicant" type="text" value="{{ fields.appname|default:application.candidate.full_name|default:'' }}"/>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
 <div>
 <label class="form-label mb-0" for="dateapplied"><sup class="text-danger">*</sup>Date</label>
-<input class="form-control" data-field="dateapplied" disabled="disabled" id="dateapplied" name="dateapplied" placeholder="Date" type="date" value=""/>
+<input class="form-control" data-field="dateapplied" disabled="disabled" id="dateapplied" name="dateapplied" placeholder="Date" type="date" value="{{ fields.dateapplied|default:fields.date|default:'' }}"/>
 </div>
 </div>
 </div>
@@ -927,7 +935,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/backgroundcheck.png' %}" alt="Stalwart Business Solutions" width="100"/></div>
+<div><img src="{% static "core/assets/images/backgroundcheck.png" %}" alt="Stalwart Business Solutions" width="100"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
@@ -935,12 +943,12 @@
 <div>
 <div class="mb-3">
 <div class="input-group"><span class="input-group-text" id="yourname">I</span>
-<input aria-describedby="yourname" aria-label="yourname" candidate"="" class="form-control" disabled="disabled" placeholder="Your Name" type="text" value="" }}"=""/>
+<input aria-describedby="yourname" aria-label="yourname" candidate"="" class="form-control" disabled="disabled" placeholder="Your Name" type="text" value="{{ fields.name|default:application.candidate.full_name|default:'' }}"/>
 <span class="input-group-text" id="yourname">,</span></div>
 </div>
 <div class="mb-3">
 <div class="input-group"><span class="input-group-text" id="nric">I</span>
-<input aria-describedby="nric" aria-label="nric" class="form-control" disabled="disabled" placeholder="NRIC / Passport No." type="text" value=""/>
+<input aria-describedby="nric" aria-label="nric" class="form-control" disabled="disabled" placeholder="NRIC / Passport No." type="text" value="{{ fields.passportnumber|default:'' }}"/>
 </div>
 </div>
 <p class="text-extra-small font-weight-400 mb-3"> hereby grant consent to <span class="font-weight-600">VENOVOX SDN BHD (858858–M)</span>, an employment screening company to conduct the following for background screening as part of the recruitment process of Venovox's client with whom I am seeking employment opportunities with. I hereby consent VENOVOX SDN BHD to release the Report, which consists the screening results to the Client.<br/>
@@ -958,21 +966,36 @@
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div class="mb-3">
 <label class="form-label mb-0" for="name"><sup class="text-danger">*</sup>Candidate's Signature</label>
-<button class="brand-button w-100" type="button"><i class="bi bi-download"></i>  Download Signature</button>
+{% if files_by_field.macro_doc_5_1 %}
+{% with signature=files_by_field.macro_doc_5_1 %}
+{% if signature.file %}
+{% with filename=signature.file.name|lower %}
+{% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".webp" in filename or ".gif" in filename %}
+<div class="mb-2">
+<img alt="Candidate's Signature" src="{{ signature.file.url }}" style="max-width:220px;max-height:90px;object-fit:contain;border:1px solid #e5e7eb;border-radius:.4rem;background:#fff;padding:.25rem;">
+</div>
+{% endif %}
+{% endwith %}
+{% endif %}
+{% include "core/_file_actions.html" with uploaded=signature %}
+{% endwith %}
+{% else %}
+<button class="brand-button w-100" disabled="disabled" type="button">No signature uploaded</button>
+{% endif %}
 </div>
 <div>
 <label class="form-label mb-0" for="name"><sup class="text-danger">*</sup>Candidate's Name</label>
-<input candidate"="" class="form-control" data-field="name" disabled="disabled" id="name" name="name" placeholder="Candidate's Name" type="text" value="" }}"=""/>
+<input candidate"="" class="form-control" data-field="name" disabled="disabled" id="name" name="name" placeholder="Candidate's Name" type="text" value="{{ fields.name|default:application.candidate.full_name|default:'' }}"/>
 </div>
 </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div class="mb-3">
 <label class="form-label mb-0" for="date"><sup class="text-danger">*</sup>Date</label>
-<input class="form-control" data-field="date" disabled="disabled" id="date" name="date" placeholder="Date" type="date" value=""/>
+<input class="form-control" data-field="date" disabled="disabled" id="date" name="date" placeholder="Date" type="date" value="{{ fields.dateapplied|default:fields.date|default:'' }}"/>
 </div>
 <div>
 <label class="form-label mb-0" for="nric"><sup class="text-danger">*</sup> NRIC/Passport No.</label>
-<input class="form-control" data-field="nric" disabled="disabled" id="nric" name="nric" placeholder="NRIC/Passport No." type="text" value=""/>
+<input class="form-control" data-field="nric" disabled="disabled" id="nric" name="nric" placeholder="NRIC/Passport No." type="text" value="{{ fields.passportnumber|default:'' }}"/>
 </div>
 </div>
 </div>
@@ -987,14 +1010,14 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/writing.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/writing.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
 <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
 <div>
 <p class="text-extra-small font-weight-600 mb-1">If you are selected for the applied position, Please share with us on what you can contribute to MACROKIOSK.</p>
-<p class="text-extra-small font-weight-400">—</p>
+<p class="text-extra-small font-weight-400" data-field="macro_6_text_1" data-assignment-answer>{{ fields.macro_6_text_1|default:"—" }}</p>
 </div>
 </div>
 </div>
@@ -1009,7 +1032,7 @@
 <div class="card-body">
 <div class="row">
 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div><img src="{% static 'core/assets/images/contract.png' %}" alt="Stalwart Business Solutions" width="120"/></div>
+<div><img src="{% static "core/assets/images/contract.png" %}" alt="Stalwart Business Solutions" width="120"></div>
 </div>
 <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
 <div class="row">
@@ -1033,19 +1056,19 @@
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <label class="form-label mb-0" for="name"><sup class="text-danger">*</sup>Name</label>
-<input candidate"="" class="form-control" data-field="name" disabled="disabled" id="name" name="name" placeholder="Name" type="text" value="" }}"=""/>
+<input candidate"="" class="form-control" data-field="name" disabled="disabled" id="name" name="name" placeholder="Name" type="text" value="{{ fields.macro_7_name|default:fields.name|default:application.candidate.full_name|default:'' }}"/>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <label class="form-label mb-0" for="nric"><sup class="text-danger">*</sup> NRIC/ID No.</label>
-<input class="form-control" data-field="nric" disabled="disabled" id="nric" name="nric" placeholder="NRIC/ID No." type="text" value=""/>
+<input class="form-control" data-field="nric" disabled="disabled" id="nric" name="nric" placeholder="NRIC/ID No." type="text" value="{{ fields.nric|default:fields.passportnumber|default:'' }}"/>
 </div>
 </div>
 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div>
 <label class="form-label mb-0" for="date"><sup class="text-danger">*</sup>Date</label>
-<input class="form-control" data-field="date" disabled="disabled" id="date" name="date" placeholder="Date" type="date" value=""/>
+<input class="form-control" data-field="date" disabled="disabled" id="date" name="date" placeholder="Date" type="date" value="{{ fields.dateapplied|default:fields.date|default:'' }}"/>
 </div>
 </div>
 </div>
@@ -1063,10 +1086,15 @@
     {% if uploaded_files %}
       <div class="list-group">
         {% for uploaded in uploaded_files %}
-          <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ uploaded.file.url }}" rel="noopener" target="_blank">
-<span><i class="bi bi-paperclip me-2"></i>{{ uploaded.field_name|default:"Document" }} — {{ uploaded.file.name|cut:"applications/" }}</span>
-<span class="text-muted small">{{ uploaded.uploaded_at|date:"d M Y H:i" }}</span>
-</a>
+          <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <span><i class="bi bi-paperclip me-2"></i>{{ uploaded.field_name|default:"Document" }} — {{ uploaded.file.name|cut:"applications/" }}</span>
+              <span class="text-muted small d-block">{{ uploaded.uploaded_at|date:"d M Y H:i" }}</span>
+            </div>
+            {% include "core/_file_actions.html" with uploaded=uploaded %}
+
+
+          </div>
         {% endfor %}
       </div>
     {% else %}
