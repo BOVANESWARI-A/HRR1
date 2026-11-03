@@ -1,0 +1,113 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ form_title|default:"Job Application" }} - eDocs</title>
+  <link rel="icon" href="{% static 'core/assets/images/favicon.png' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'core/assets/css/master.css' %}">
+  <link rel="stylesheet" href="{% static 'core/assets/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'core/assets/icons/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <style>
+    .submitted-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .submitted-field{padding:12px 14px;border:1px solid #e7e9ed;border-radius:6px;background:#fff;min-width:0}
+    .submitted-label{display:block;color:#68707c;font-size:12px;margin-bottom:5px}
+    .submitted-value{display:block;color:#242a32;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}
+    .submitted-file{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf0f2}
+    .submitted-file:last-child{border-bottom:0}
+    .file-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .file-action{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:4px;background:#343a40;color:#fff;text-decoration:none;font-size:12px}
+    .file-action:hover{color:#fff;opacity:.88}
+    @media(max-width:767px){.submitted-form-grid{grid-template-columns:1fr}.submitted-file{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  {% include "core/sidebar.html" %}
+  <div id="main-content" class="flex-grow-1">
+    <header class="header header-light">
+      <div class="container-fluid px-4 py-2 d-flex align-items-center justify-content-between">
+        <a href="javascript:void(0)" class="toggle-sidebar-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="bi bi-list"></i></a>
+        <nav class="header-nav ms-auto"><ul class="d-flex align-items-center mb-0">
+          {% include "core/notification-bell.html" %}
+          <li class="nav-item dropdown">
+            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="javascript:void(0)" data-bs-toggle="dropdown">
+              <img src="{% static 'core/assets/images/profile.png' %}" alt="Profile" class="rounded-circle" width="32" height="32">
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{ request.user.first_name|default:request.user.username }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+              <li><a class="dropdown-item" href="{% url 'myprofile' %}"><i class="bi bi-person"></i> My Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Sign Out</a></li>
+            </ul>
+          </li>
+        </ul></nav>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <div class="container-fluid px-4">
+        <div class="py-4">
+          <section class="page-container">
+            <div class="pagetitle pt-2 mb-3">
+              <p class="text-medium font-weight-500">{{ form_title|default:"Job Application" }}</p>
+              <p class="text-extra-small text-muted">Candidate-submitted information. Empty fields are not shown.</p>
+            </div>
+            <div class="card card-box">
+              <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                  <strong>{{ application.candidate.full_name|default:application.candidate.email|default:"Candidate" }}</strong>
+                  <div class="text-extra-small text-muted">{{ application.candidate.email }}</div>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                  <span class="badge bg-secondary">{{ application.get_status_display }}</span>
+                  <a class="btn btn-dark btn-sm" href="{% url 'application_detail' application.pk %}?download=pdf"><i class="bi bi-download"></i> Download PDF</a>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="submitted-form-grid">
+                  {% for field in submitted_fields %}
+                    <div class="submitted-field">
+                      <span class="submitted-label">{{ field.label }}</span>
+                      <span class="submitted-value">{{ field.value }}</span>
+                    </div>
+                  {% empty %}
+                    <p class="text-muted mb-0">No form fields have been saved for this application yet.</p>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="card card-box mt-3">
+              <div class="card-header"><strong><i class="bi bi-paperclip"></i> Candidate uploaded files</strong></div>
+              <div class="card-body">
+                {% for uploaded in uploaded_files %}
+                  <div class="submitted-file">
+                    <div>
+                      <div class="font-weight-500">{{ uploaded.file.name|cut:"applications/" }}</div>
+                      <small class="text-muted">{{ uploaded.field_name|default:"Uploaded document" }} · {{ uploaded.uploaded_at|date:"d M Y, h:i A" }}</small>
+                    </div>
+                    <div class="file-actions">
+                      <a class="file-action" href="{{ uploaded.file.url }}" target="_blank" rel="noopener"><i class="bi bi-eye"></i> View</a>
+                      <a class="file-action" href="{{ uploaded.file.url }}" download><i class="bi bi-download"></i> Download</a>
+                    </div>
+                  </div>
+                {% empty %}
+                  <p class="text-muted mb-0">No files were uploaded with this application.</p>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="my-3 d-flex gap-2 flex-wrap">
+              <a href="{% url 'received_applications' %}" class="btn btn-dark"><i class="bi bi-arrow-left"></i> Back to Received Applications</a>
+              <a href="{% url 'application_detail' application.pk %}?download=pdf" class="btn btn-outline-dark"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer px-4 py-3"><span>© Stalwart Business Solutions.</span></footer>
+  </div>
+</div>
+<script src="{% static 'core/assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'core/assets/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'core/assets/js/scripts.js' %}"></script>
+</body>
+</html>

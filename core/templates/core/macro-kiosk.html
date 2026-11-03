@@ -154,59 +154,75 @@
 </div>
 </div>
 <div class="card card-box">
-<div class="card-header">
-<p class="text-extra-small font-weight-500"><sup class="text-danger">*</sup>Position Applied</p>
-</div>
-<div class="card-body">
-<div class="row align-items-center">
-<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<img alt="Stalwart Business Solutions" class="rounded-circle" src="{% static 'core/assets/images/profile.png' %}"/>
-</div>
-<div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-<div class="row">
-<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-<div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_1" name="macro_1_checkbox_1" type="checkbox" value="Analyst Programmer (Java / .Net)"/>
-<label class="form-check-label" for="macro_1_checkbox_1"> Analyst Programmer (Java / .Net) </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_2" name="macro_1_checkbox_2" type="checkbox" value="Product / Project Manager"/>
-<label class="form-check-label" for="macro_1_checkbox_2"> Product / Project Manager </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_3" name="macro_1_checkbox_3" type="checkbox" value="Business Manager / Sales / Marketing"/>
-<label class="form-check-label" for="macro_1_checkbox_3"> Business Manager / Sales / Marketing </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_4" name="macro_1_checkbox_4" type="checkbox" value="Finance / HR / Admin"/>
-<label class="form-check-label" for="macro_1_checkbox_4">Finance / HR / Admin </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_5" name="macro_1_checkbox_5" type="checkbox" value="RPA Developer"/>
-<label class="form-check-label" for="macro_1_checkbox_5"> RPA Developer </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_6" name="macro_1_checkbox_6" type="checkbox" value="Consultant"/>
-<label class="form-check-label" for="macro_1_checkbox_6"> Consultant </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_7" name="macro_1_checkbox_7" type="checkbox" value="Designer"/>
-<label class="form-check-label" for="macro_1_checkbox_7">Designer </label>
-</div>
-<div class="form-check form-check-inline">
-<input class="form-check-input" data-single-group="macro-occupation" id="macro_1_checkbox_8" name="macro_1_checkbox_8" type="checkbox" value="Others"/>
-<label class="form-check-label" for="macro_1_checkbox_8">Others </label>
-</div>
-<div class="pt-2">
-<input class="form-control" id="others" name="others" placeholder="Others" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+    <div class="card-header">
+        <p class="text-extra-small font-weight-500">
+            <sup class="text-danger">*</sup>Position Applied
+        </p>
+    </div>
+
+    <div class="card-body">
+        <div class="row align-items-center">
+
+            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                <img alt="Stalwart Business Solutions"
+                     class="rounded-circle"
+                     src="{% static 'core/assets/images/profile.png' %}"/>
+            </div>
+
+            <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                <div class="row">
+                    <div class="col-12">
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_1" name="position_applied" type="radio" value="Analyst Programmer (Java / .Net)"/>
+                            <label class="form-check-label" for="macro_1_checkbox_1">Analyst Programmer (Java / .Net)</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_2" name="position_applied" type="radio" value="Product / Project Manager"/>
+                            <label class="form-check-label" for="macro_1_checkbox_2">Product / Project Manager</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_3" name="position_applied" type="radio" value="Business Manager / Sales / Marketing"/>
+                            <label class="form-check-label" for="macro_1_checkbox_3">Business Manager / Sales / Marketing</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_4" name="position_applied" type="radio" value="Finance / HR / Admin"/>
+                            <label class="form-check-label" for="macro_1_checkbox_4">Finance / HR / Admin</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_5" name="position_applied" type="radio" value="RPA Developer"/>
+                            <label class="form-check-label" for="macro_1_checkbox_5">RPA Developer</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_6" name="position_applied" type="radio" value="Consultant"/>
+                            <label class="form-check-label" for="macro_1_checkbox_6">Consultant</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_7" name="position_applied" type="radio" value="Designer"/>
+                            <label class="form-check-label" for="macro_1_checkbox_7">Designer</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="macro_1_checkbox_8" name="position_applied" type="radio" value="Others"/>
+                            <label class="form-check-label" for="macro_1_checkbox_8">Others</label>
+                        </div>
+
+                        <div class="pt-2">
+                            <input class="form-control" id="others" name="others" placeholder="Others" type="text"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 <div class="card card-box">
 <div class="card-header">
@@ -857,6 +873,67 @@
 </div>
 </div>
 <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-600">Documents Submission</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="assets/images/document-submission.png" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Personality Test Result</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Updated Resume</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;MyKad/NRIC/Passport</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 1</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 2</button>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 3</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+<div class="card card-box">
 <div class="card-header">
 <p class="text-extra-small font-weight-500">Activities / Interest / Hobbies</p>
 </div>
@@ -1306,18 +1383,26 @@
 <input aria-describedby="nric" aria-label="nric" class="form-control" name="macro_5_nric" placeholder="NRIC / Passport No." type="text"/>
 </div>
 </div>
-<p class="text-extra-small font-weight-400 mb-3"> hereby grant consent to <span class="font-weight-600">VENOVOX SDN BHD (858858–M)</span>, an employment screening company to conduct the following for background screening as part of the recruitment process of Venovox's client with whom I am seeking employment opportunities with. I hereby consent VENOVOX SDN BHD to release the Report, which consists the screening results to the Client.<br/>
-<br/>
-                                        All information provided by me in support of my application for employment is true and correct to the best of my knowledge. I understand that misrepresentation or omission will constitute sufficient ground for rejection or for subsequent dismissal if I am hired.<br/>
-<br/>
-                                        I hereby consent and authorize any former employer, school, person, firm, corporation, consumer or credit reporting agency, or government agency to answer any and all questions and to release or provide any information within their knowledge or record, and I agree to hold any or all of them blameless and free of any liability for releasing any truthful information that is within their knowledge or records. I also agree to hold the Company blameless and free of any liability for using any information received from such parties in making an employment decision regarding me. <br/>
-<br/>
-                                        The company is hereby authorized to release to any other firm or person with whom I may seek employment, any and all information concerning my employment or application and I agree to hold the company blameless and free of any liability for releasing any such information.</p>
-<p class="text-extra-small font-weight-400 mb-0"><span class="font-weight-600 text-decoration-underline">Acknowledgement and Release</span><br/>
-<br/>
-                                        I acknowledge receipt of this letter. I release your company and its employees and agents from all liability relating to your obtaining and use of such information solely and only for the purpose of being evaluated for a recruitment position. I authorize all companies, schools, organizations and other persons to provide such information to you and your agents and release them from all liability for doing do so.</p>
-</div>
-</div>
+<p class="text-extra-small font-weight-400 mb-3"> (“Candidate”), hereby grant informed consent to <span class="font-weight-600">Macro Kiosk Berhad</span>, (“Data Controller”) and the appointed screening business partner, VENOVOX SDN BHD (operating in Malaysia, Singapore, and the UK) (“Data Processor”), to conduct background screening as part of the recruitment selection/HR policy requirement in assessing my suitability for selection on the position applied or continuance of my employment.<br>
+                                        <br>
+                                        <span class="font-weight-600 text-decoration-underline">AUTHORISATION FOR CORPORATE BACKGROUND CHECK</span><br>
+                                        <br>
+                                        I have read the Personal Data Protection Notice of the Data Controller and the Data Processor. I explicitly consent to the collection, use and processing of all my personal data and sensitive personal data according to the Personal Data Protection Notice of the Data Controller and the Data Processor. I hereby authorise the Data Controller to release to the Data Processor any and all my personal data, and information concerning my employment or application to seek verification on certain functions to agencies and legal entities. I give my consent to the Data Controller and Data Processor to conduct credit checks on me.<br>
+                                        <br>
+                                        I explicitly authorise the relevant agencies and legal entities to disclose to the Data Controller, Data Processor and their respective agents all information about or concerning me, including but not limited to the Data Processor’s affiliate companies, my previous or present employers, educational institutions, referees, regulatory and governmental authorities, third-party service providers / verification partners / private and public sector repositories of information / credit bureaus and any other person, organisation or agency possessing relevant information about me within their knowledge or record, and I agree that all
+                                        such parties shall be released from and held harmless against any liability arising from the disclosure or release of any information that is within their knowledge or records.<br>
+                                        <br>
+                                        <span class="font-weight-600 text-decoration-underline">CONSENT TO SCREENING</span><br>
+                                        <br>
+                                        I understand that an investigative report may be generated on me. I agree that the Data Controller and the Data Processor and their respective employees and agents shall be released from and held harmless against any liability arising from the processing and the use of any personal data received from such parties in making an employment decision regarding me. I understand that the Data Controller may rely on this authorisation to order additional background reports, including investigative consumer reports, during my employment without asking me further for my authorisation as allowed by law.<br>
+                                        <br>
+                                        I further acknowledge that any verification, screening or investigative report conducted by the Data Processor is based on information provided by me and/or obtained from third parties. I agree that the Data Processor and its employees and agents shall be released from and held harmless against any liability arising from the results of such screening or report and acknowledge that the reliability, accuracy and completeness of any report depend on the veracity and completeness of the information provided by me. I agree that a copy of this form shall be treated as valid and enforceable as the original. I certify that all the personal information I provided is true and correct. I understand that misrepresentation or omission will constitute sufficient ground for rejection or for subsequent dismissal if I am hired.<br>
+                                        <br>
+                                        <span class="font-weight-600 text-decoration-underline">ACKNOWLEDGEMENT AND RELEASE</span><br>
+                                        <br>
+                                        I hereby provide my consent to the processing of my personal data according to the Personal Data Protection Notice of the Data Controller and the Data Processor, as well as in the manner as may be further described in this Consent Form, freely, voluntarily, and on an informed basis.</p>
+                                    </div>
+                                  </div>
 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
 <div class="mb-3">
 <label class="form-label mb-0" for="name"><sup class="text-danger">*</sup>Candidate's Signature</label>

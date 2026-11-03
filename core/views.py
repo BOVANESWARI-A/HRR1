@@ -7,6 +7,7 @@ from copy import deepcopy
 import ipaddress
 from urllib.request import Request as UrlRequest, urlopen
 from django.http import JsonResponse
+from collections import defaultdict
 
 
 
@@ -1566,7 +1567,7 @@ def invite_agent_client(request):
     subject = f"{agency} has invited you to join eDocs"
     body = (
         f"Hello {company_name},\n\n"
-        f"{agency} has invited you to join eDocs, a secure way to share and manage candidate’s documents.\n\n"
+        f"{agency} has invited you to join eDocs, a secure way to share and manage candidateâ€™s documents.\n\n"
         f"Join here: {invite_link}\n\n"
         "If you already have an account, please log in to continue.\n\neDocs"
     )
@@ -2132,9 +2133,9 @@ def candidate_application(request, token):
             required_values = [submitted.get("full_name", "").strip(), submitted.get("email", "").strip(), submitted.get("position_applied", "").strip(), submitted.get("declaration_confirmed", "").strip()]
             if not all(required_values) or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", submitted.get("email", "").strip()):
                 messages.error(request, "Please provide your name, a valid email, position applied for, and accept the declaration.")
-                return render(request, "core/raddish-application.html", {"application": app, "saved_data": submitted,
+                return render(request, "core/raddish.html", {"application": app, "saved_data": submitted,
                     "personal_fields": [("position_applied", "Application for employment as"), ("full_name", "Full name"), ("email", "Email"), ("home_address", "Home address"), ("correspondence_address", "Correspondence address"), ("home_telephone", "Home telephone"), ("correspondence_telephone", "Correspondence telephone"), ("date_of_birth", "Date of birth"), ("age", "Age"), ("marital_status", "Marital status"), ("nationality", "Nationality"), ("religion", "Religion"), ("nric_no", "NRIC No."), ("passport_no", "Passport No."), ("epf_no", "EPF No."), ("socso_no", "SOCSO No.")],
-                    "family_fields": [("spouse_details", "Spouse — name, age, occupation"), ("father_details", "Father — name, age, occupation"), ("mother_details", "Mother — name, age, occupation"), ("children_details", "Children — names, ages, occupation")], "education_fields": [("school_institution", "School / institution / college / university"), ("education_dates", "Dates joined and graduated"), ("highest_qualification", "Highest standard / qualification / grade")], "other_fields": [("serious_offence", "Ever convicted of a serious offence? If yes, give details"), ("dismissed_from_employment", "Ever dismissed from employment? If yes, give reasons"), ("serious_illness", "Any serious illness? If yes, indicate nature"), ("available_start_date", "If successful, when can you start?"), ("expected_salary", "Expected salary")]})
+                    "family_fields": [("spouse_details", "Spouse â€” name, age, occupation"), ("father_details", "Father â€” name, age, occupation"), ("mother_details", "Mother â€” name, age, occupation"), ("children_details", "Children â€” names, ages, occupation")], "education_fields": [("school_institution", "School / institution / college / university"), ("education_dates", "Dates joined and graduated"), ("highest_qualification", "Highest standard / qualification / grade")], "other_fields": [("serious_offence", "Ever convicted of a serious offence? If yes, give details"), ("dismissed_from_employment", "Ever dismissed from employment? If yes, give reasons"), ("serious_illness", "Any serious illness? If yes, indicate nature"), ("available_start_date", "If successful, when can you start?"), ("expected_salary", "Expected salary")]})
             app.data = {"raddish_application": submitted}
             app.status = "submitted"
             app.submitted_at = timezone.now()
@@ -2145,11 +2146,11 @@ def candidate_application(request, token):
             _notify_hr_company(app.company, "Employment application submitted", f"A candidate submitted the {app.company.name} employment form.", app, reverse("received_applications"))
             messages.success(request, "Your employment application has been submitted successfully.")
             return render(request, "core/submitted-application.html", {"candidate_submission": True, "application": app})
-        return render(request, "core/raddish-application.html", {
+        return render(request, "core/raddish.html", {
             "application": app,
             "saved_data": (app.data or {}).get("raddish_application", {}) if isinstance(app.data, dict) else {},
             "personal_fields": [("position_applied", "Application for employment as"), ("full_name", "Full name"), ("email", "Email"), ("home_address", "Home address"), ("correspondence_address", "Correspondence address"), ("home_telephone", "Home telephone"), ("correspondence_telephone", "Correspondence telephone"), ("date_of_birth", "Date of birth"), ("age", "Age"), ("marital_status", "Marital status"), ("nationality", "Nationality"), ("religion", "Religion"), ("nric_no", "NRIC No."), ("passport_no", "Passport No."), ("epf_no", "EPF No."), ("socso_no", "SOCSO No.")],
-            "family_fields": [("spouse_details", "Spouse — name, age, occupation"), ("father_details", "Father — name, age, occupation"), ("mother_details", "Mother — name, age, occupation"), ("children_details", "Children — names, ages, occupation")],
+            "family_fields": [("spouse_details", "Spouse â€” name, age, occupation"), ("father_details", "Father â€” name, age, occupation"), ("mother_details", "Mother â€” name, age, occupation"), ("children_details", "Children â€” names, ages, occupation")],
             "education_fields": [("school_institution", "School / institution / college / university"), ("education_dates", "Dates joined and graduated"), ("highest_qualification", "Highest standard / qualification / grade")],
             "other_fields": [("serious_offence", "Ever convicted of a serious offence? If yes, give details"), ("dismissed_from_employment", "Ever dismissed from employment? If yes, give reasons"), ("serious_illness", "Any serious illness? If yes, indicate nature"), ("available_start_date", "If successful, when can you start?"), ("expected_salary", "Expected salary")],
         })
@@ -3805,7 +3806,7 @@ def application_detail(request, pk):
         template = "core/Nevigate-application.html"
 
     elif "raddish" in company_name:
-        template = "core/raddish-application.html"
+        template = "core/raddish_application.html"
 
     elif "insite" in company_name:
         template = "core/insitemy-application.html"
@@ -3821,7 +3822,16 @@ def application_detail(request, pk):
 
     
     
-    saved_data = app.data if isinstance(app.data, dict) else {}
+    raw_data = app.data if isinstance(app.data, dict) else {}
+
+    if "raddish" in company_name:
+        form_saved_data = raw_data.get("raddish_application", {})
+        if not isinstance(form_saved_data, dict):
+            form_saved_data = {}
+        saved_data = raw_data
+    else:
+        saved_data = raw_data
+        form_saved_data = {}
 
     # Declaration details expected by the InsiteMy template
     decl = saved_data.get("declaration", {})
@@ -3833,32 +3843,32 @@ def application_detail(request, pk):
         "appname",
         decl.get("declaration_appname", saved_data.get("consent", {}).get("appname", ""))
     )
-
-
+    
+    
     fields = {}
-
+    
     # Flatten nested MacroKiosk sections, if present.
     for section_name, section_data in saved_data.items():
         if section_name.startswith("macro_section_") and isinstance(section_data, dict):
            fields.update(section_data)
-
+    
     # Also support applications saved directly as flat dictionaries.
     fields.update({
-
+    
         key: value
         for key, value in saved_data.items()
         if not key.startswith("macro_section_")
     })
-
+    
     # Map common template fields to existing saved values.
     fields.setdefault("date", fields.get("macro_5_date") or fields.get("macro_7_date") or fields.get("dateapplied", ""))
     
     # Provide personal information expected by the InsiteMy template.
     pi = saved_data.get("personal_information", {})
-
+    
     if not isinstance(pi, dict):
        pi = {}
-
+    
     # Support legacy applications where personal information is stored flat.
     for key in (
         "name", "passportnumber", "nationality", "dob", "age",
@@ -3870,18 +3880,18 @@ def application_detail(request, pk):
     ):
         if not pi.get(key):
             pi[key] = fields.get(key, "")
-
+    
     pi.setdefault("medical_display", pi.get("medical_condition", ""))
     pi.setdefault("criminal_display", pi.get("criminal_offence", ""))
     
     # Prevent missing legacy checkbox fields from breaking application details.
     for number in range(1, 21):
         fields.setdefault(f"macro_4_checkbox_{number}", "")
-
     
-
-
-
+    
+    
+    
+    
     return render(
         request,
         template,
@@ -3889,9 +3899,14 @@ def application_detail(request, pk):
             "application": app,
             "role": role,
             "saved_data": saved_data,
+            "form_saved_data": form_saved_data,
             "fields": fields,
             "pi": pi,
             "decl": decl,
+            "iq": saved_data.get("iq_test", {}),
+            "emp": saved_data.get("employment_expectations", {}),
+            "ref": saved_data.get("reference", {}),
+            "consent": saved_data.get("consent", {}),
             "uploaded_files": app.files.all().order_by("-uploaded_at"),
         },
     )
@@ -5043,36 +5058,141 @@ def security(request):
     return render(request, "core/security.html", {"role": get_role(request.user)})
 
 
+
+
+from collections import defaultdict
+from pathlib import Path
+
+from django.contrib import messages
+from django.shortcuts import redirect, render
+
+# Keep your existing project imports for:
+# role_required, candidate_for_user, CandidateDocument,
+# MAX_UPLOAD_SIZE, ALLOWED_UPLOAD_EXTENSIONS, get_role
+
+
 @role_required("candidate")
 def mydata(request):
     candidate = candidate_for_user(request.user)
+
     if not candidate:
         messages.error(request, "Candidate profile was not found.")
         return redirect("dashboard")
+
     if request.method == "POST":
-        action = request.POST.get("action", "")
+        action = request.POST.get("action", "").strip()
+
         if action == "upload":
             name = request.POST.get("dcname", "").strip()
             uploaded = request.FILES.get("document")
+
             if not name or not uploaded:
-                messages.error(request, "Document name and file are required.")
+                messages.error(
+                    request,
+                    "Document category and file are required."
+                )
+
             elif uploaded.size > MAX_UPLOAD_SIZE:
-                messages.error(request, "Maximum file size is 1 MB.")
+                messages.error(
+                    request,
+                    "Maximum file size is 1 MB."
+                )
+
             elif Path(uploaded.name).suffix.lower() not in ALLOWED_UPLOAD_EXTENSIONS:
-                messages.error(request, "This file type is not allowed.")
+                messages.error(
+                    request,
+                    "This file type is not allowed."
+                )
+
             else:
-                CandidateDocument.objects.create(candidate=candidate, name=name, file=uploaded)
-                messages.success(request, "Document uploaded successfully.")
+                # Create a separate record for every upload.
+                # Previous CVs and other documents are retained.
+                CandidateDocument.objects.create(
+                    candidate=candidate,
+                    name=name,
+                    file=uploaded,
+                )
+
+                messages.success(
+                    request,
+                    "Document uploaded successfully."
+                )
+
         elif action == "delete":
-            CandidateDocument.objects.filter(pk=request.POST.get("document_id"), candidate=candidate).delete()
-            messages.success(request, "Document deleted successfully.")
+            document_id = request.POST.get("document_id")
+
+            # Only delete a document belonging to this candidate.
+            document = CandidateDocument.objects.filter(
+                pk=document_id,
+                candidate=candidate,
+            ).first()
+
+            if document:
+                document.delete()
+                messages.success(
+                    request,
+                    "Document deleted successfully."
+                )
+            else:
+                messages.error(
+                    request,
+                    "Document not found or you do not have permission to delete it."
+                )
+
+        else:
+            messages.error(request, "Invalid action.")
+
         return redirect("mydata")
+
+    # Fetch this candidate's documents only.
+    documents = list(
+        candidate.documents.order_by("-uploaded_at", "-pk")
+    )
+
+    # Group uploaded files by their selected document category.
+    grouped_documents = defaultdict(list)
+
+    for document in documents:
+        grouped_documents[document.name].append(document)
+
+    # Keep the folders in the same order as the upload dropdown.
+    category_order = [
+        "Latest Curriculum Vitae",
+        "Identity Card",
+        "Payslips",
+        "Educational Documents",
+        "Achievements",
+        "Experience Certificates",
+        "Passport / Visa Copies",
+        "Other Documents",
+    ]
+
+    document_groups = []
+
+    for category in category_order:
+        if category in grouped_documents:
+            document_groups.append({
+                "name": category,
+                "documents": grouped_documents.pop(category),
+            })
+
+    # Include any existing categories not listed above.
+    for category, category_documents in grouped_documents.items():
+        document_groups.append({
+            "name": category,
+            "documents": category_documents,
+        })
+
     return render(
         request,
         "core/mydata.html",
-        {"role": get_role(request.user), "candidate": candidate, "documents": candidate.documents.order_by("-uploaded_at")},
+        {
+            "role": get_role(request.user),
+            "candidate": candidate,
+            "documents": documents,
+            "document_groups": document_groups,
+        },
     )
-
 
 def simple_page(request, page):
     allowed = {
@@ -5102,3 +5222,5 @@ def simple_page(request, page):
             messages.success(request, "Feedback submitted successfully.")
             return redirect("feedback")
     return render(request, "core/" + allowed[page], {"role": get_role(request.user)})
+
+
