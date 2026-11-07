@@ -110,10 +110,10 @@
                     <div class="card-body">
                       <div class="d-flex align-items-center justify-content-between">
                         <div>
-                          <p class="text-medium font-weight-600"><span>NE-001</span> - <span>React Developer</span></p>
-                          <p class="text-extra-small font-weight-400 text-muted">Prakash Sundar</p>
+                          <p class="text-medium font-weight-600"><span>#{{ application.pk }}</span>{% if position %} - <span>{{ position }}</span>{% endif %}</p>
+                          <p class="text-extra-small font-weight-400 text-muted">{{ application.candidate.full_name|default:application.candidate.email }}</p>
                         </div>
-                        <div><a href="javascript:void(0)" class="brand-button-alt btn-sm"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a> </div>
+                        <div class="d-flex gap-2"><a href="{% url 'application_detail' application.pk %}?download=pdf" class="brand-button-alt btn-sm" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a><a href="{% url 'application_detail' application.pk %}?download=zip" class="brand-button-alt btn-sm"><i class="bi bi-file-earmark-zip"></i>&nbsp;&nbsp;All Files</a> </div>
                       </div>
                     </div>
                   </div>
@@ -124,7 +124,7 @@
                           <p class="text-extra-small font-weight-500">Personal Information</p>
                         </div>
                         <div>
-                          <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Photo</button>
+                          {% if photo_file %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ photo_file.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;Photo</a>{% endif %}
                         </div>
                       </div>
                     </div>
@@ -1019,51 +1019,15 @@
                         </div>
                         <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
                           <div class="row">
+                            {% for uploaded in uploaded_files %}
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                               <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Personality Test Result</button>
+                                <a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;{{ uploaded.file.name|cut:"applications/"|truncatechars:30 }}</a>
                               </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Updated Resume</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;MyKad/NRIC/Passport</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Academic Certificate</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 1</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 2</button>
-                              </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Pay Slip 3</button>
-                              </div>
-                            </div>
+                            {% empty %}
+                            <div class="col-xxl-12"><p class="text-muted mb-0">No files were uploaded with this application.</p></div>
+                            {% endfor %}
                           </div>
                         </div>
                       </div>
@@ -1162,21 +1126,21 @@
                               <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div class="mb-3">
                                   <label for="applicationForm" class="form-label mb-0"><sup class="text-danger">*</sup>Signature of the applicant</label>
-                                  <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Download Signature</button>
+                                  {% if files_by_field.applicant_signature %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ files_by_field.applicant_signature.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;View Signature</a>{% else %}<p class="text-extra-small text-muted mb-0">No signature uploaded.</p>{% endif %}
                                 </div>
                                 <div>
                                   <label for="appname" class="form-label mb-0"><sup class="text-danger">*</sup>Candidate's Name</label>
-                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="Prakash Sundar" disabled>
+                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="{{ form_saved_data.declaration_name }}" disabled>
                                 </div>
                               </div>
                               <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div class="mb-3">
                                   <label for="dateapplied" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
-                                  <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date" disabled>
+                                  <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date" value="{{ form_saved_data.declaration_date }}" disabled>
                                 </div>
                                 <div>
                                   <label for="appplace" class="form-label mb-0"><sup class="text-danger">*</sup>NRIC/Passport No.</label>
-                                  <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="A2096457" disabled>
+                                  <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="{{ form_saved_data.declaration_nric }}" disabled>
                                 </div>
                               </div>
                             </div>
@@ -1213,21 +1177,21 @@
                               <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div class="mb-3">
                                   <label for="applicationForm" class="form-label mb-0"><sup class="text-danger">*</sup>Signature </label>
-                                  <button type="button" class="brand-button w-100"><i class="bi bi-download"></i>&nbsp;&nbsp;Download Signature</button>
+                                  {% if files_by_field.pdpa_signature %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ files_by_field.pdpa_signature.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;View Signature</a>{% else %}<p class="text-extra-small text-muted mb-0">No signature uploaded.</p>{% endif %}
                                 </div>
                                 <div>
                                   <label for="appname" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
-                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="Prakash Sundar" disabled>
+                                  <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="{{ form_saved_data.pdpa_name }}" disabled>
                                 </div>
                               </div>
                               <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div class="mb-3">
                                   <label for="dateapplied" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
-                                  <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date" disabled>
+                                  <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date" value="{{ form_saved_data.pdpa_date }}" disabled>
                                 </div>
                                 <div>
                                   <label for="appplace" class="form-label mb-0"><sup class="text-danger">*</sup>NRIC No.</label>
-                                  <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="A2096457" disabled>
+                                  <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="{{ form_saved_data.pdpa_nric }}" disabled>
                                 </div>
                               </div>
                             </div>
@@ -1297,8 +1261,64 @@
 </div>
 <!-- logout --> 
 <!-- js --> 
-<script src="assets/js/bundle.js" type="text/javascript"></script> 
-<script src="assets/js/scripts.js" type="text/javascript"></script> 
+<script src="{% static 'core/assets/js/bundle.js' %}" type="text/javascript"></script> 
+<script src="{% static 'core/assets/js/scripts.js' %}" type="text/javascript"></script> 
 <!-- js -->
+{{ form_saved_data|json_script:"saved-form-data" }}
+<script>
+(function () {
+  let saved = {};
+  try { saved = JSON.parse(document.getElementById('saved-form-data')?.textContent || '{}'); } catch (e) { saved = {}; }
+  const fieldLabels = saved._field_labels || {};
+  const norm = (t) => (t || '').replace(/\*+/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  const shortLabel = (l) => { const i = l.lastIndexOf(' - '); return i >= 0 ? l.slice(i + 3) : l; };
+  const byLabel = {};
+  Object.keys(saved).forEach((k) => {
+    if (k.startsWith('_')) return;
+    const v = saved[k];
+    const stored = fieldLabels[k];
+    const short = stored ? norm(shortLabel(stored)) : norm(k.replace(/__/g, ' ').replace(/_/g, ' '));
+    (byLabel[short] ||= []).push(v);
+    if (stored) (byLabel[norm(stored)] ||= []).push(v);
+  });
+  const aliases = {
+    'nric no.': 'identity card no.',
+    'children': 'childrens',
+    'job designation': 'designation',
+    'last starting salary': 'starting salary',
+    'last reasons for leaving': 'reasons for leaving'
+  };
+  const familyLabels = { father: 'father', mother: 'mother', spouse: 'spouse', children: 'childrens', siblings: 'siblings' };
+  const familyOrder = { spouse: 0, father: 1, mother: 2, childrens: 3, siblings: 4 };
+  const display = (v) => {
+    if (Array.isArray(v)) return v.map(display).filter(Boolean).join(', ');
+    if (v === undefined || v === null || v === '') return '';
+    if (v === 'true' || v === true) return 'Yes';
+    return String(v);
+  };
+  const take = (label, occ) => {
+    const list = byLabel[label] || [];
+    return display(list[Math.min(occ || 0, Math.max(list.length - 1, 0))]);
+  };
+  const seen = {};
+  document.querySelectorAll('p.text-tiny.theme-color-1, p.text-dark-85').forEach((labelP) => {
+    const valueP = labelP.parentElement && labelP.parentElement.querySelector('p.text-muted');
+    if (!valueP) return;
+    let key = norm(labelP.textContent);
+    key = aliases[key] || key;
+    if (key in familyLabels) {
+      const formLabel = familyLabels[key];
+      const idx = familyOrder[formLabel];
+      const parts = [take(formLabel, 0), take('age', idx), take('occupation', idx), take('contact number', idx)].filter(Boolean);
+      if (parts.length) valueP.textContent = parts.join(', ');
+      return;
+    }
+    const occ = seen[key] || 0;
+    seen[key] = occ + 1;
+    const value = take(key, occ);
+    if (value) valueP.textContent = value;
+  });
+})();
+</script>
 </body>
 </html>

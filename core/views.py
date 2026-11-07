@@ -2164,11 +2164,37 @@ def _dynamic_form_fields(app):
     labels = values.get("_field_labels", {})
     if not isinstance(labels, dict):
         labels = {}
-    return [
-        {"label": str(labels.get(key) or key.replace("__", " ").replace("_", " ").title()), "value": _stringify_app_value(value)}
-        for key, value in values.items()
-        if not key.startswith("_") and key not in IGNORED_POST_FIELDS | {"action"} and _stringify_app_value(value)
-    ]
+    fields = []
+    for key, value in values.items():
+        if key.startswith("_") or key in IGNORED_POST_FIELDS | {"action"}:
+            continue
+        display = _stringify_app_value(value)
+        if not display:
+            continue
+        label = str(labels.get(key) or key.replace("__", " ").replace("_", " ").title())
+        context = ""
+        if " - " in label:
+            context, label = (part.strip() for part in label.split(" - ", 1))
+        if display == "true":
+            display = "Yes"
+        fields.append({"label": label, "value": display, "context": context})
+    return fields
+
+
+def _dynamic_field_groups(app):
+    """Group submitted fields into the form's card sections, in DOM order."""
+    groups = []
+    current = None
+    for field in _dynamic_form_fields(app):
+        context = field["context"]
+        if context and (current is None or current["title"] != context):
+            current = {"title": context, "fields": []}
+            groups.append(current)
+        elif current is None:
+            current = {"title": "Application Details", "fields": []}
+            groups.append(current)
+        current["fields"].append(field)
+    return groups
 
 
 def _dynamic_candidate_application(request, app, invitation, slug):
@@ -3658,6 +3684,7 @@ def _application_pdf_response(app):
         "uploaded_files": list(app.files.all().order_by("-uploaded_at")),
         "form_slug": application_form_slug(app),
         "submitted_fields": _dynamic_form_fields(app),
+        "field_groups": _dynamic_field_groups(app),
     })
     return build_application_pdf(app, context)
 
@@ -4026,10 +4053,24 @@ def application_detail(request, pk):
         return _application_pdf_response(app)
 
     if application_form_slug(app) in {"raddish", "nevigate"}:
-        return render(request, "core/application-dynamic-detail.html", {
+        slug = application_form_slug(app)
+        template = "core/raddish_application.html" if slug == "raddish" else "core/Nevigate-application.html"
+        app_data = app.data if isinstance(app.data, dict) else {}
+        saved_section = app_data.get(f"{slug}_application", {})
+        if not isinstance(saved_section, dict):
+            saved_section = {}
+        return render(request, template, {
             "application": app,
+            "role": role,
             "form_title": f"{app.company.name} Employment Application",
-            "submitted_fields": _dynamic_form_fields(app),
+            "position": _occupation_label(_flatten_application_data(app_data)),
+            "form_saved_data": saved_section,
+            "files_by_field": _files_by_field(app),
+            "photo_file": next(
+                (f for f in app.files.all() if Path(f.file.name).suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}),
+                None,
+            ),
+            "field_groups": _dynamic_field_groups(app),
             "uploaded_files": app.files.all().order_by("uploaded_at"),
         })
 

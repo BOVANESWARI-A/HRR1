@@ -925,7 +925,8 @@ class DynamicApplicationTests(TestCase):
             image = ApplicationFile.objects.create(application=app, field_name="photo", file=SimpleUploadedFile("photo.png", self.png()))
             document = ApplicationFile.objects.create(application=app, field_name="resume", file=SimpleUploadedFile("resume.docx", b"original resume"))
             page = self.client.get(f"/application/{app.pk}/")
-            self.assertTemplateUsed(page, "core/application-dynamic-detail.html")
+            expected = "core/raddish_application.html" if slug == "raddish" else "core/Nevigate-application.html"
+            self.assertTemplateUsed(page, expected)
             self.assertContains(page, "Distinct qualification")
             self.assertContains(page, "Course Studied")
             self.assertContains(page, f"?file={document.pk}")
@@ -933,7 +934,7 @@ class DynamicApplicationTests(TestCase):
             self.assertEqual(pdf["Content-Type"], "application/pdf")
             text = "\n".join(page.extract_text() for page in PdfReader(BytesIO(pdf.content)).pages)
             self.assertIn("Distinct qualification", text)
-            self.assertIn("Course Studied", text)
+            self.assertIn("COURSE STUDIED", text)
             self.assertIn(document.file.name.rsplit('/', 1)[-1], text)
             bundle = self.client.get(f"/application/{app.pk}/?download=zip")
             with zipfile.ZipFile(BytesIO(bundle.content)) as archive:

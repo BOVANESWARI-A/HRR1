@@ -61,6 +61,7 @@ FILE_LABELS = {
     "payslip_2": "Pay Slip 2",
     "payslip_3": "Pay Slip 3",
     "applicant_signature": "Applicant's Signatory",
+    "pdpa_signature": "PDPA Consent Signatory",
     "macro_doc_1_1": "Passport Size Photo",
     "macro_doc_5_1": "Candidate's Signature",
 }
@@ -665,16 +666,7 @@ def build_application_pdf(app, ctx):
     ]
 
     if ctx.get("form_slug") in {"raddish", "nevigate"}:
-        story.append(Paragraph("Submitted Application", styles["section"]))
-        for field in ctx.get("submitted_fields", []):
-            story.append(Paragraph(_escape(field["label"]), styles["label"]))
-            story.append(Paragraph(_escape(field["value"]), styles["value"]))
-            story.append(Spacer(1, 4))
-        story.append(Paragraph("Uploaded Documents and Images", styles["section"]))
-        for uploaded in ctx.get("uploaded_files", []):
-            story.append(Paragraph(_escape(_uploaded_name(uploaded)), styles["label"]))
-            story.append(_file_flowable(styles, uploaded))
-            story.append(Spacer(1, 6))
+        story.extend(_build_dynamic(styles, app, ctx))
 
     elif "nevigate" in company_lower:
         story.extend(
@@ -711,6 +703,67 @@ def build_application_pdf(app, ctx):
     )
 
     return response
+
+DYNAMIC_SECTION_LOGOS = [
+    (("personal", "particular", "contact"), "personal-details.png"),
+    (("address", "residence"), "address.png"),
+    (("family",), "family.png"),
+    (("education", "academic", "qualification", "college"), "college.png"),
+    (("employment", "experience", "job role", "responsibilit"), "experience.png"),
+    (("reference",), "reference-details.png"),
+    (("language", "dialect"), "language.png"),
+    (("membership",), "membership.png"),
+    (("activit", "hobb", "leisure", "interest"), "hobbies.png"),
+    (("award",), "trophy.png"),
+    (("computer", "software", "technical", "skill", "course", "training"), "computer.png"),
+    (("document", "attach", "tick"), "document-submission.png"),
+    (("declaration", "signature", "consent", "pdpa"), "declaration.png"),
+    (("position", "employment as"), "position-applied.png"),
+    (("additional", "other", "general"), "others.png"),
+    (("notice", "availability", "expectation", "salary"), "employment-expectations.png"),
+]
+
+
+def _dynamic_section_logo(title):
+    text = (title or "").casefold()
+    for keywords, image in DYNAMIC_SECTION_LOGOS:
+        if any(keyword in text for keyword in keywords):
+            return image
+    return "others.png"
+
+
+def _build_dynamic(styles, app, ctx):
+    """Render Raddish/Nevigate submissions using the shared InsiteMy-style
+    sectioned design: teal headers, cards, field grids and file cards."""
+    story = []
+    for group in ctx.get("field_groups") or []:
+        fields = group.get("fields") or []
+        if not fields:
+            continue
+        story.extend(_section(
+            styles,
+            group.get("title") or "Application Details",
+            _field_grid(
+                styles,
+                [(field.get("label"), field.get("value")) for field in fields],
+                3,
+            ),
+            logo=_dynamic_section_logo(group.get("title")),
+        ))
+    uploads = [
+        (_pretty_field(getattr(uploaded, "field_name", "") or "Document"), uploaded)
+        for uploaded in ctx.get("uploaded_files") or []
+    ]
+    if uploads:
+        story.extend(_section(
+            styles,
+            "Documents Submission",
+            _file_grid(styles, uploads, 3, width=INNER_WIDTH),
+        ))
+    if not story:
+        story.append(Paragraph("No submitted information is available.", styles["muted"]))
+    return story
+
 
 def _build_macro(styles, app, ctx):
     fields = ctx.get("fields") or {}

@@ -99,9 +99,15 @@
         <div class="py-4">
         <section class="page-container"> 
           <!-- Title -->
-          <div class="pagetitle pt-2 mb-3">
+          <div class="pagetitle pt-2 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
             <p class="text-medium font-weight-500">Job Application</p>
-            <p class="text-extra-small font-weight-400 text-muted">Complete this application to showcase your skills and experience for the suitable position. Provide details to help us understand your unique fit for our team!</p>
+            <p class="text-extra-small font-weight-400 text-muted">Submitted application for {{ application.candidate.full_name|default:application.candidate.email }}{% if position %} - {{ position }}{% endif %}.</p>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'application_detail' application.pk %}?download=pdf" class="brand-button-alt btn-sm" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a>
+              <a href="{% url 'application_detail' application.pk %}?download=zip" class="brand-button-alt btn-sm"><i class="bi bi-file-earmark-zip"></i>&nbsp;&nbsp;All Files</a>
+            </div>
           </div>
           <!-- progress bar -->
           <div class="MyProgress mb-3">
@@ -1313,30 +1319,45 @@
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                     <div class="mb-3">
                                       <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Signature of the applicant</label>
-                                      <div class="input-group">
-                                        <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                        <button class="brand-button-alt" type="button" id="inputGroupFileAddon04" data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                      </div>
+                                      {% if files_by_field.applicant_signature %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ files_by_field.applicant_signature.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;View Signature</a>{% else %}<p class="text-extra-small text-muted mb-0">No signature uploaded.</p>{% endif %}
                                     </div>
                                     <div>
                                       <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Candidate's Name</label>
-                                      <input type="text" class="form-control" id="name" name="name" placeholder="Candidate's Name">
+                                      <input type="text" class="form-control" id="name" name="declaration_name" placeholder="Candidate's Name" value="{{ form_saved_data.declaration_name }}" disabled>
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                     <div class="mb-3">
                                       <label for="date" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
-                                      <input type="date" class="form-control" id="date" name="date" placeholder="Date">
+                                      <input type="date" class="form-control" id="date" name="declaration_date" placeholder="Date" value="{{ form_saved_data.declaration_date }}" disabled>
                                     </div>
                                     <div>
                                       <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup> NRIC/Passport No.</label>
-                                      <input type="text" class="form-control" id="nric" name="nric" placeholder="NRIC/Passport No.">
+                                      <input type="text" class="form-control" id="nric" name="declaration_nric" placeholder="NRIC/Passport No." value="{{ form_saved_data.declaration_nric }}" disabled>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           
+                        </div>
+                      </div>
+                      <div class="card card-box">
+                        <div class="card-header">
+                          <p class="text-extra-small font-weight-600">Uploaded Documents and Images</p>
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            {% for uploaded in uploaded_files %}
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;{{ uploaded.file.name|cut:"applications/"|truncatechars:30 }}</a>
+                              </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-xxl-12"><p class="text-muted mb-0">No files were uploaded with this application.</p></div>
+                            {% endfor %}
+                          </div>
                         </div>
                       </div>
                       <div class="card card-box">
@@ -1491,7 +1512,37 @@
 (function () {
   const master = document.getElementById('applicationForm');
   if (!master) return;
-  const controls = Array.from(document.querySelectorAll('input, select, textarea'));
+  const repeatedValues = JSON.parse(document.getElementById('saved-form-data')?.textContent || '{}');
+  const repeatSaved = repeatedValues._repeat_counts || {};
+  // Recover the highest repeat index used, in case _repeat_counts is missing.
+  Object.keys(repeatedValues).forEach((key) => {
+    const match = key.match(/^(repeat\d+)_row(\d+)_/);
+    if (match) repeatSaved[match[1]] = Math.max(Number(repeatSaved[match[1]]) || 0, Number(match[2]));
+  });
+  const repeatCounts = {};
+  const repeatGroups = Array.from(document.querySelectorAll('button')).filter(button => button.textContent.trim() === 'Add More').map((button, index) => {
+    const source = button.parentElement.previousElementSibling;
+    const key = 'repeat' + index;
+    repeatCounts[key] = 0;
+    const addRow = () => {
+      if (!source || repeatCounts[key] >= 20) return [];
+      const clone = source.cloneNode(true);
+      const number = ++repeatCounts[key];
+      const fields = Array.from(clone.querySelectorAll('input, select, textarea'));
+      fields.forEach((el, fieldIndex) => {
+        el.name = key + '_row' + number + '_' + (el.name || 'field' + fieldIndex);
+        el.id = el.name;
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+        else el.value = '';
+      });
+      button.parentElement.before(clone);
+      return fields;
+    };
+    for (let row = 0; row < Math.min(Number(repeatSaved[key]) || 0, 20); row++) addRow();
+    return {button, addRow};
+  });
+  const controls = Array.from(document.querySelectorAll('input, select, textarea')).filter(el => !el.closest('#applicationForm'));
+  const occurrences = {};
   let unnamedUpload = 0;
   controls.forEach((el) => {
     if (el.type === 'hidden' && el.name === 'csrfmiddlewaretoken') return;
@@ -1502,13 +1553,17 @@
       el.name = (el.type === 'file' ? 'upload_' : 'field_') +
         (base || 'field') + '_' + (++unnamedUpload);
     }
-    if (el.name) el.setAttribute('form', 'applicationForm');
+    if (el.type !== 'radio' && el.type !== 'hidden') {
+      const original = el.name;
+      occurrences[original] = (occurrences[original] || 0) + 1;
+      if (occurrences[original] > 1) el.name = original + '__' + occurrences[original];
+    }
   });
 
   // Restore values saved by the server without trying to populate file inputs.
   let saved = {};
   try {
-    saved = JSON.parse(document.getElementById('saved-form-data')?.textContent || '{}');
+    saved = repeatedValues;
   } catch (e) { saved = {}; }
   const byName = {};
   controls.forEach((el) => {
@@ -1532,38 +1587,18 @@
     });
   });
 
-  // The original HTML contains separate form wrappers and tab buttons without
-  // Bootstrap tab panes. Associate every field with the one backend form.
+  // Read-only submitted view: disable every control and hide editing buttons.
+  controls.forEach((el) => {
+    el.disabled = true;
+    el.readOnly = true;
+  });
   const buttons = Array.from(document.querySelectorAll('button'));
   buttons.forEach((button) => {
     const label = button.innerText.replace(/\s+/g, ' ').trim().toLowerCase();
-    if (label === 'save' || label.includes('save draft')) {
-      button.type = 'submit';
-      button.setAttribute('form', 'applicationForm');
-      button.name = 'action';
-      button.value = 'draft';
-      button.addEventListener('click', () => {
-        document.getElementById('formAction').disabled = true;
-      });
-    } else if (label === 'submit' || label === 'submit application') {
-      button.type = 'submit';
-      button.setAttribute('form', 'applicationForm');
-      button.name = 'final_submit';
-      button.value = 'true';
-      button.addEventListener('click', () => {
-        document.getElementById('formAction').disabled = true;
-      });
-    }
-  });
-
-  master.addEventListener('submit', function () {
-    // Do not send the hidden action field when the final-submit button is used.
-    const active = document.activeElement;
-    if (active && active.name === 'final_submit') {
-      document.getElementById('formAction').disabled = true;
-    } else {
-      document.getElementById('formAction').disabled = false;
-      document.getElementById('formAction').value = 'draft';
+    if (label === 'save' || label.includes('save draft') || label === 'submit' || label === 'submit application') {
+      button.closest('.card')?.style.setProperty('display', 'none');
+    } else if (label === 'add more' || label === 'upload more' || label.includes('upload')) {
+      button.style.display = 'none';
     }
   });
 
