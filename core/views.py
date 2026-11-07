@@ -1,5 +1,7 @@
 from functools import wraps
 from pathlib import Path
+from io import BytesIO
+from zipfile import ZipFile, ZIP_DEFLATED
 import re
 import ast
 import json
@@ -22,7 +24,8 @@ from django.core import signing
 from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Q
-from django.http import Http404, JsonResponse, HttpResponse
+from django.db.models.functions import Coalesce
+from django.http import FileResponse, Http404, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -189,6 +192,18 @@ def _hr_users_for_company(company):
     return users
 
 
+def _forward_hr_email(app, agent):
+    users = [user for user in _hr_users_for_company(app.company) if user.is_active and user.email.strip()]
+    approved_ids = set(AgentHRClient.objects.filter(agent=agent, status="approved").values_list("hr_user_id", flat=True))
+    approved = {user.email.strip().lower() for user in users if user.pk in approved_ids}
+    if len(approved) == 1:
+        return approved.pop()
+    emails = {user.email.strip().lower() for user in users}
+    if len(emails) == 1:
+        return emails.pop()
+    return (app.company.email or "").strip().lower() if not emails else ""
+
+
 def _notify_hr_company(company, title, message, application=None, target_url=""):
     _notify_users(_hr_users_for_company(company), title, message, application, target_url)
 
@@ -301,20 +316,16 @@ def role_landing_url(user):
     return reverse("dashboard")
 
 
+def application_form_slug(app):
+    return _prefill_form_type(app) if app.company else ""
+
+
 def is_insitemy_application(app):
-    if not app.company:
-        return False
-    if app.company.name.strip().lower() == "insitemy":
-        return True
-    return HROnboardingForm.objects.filter(hr_user__profile__company_name__iexact=app.company.name, status="ready", connected_form_slug="insitemy").exists()
+    return application_form_slug(app) == "insitemy"
 
 
 def is_macro_kiosk_application(app):
-    if not app.company:
-        return False
-    if app.company.name.strip().lower() in {"macro kiosk", "macrokiosk"}:
-        return True
-    return HROnboardingForm.objects.filter(hr_user__profile__company_name__iexact=app.company.name, status="ready", connected_form_slug="macro_kiosk").exists()
+    return application_form_slug(app) == "macro_kiosk"
 
 
 def role_required(*allowed_roles):
@@ -347,6 +358,30 @@ def candidate_for_user(user):
     if user.email:
         return Candidate.objects.filter(email__iexact=user.email).first()
     return None
+
+
+def _invitation_candidate(email, user=None):
+    email = email.strip().lower()
+    if user is None:
+        accounts = list(User.objects.select_for_update().filter(email__iexact=email).order_by("pk")[:2])
+        if len(accounts) > 1:
+            raise ValidationError("Multiple accounts use this email. Please resolve the duplicate accounts before inviting this candidate.")
+        user = accounts[0] if accounts else None
+    if user:
+        if get_role(user) != "candidate" or user.email.strip().lower() != email:
+            raise ValidationError("This email belongs to a different account type.")
+        candidate = Candidate.objects.filter(user=user).first()
+        if candidate:
+            if candidate.email.strip().lower() != email:
+                raise ValidationError("The candidate profile email does not match the account email. Please correct the profile first.")
+            return candidate
+    candidate = Candidate.objects.select_for_update().filter(email__iexact=email, user__isnull=True).order_by("pk").first()
+    if not candidate:
+        return Candidate.objects.create(email=email, user=user)
+    if user:
+        candidate.user = user
+        candidate.save(update_fields=["user"])
+    return candidate
 
 
 def candidate_queryset_for_user(user):
@@ -698,7 +733,9 @@ def signup(request):
                         profile.application_type = ("insitemy" if "insite" in account_invitation.company.name.lower() else "macro_kiosk")
                         profile.save(update_fields=["company_name", "application_type", "updated_at"])
                     if account_invitation.target_role == "candidate":
-                        candidate = Candidate.objects.create(user=user, full_name=full_name, email=email)
+                        candidate = _invitation_candidate(email, user=user)
+                        candidate.full_name = full_name
+                        candidate.save(update_fields=["full_name"])
                         Subscription.objects.get_or_create(candidate=candidate)
                     elif account_invitation.target_role == "hr" and account_invitation.company:
                         from datetime import timedelta
@@ -855,11 +892,9 @@ def signup(request):
                             for recipient in admin_emails: EmailLog.objects.create(recipient=recipient, subject=f"eDocs HR form uploaded: {company_name}", success=False, error=str(exc))
 
                     if role == "candidate":
-                        candidate = Candidate.objects.create(
-                            user=user,
-                            full_name=full_name,
-                            email=email,
-                        )
+                        candidate = _invitation_candidate(email, user=user)
+                        candidate.full_name = full_name
+                        candidate.save(update_fields=["full_name"])
                         Subscription.objects.get_or_create(candidate=candidate)
 
                 if role == "hr":
@@ -1226,7 +1261,7 @@ def send_invite_page(request):
                 onboarding.company_name
                 if onboarding and onboarding.company_name
                 else profile_name
-            ) or link.hr_user.email
+            ) or hr_company_name(link.hr_user)
             company_options.append((display_name, display_name))
 
     return render(request, "core/send-invite.html", {
@@ -1307,7 +1342,17 @@ def send_invitation(request):
         requested_name = (request.POST.get("company_name") or request.POST.get("company") or "").strip()
         chosen = None
         if requested_name:
-            chosen = next((link for link in approved_links if (getattr(getattr(link.hr_user, "profile", None), "company_name", "") or "").casefold() == requested_name.casefold()), None)
+            for link in approved_links:
+                onboarding = getattr(link.hr_user, "onboarding_form", None)
+                profile = getattr(link.hr_user, "profile", None)
+                display_name = (
+                    getattr(onboarding, "company_name", "")
+                    or getattr(profile, "company_name", "")
+                    or hr_company_name(link.hr_user)
+                )
+                if requested_name.casefold() in {display_name.strip().casefold(), link.hr_user.email.strip().casefold()}:
+                    chosen = link
+                    break
         if chosen is None and not requested_name:
             chosen = approved_links.first()
         if chosen:
@@ -1317,7 +1362,7 @@ def send_invitation(request):
                 connected_name = ""
             connected_name = connected_name or (
                 getattr(getattr(chosen.hr_user, "profile", None), "company_name", "")
-                or chosen.hr_user.email
+                or hr_company_name(chosen.hr_user)
             )
             company, _ = Company.objects.get_or_create(
                 name=connected_name,
@@ -1343,17 +1388,14 @@ def send_invitation(request):
         for email in emails:
             try:
                 with transaction.atomic():
-                    candidate = Candidate.objects.filter(email__iexact=email).order_by("id").first()
-                    if not candidate:
-                        candidate = Candidate.objects.create(email=email, full_name=name, phone=phone)
-                    else:
-                        changed = False
-                        if name and not candidate.full_name:
-                            candidate.full_name = name; changed = True
-                        if phone and not candidate.phone:
-                            candidate.phone = phone; changed = True
-                        if changed:
-                            candidate.save()
+                    candidate = _invitation_candidate(email)
+                    changed = False
+                    if name and not candidate.full_name:
+                        candidate.full_name = name; changed = True
+                    if phone and not candidate.phone:
+                        candidate.phone = phone; changed = True
+                    if changed:
+                        candidate.save(update_fields=["full_name", "phone"])
 
                     Subscription.objects.get_or_create(candidate=candidate)
 
@@ -1408,6 +1450,8 @@ def send_invitation(request):
                     failed += 1
             except Exception as exc:
                 failed += 1
+                if isinstance(exc, ValidationError):
+                    messages.error(request, " ".join(exc.messages))
                 EmailLog.objects.create(
                     recipient=email, subject=f"{company.name} - Job Application Invitation",
                     success=False, error=str(exc)
@@ -1415,7 +1459,7 @@ def send_invitation(request):
         if sent:
             messages.success(request, f"{sent} invitation(s) sent successfully.")
         if failed:
-            messages.error(request, f"{failed} invitation(s) failed. Open EmailLog after fixing SMTP settings for the exact error.")
+            messages.error(request, f"{failed} invitation(s) failed. Open EmailLog for the exact error.")
         return redirect(role_landing_url(request.user))
 
     # HR/Agent account invitation.
@@ -1776,64 +1820,160 @@ def _merge_section(saved_data, section, data):
     return saved_data
 
 
+def _prefill_form_type(app):
+    data = app.data if isinstance(app.data, dict) else {}
+    for section, form_type in (("raddish_application", "raddish"), ("nevigate_application", "nevigate"), ("macro_section_1", "macro_kiosk"), ("personal_information", "insitemy")):
+        if section in data:
+            return form_type
+    onboarding = HROnboardingForm.objects.filter(Q(company_name__iexact=app.company.name) | Q(hr_user__profile__company_name__iexact=app.company.name), status="ready").exclude(connected_form_slug="").order_by("-ready_at", "-pk").first()
+    if onboarding:
+        return onboarding.connected_form_slug
+    name = app.company.name.casefold()
+    for fragment, form_type in (("raddish", "raddish"), ("nevigate", "nevigate"), ("insite", "insitemy"), ("macro", "macro_kiosk")):
+        if fragment in name:
+            return form_type
+    return ""
+
+
+def _prefill_has_value(value):
+    if isinstance(value, list):
+        return any(_prefill_has_value(item) for item in value)
+    if isinstance(value, str):
+        return bool(value.strip()) and value.strip().casefold() not in {"please select", "select", "n/a", "-"}
+    return value is not None and value != [] and value != {}
+
+
+def _prefill_safe_data(value):
+    if isinstance(value, dict):
+        return {
+            key: _prefill_safe_data(item) for key, item in value.items()
+            if not key.startswith(("_", "name__", "nric__", "macro_doc_", "file_"))
+            and not any(part in key.casefold() for part in ("consent", "signature", "declaration", "upload", "document", "photo", "attachment", "token", "confirm", "agree", "submitted", "completed", "checkdefault"))
+            and key.split("__")[0] not in {"action", "date", "dateapplied", "pdpa_date", "appname", "appplace", "final_submit", "csrfmiddlewaretoken", "saved_sections", "completed_sections"}
+            and _prefill_has_value(item)
+        }
+    if isinstance(value, list):
+        return [_prefill_safe_data(item) for item in value]
+    if isinstance(value, str) and (value.startswith("data:") or value.startswith("/media/")):
+        return ""
+    return deepcopy(value)
+
+
+def _prefill_merge(target, source, overwrite=False):
+    for key, value in source.items():
+        if isinstance(value, dict) and isinstance(target.get(key), dict):
+            _prefill_merge(target[key], value, overwrite)
+        elif overwrite or key not in target or not _prefill_has_value(target[key]):
+            target[key] = deepcopy(value)
+    return target
+
+
+def _prefill_field_groups():
+    groups = []
+    for key in ("name", "email", "dob", "gender", "nationality"):
+        groups.append({
+            "insitemy": ("personal_information", key),
+            "macro_kiosk": ("macro_section_1", key),
+            "raddish": ("raddish_application", key),
+            "nevigate": ("nevigate_application", key),
+        })
+    groups.extend([
+        {"insitemy": ("personal_information", "passportnumber"), "macro_kiosk": ("macro_section_1", "passportnumber"), "raddish": ("raddish_application", "nric"), "nevigate": ("nevigate_application", "nric")},
+        {"insitemy": ("personal_information", "passportnumber"), "raddish": ("raddish_application", "passportnumber"), "nevigate": ("nevigate_application", "passportnumber")},
+        {"insitemy": ("personal_information", "phone"), "macro_kiosk": ("macro_section_1", "nationality_4")},
+        {"insitemy": ("personal_information", "marital_status"), "macro_kiosk": ("macro_section_1", "marital")},
+        {"insitemy": ("personal_information", "permanent_address"), "macro_kiosk": ("macro_section_1", "address")},
+        {"insitemy": ("personal_information", "residential_address"), "macro_kiosk": ("macro_section_1", "address_2")},
+        {"insitemy": ("employment_expectations", "expectedsalary"), "macro_kiosk": ("macro_section_4", "lastsalary_2")},
+    ])
+    for number in (1, 2):
+        for suffix in ("name", "pos", "com", "email", "phn"):
+            # Raddish/Nevigate rename duplicate control names by DOM order:
+            # Reference 2 becomes ``ref1<field>__2``, but ``ref1phn`` appears
+            # twice per reference (phone + relationship), so Reference 2's
+            # phone is ``ref1phn__3``.
+            dynamic_field = f"ref1{suffix}" if number == 1 else ("ref1phn__3" if suffix == "phn" else f"ref1{suffix}__2")
+            groups.append({
+                "insitemy": ("reference", f"ref{number}{suffix}"),
+                "macro_kiosk": ("macro_section_4", f"ref1{suffix}" + ("_2" if number == 2 else "")),
+                "raddish": ("raddish_application", dynamic_field),
+                "nevigate": ("nevigate_application", dynamic_field),
+            })
+    return groups
+
+
 def _candidate_defaults(app):
     """Return only safe, genuinely common identity defaults for a new form."""
-    candidate = app.candidate
-    saved = deepcopy(app.data) if isinstance(app.data, dict) else {}
-
-    common_fields = {
-        "name", "email", "phone", "passportnumber", "dob", "gender",
-        "nationality", "marital", "marital_status",
+    form_type = _prefill_form_type(app)
+    sections = {
+        "insitemy": {"personal_information", "employment_expectations", "reference", "employment_history", "education", "general_information"},
+        "macro_kiosk": {"macro_section_1", "macro_section_2", "macro_section_3", "macro_section_4"},
+        "raddish": {"raddish_application"},
+        "nevigate": {"nevigate_application"},
     }
-
-    previous = (
-        JobApplication.objects
-        .filter(
-            candidate=candidate,
-            status__in={"submitted", "reviewed", "shortlisted", "rejected"},
-        )
-        .exclude(pk=app.pk)
-        .order_by("-submitted_at", "-updated_at")
-        .first()
-    )
-
-    previous_common = {}
-    if previous and isinstance(previous.data, dict):
-        for section_name in ("personal_information", "macro_section_1"):
-            section = previous.data.get(section_name, {})
-            if isinstance(section, dict):
-                for key in common_fields:
-                    value = section.get(key)
-                    if value not in ("", None, [], {}):
-                        previous_common[key] = deepcopy(value)
-
-    def set_if_missing(target, key, value):
-        if key not in target or target.get(key) in ("", None, [], {}):
-            target[key] = deepcopy(value)
-
-    if is_insitemy_application(app):
-        personal = saved.get("personal_information")
-        if not isinstance(personal, dict):
-            personal = {}
-        for key, value in previous_common.items():
-            set_if_missing(personal, key, value)
-        set_if_missing(personal, "name", normalize_person_name(candidate.full_name))
-        set_if_missing(personal, "email", candidate.email or "")
-        set_if_missing(personal, "phone", candidate.phone or "")
-        saved["personal_information"] = personal
-
-    elif is_macro_kiosk_application(app):
-        macro = saved.get("macro_section_1")
-        if not isinstance(macro, dict):
-            macro = {}
-        for key, value in previous_common.items():
-            if key != "phone":
-                set_if_missing(macro, key, value)
-        set_if_missing(macro, "name", normalize_person_name(candidate.full_name))
-        set_if_missing(macro, "email", candidate.email or "")
-        saved["macro_section_1"] = macro
-
-    return saved
+    defaults = {}
+    previous = JobApplication.objects.filter(
+        candidate_id=app.candidate_id,
+        status__in={"submitted", "reviewed", "shortlisted", "rejected"},
+    ).exclude(pk=app.pk).select_related("company").annotate(
+        prefill_timestamp=Coalesce("submitted_at", "updated_at"),
+    ).order_by("-prefill_timestamp", "-pk")
+    groups = _prefill_field_groups()
+    for old in previous:
+        if not isinstance(old.data, dict):
+            continue
+        old_type = _prefill_form_type(old)
+        safe = _prefill_safe_data(old.data)
+        if old_type == form_type:
+            _prefill_merge(defaults, {key: value for key, value in safe.items() if key in sections.get(form_type, set())})
+            review_fields = {
+                "insitemy": {
+                    "consent": {"consentname", "appname", "nric"},
+                    "declaration": {"declaration_appname", "appplace"},
+                    "iq_test": {f"iq_q{number}" for number in range(1, 6)} | {f"iq_response_{number}" for number in range(1, 8)},
+                },
+                "macro_kiosk": {
+                    "macro_section_5": {"macro_5_yourname", "macro_5_name", "macro_5_nric", "nric"},
+                    "macro_section_7": {"macro_7_name", "macro_7_nric"},
+                },
+                "raddish": {"raddish_application": {"declaration_name", "declaration_nric"}},
+                "nevigate": {"nevigate_application": {"declaration_name", "declaration_nric", "pdpa_name", "pdpa_nric"}},
+            }
+            for section, allowed in review_fields.get(form_type, {}).items():
+                source = old.data.get(section, {})
+                if not isinstance(source, dict):
+                    continue
+                reusable = {key: _prefill_safe_data(value) for key, value in source.items() if key in allowed and _prefill_has_value(value)}
+                if reusable:
+                    _prefill_merge(defaults, {section: reusable})
+        for group in groups:
+            if old_type not in group or form_type not in group:
+                continue
+            source_section, source_field = group[old_type]
+            source = safe.get(source_section, {})
+            if not isinstance(source, dict):
+                continue
+            value = source.get(source_field, safe.get(source_field))
+            if not _prefill_has_value(value):
+                aliases = {"name": ("full_name",), "dob": ("date_of_birth",), "passportnumber": ("passport_no",), "nric": ("nric_no",), "marital_status": ("marital",)}
+                value = next((source[key] for key in aliases.get(source_field, ()) if _prefill_has_value(source.get(key))), value)
+            if _prefill_has_value(value):
+                destination_section, destination_field = group[form_type]
+                if old_type == "insitemy" and source_field == "passportnumber" and form_type != "insitemy":
+                    is_nric = bool(re.fullmatch(r"\d{12}", re.sub(r"[\s-]", "", str(value))))
+                    needs_nric = form_type == "macro_kiosk" or destination_field == "nric"
+                    if needs_nric != is_nric:
+                        continue
+                _prefill_merge(defaults, {destination_section: {destination_field: value}})
+    identity_section = {"insitemy": "personal_information", "macro_kiosk": "macro_section_1", "raddish": "raddish_application", "nevigate": "nevigate_application"}.get(form_type)
+    if identity_section:
+        identity = {"name": normalize_person_name(app.candidate.full_name), "email": app.candidate.email}
+        if form_type == "insitemy":
+            identity["phone"] = app.candidate.phone
+        elif form_type == "macro_kiosk":
+            identity["nationality_4"] = app.candidate.phone
+        _prefill_merge(defaults, {identity_section: {key: value for key, value in identity.items() if _prefill_has_value(value)}})
+    return _prefill_merge(defaults, app.data if isinstance(app.data, dict) else {}, overwrite=True)
 
 
 MACRO_REQUIRED_FIELDS = {
@@ -2015,6 +2155,121 @@ def _validate_final_application(app, data, request=None):
             errors.append("Document Submission: at least one document is required.")
     return errors
 
+def _dynamic_form_fields(app):
+    section = f"{application_form_slug(app)}_application"
+    data = app.data if isinstance(app.data, dict) else {}
+    values = data.get(section, data)
+    if not isinstance(values, dict):
+        values = {}
+    labels = values.get("_field_labels", {})
+    if not isinstance(labels, dict):
+        labels = {}
+    return [
+        {"label": str(labels.get(key) or key.replace("__", " ").replace("_", " ").title()), "value": _stringify_app_value(value)}
+        for key, value in values.items()
+        if not key.startswith("_") and key not in IGNORED_POST_FIELDS | {"action"} and _stringify_app_value(value)
+    ]
+
+
+def _dynamic_candidate_application(request, app, invitation, slug):
+    from datetime import date
+    from django.core.validators import validate_email
+    section = f"{slug}_application"
+    template = "core/Raddish.html" if slug == "raddish" else "core/Nevigate.html"
+    values = _candidate_defaults(app).get(section, {})
+    errors = []
+    if request.method == "POST":
+        submitted = {
+            key: items if len(items) > 1 else items[0]
+            for key, items in request.POST.lists()
+            if key not in IGNORED_POST_FIELDS | {"action", "_field_labels"} and not key.startswith("_")
+        }
+        values.update(submitted)
+        try:
+            labels = json.loads(request.POST.get("_field_labels", "{}"))
+            if not isinstance(labels, dict):
+                raise ValueError
+            values["_field_labels"] = {key: value[:250] for key, value in labels.items() if isinstance(value, str) and key in values}
+            repeats = json.loads(request.POST.get("_repeat_counts", "{}"))
+            if not isinstance(repeats, dict) or any(not re.fullmatch(r"repeat\d+", key) or type(count) is not int or not 0 <= count <= 20 for key, count in repeats.items()):
+                raise ValueError
+            values["_repeat_counts"] = repeats
+        except (ValueError, TypeError):
+            errors.append("Invalid form field labels. Please reload the page and try again.")
+        final = request.POST.get("final_submit") == "true" or request.POST.get("action") == "submit"
+        for key, value in values.items():
+            if key.startswith("_"):
+                continue
+            items = value if isinstance(value, list) else [value]
+            for item in items:
+                if not item:
+                    continue
+                if re.search(r"(?:^|_)(?:email|ref\d+email)(?:__?\d+)?$", key, re.I):
+                    try:
+                        validate_email(item)
+                    except ValidationError:
+                        errors.append(f"{key}: enter a valid email address.")
+                if key in {"dob", "declaration_date", "pdpa_date", "available_start_date"} or re.fullmatch(r"(?:repeat\d+_row\d+_)?(?:yearfrom|yearto|datefrom|dateto)(?:__\d+)?", key):
+                    try:
+                        date.fromisoformat(item)
+                    except (ValueError, TypeError):
+                        errors.append(f"{key}: enter a valid date.")
+        uploads = [(key, file) for key, files in request.FILES.lists() for file in files]
+        for key, file in uploads:
+            if len(key) > 100 or file.size > MAX_UPLOAD_SIZE or Path(file.name).suffix.lower() not in ALLOWED_UPLOAD_EXTENSIONS:
+                errors.append(f"{file.name}: use a PDF, DOC/DOCX, JPG, PNG or WebP file no larger than 1 MB.")
+        if final:
+            required = {"name": "Full name", "email": "Email", "position_applied": "Position applied for", "declaration_name": "Declaration name", "declaration_nric": "Declaration NRIC/passport", "declaration_date": "Declaration date"}
+            if slug == "nevigate":
+                required.update(pdpa_name="PDPA name", pdpa_nric="PDPA NRIC/passport", pdpa_date="PDPA date")
+            for key, label in required.items():
+                if not isinstance(values.get(key), str) or not values[key].strip():
+                    errors.append(f"{label} is required.")
+            for key in ("declaration_confirmed", "pdpa_confirmed") if slug == "nevigate" else ("declaration_confirmed",):
+                if not isinstance(values.get(key), str) or values[key] not in {"true", "on", "1"}:
+                    errors.append(f"Please accept the {'PDPA consent' if key == 'pdpa_confirmed' else 'applicant declaration'}.")
+            for field in ("applicant_signature", "pdpa_signature") if slug == "nevigate" else ("applicant_signature",):
+                if not any(key == field for key, file in uploads) and not app.files.filter(field_name=field).exists():
+                    errors.append(f"{field.replace('_', ' ').title()} is required.")
+        if not errors:
+            with transaction.atomic():
+                locked = JobApplication.objects.select_for_update().get(pk=app.pk)
+                if locked.status not in {"invited", "draft"} or invitation.completed_at:
+                    return redirect("application_detail", pk=app.pk)
+                data = locked.data if isinstance(locked.data, dict) else {}
+                data[section] = values
+                locked.data = data
+                for field, file in uploads:
+                    _save_uploaded_file(locked, field, file)
+                if final:
+                    locked.status = "submitted"
+                    locked.submitted_at = timezone.now()
+                    invitation.completed_at = locked.submitted_at
+                    invitation.save(update_fields=["completed_at"])
+                locked.save(update_fields=["data", "status", "submitted_at", "updated_at"])
+                if not locked.audit_trails.filter(action="application_filled").exists():
+                    _audit_event(request, locked, "application_filled")
+                if final:
+                    _audit_event(request, locked, "submitted")
+            if final:
+                subject = f"{app.company.name} employment application submitted"
+                body = f"A candidate submitted the {app.company.name} employment form. Application ID: {app.pk}. Please sign in to eDocs to review it."
+                _notify_hr_company(app.company, "Employment application submitted", body, app, reverse("received_applications"))
+                for user in _hr_users_for_company(app.company):
+                    if not user.is_active or not user.email:
+                        continue
+                    try:
+                        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+                        EmailLog.objects.create(recipient=user.email, subject=subject, success=True)
+                    except Exception as exc:
+                        EmailLog.objects.create(recipient=user.email, subject=subject, success=False, error=str(exc))
+                messages.success(request, "Your employment application has been submitted successfully.")
+                return redirect("submitted_applications")
+            messages.success(request, "Your application draft has been saved.")
+            return redirect("candidate_application", token=invitation.token)
+    return render(request, template, {"application": app, "form_saved_data": values, "form_errors": errors, "uploaded_files": app.files.all()})
+
+
 @login_required(login_url="/login/")
 def candidate_application(request, token):
     invitation = get_object_or_404(
@@ -2051,7 +2306,9 @@ def candidate_application(request, token):
     # ALREADY SUBMITTED
     # ============================================================
 
-    if app.status == "submitted":
+    if app.status in {"submitted", "reviewed", "shortlisted", "rejected"} or invitation.completed_at:
+        if application_form_slug(app) in {"raddish", "nevigate"}:
+            return redirect("application_detail", pk=app.pk)
         return render(
             request,
             "core/submitted-application.html",
@@ -2084,76 +2341,9 @@ def candidate_application(request, token):
     # JobApplication.MACRO
     # ============================================================
 
-    onboarding = HROnboardingForm.objects.filter(
-        hr_user__profile__company_name__iexact=app.company.name,
-        status="ready",
-    ).first()
-    if onboarding and onboarding.connected_form_slug == "nevigate":
-        if request.method == "POST":
-            submitted = {
-                key: value for key, value in request.POST.items()
-                if key not in {"csrfmiddlewaretoken"}
-            }
-            app.data = {"nevigate_application": submitted}
-            app.status = "submitted"
-            app.submitted_at = timezone.now()
-            app.save(update_fields=["data", "status", "submitted_at", "updated_at"])
-            invitation.completed_at = timezone.now()
-            invitation.save(update_fields=["completed_at"])
-            _audit_event(request, app, "application_submitted")
-            subject = f"{app.company.name} employment application submitted"
-            body = (
-                f"A candidate has submitted the Nevigate Global Network employment application "
-                f"for {app.company.name}.\n\nApplication ID: {app.pk}\n"
-                f"Please sign in to eDocs to review the submitted application."
-            )
-            try:
-                hr_users = User.objects.filter(
-                    profile__company_name__iexact=app.company.name,
-                    is_active=True,
-                ).exclude(email="")
-                recipients = list(hr_users.values_list("email", flat=True).distinct())
-                if recipients:
-                    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients, fail_silently=False)
-                    for recipient in recipients:
-                        EmailLog.objects.create(recipient=recipient, subject=subject, success=True)
-            except Exception as exc:
-                EmailLog.objects.create(
-                    recipient=(recipients[0] if "recipients" in locals() and recipients else settings.DEFAULT_FROM_EMAIL),
-                    subject=subject, success=False, error=str(exc)
-                )
-            _notify_hr_company(app.company, "Employment application submitted", body, app, reverse("received_applications"))
-            messages.success(request, "Your Nevigate employment application has been submitted. The company has been notified by email.")
-            return redirect("submitted_applications")
-        return render(request, "core/Nevigate.html", {"application": app})
-
-    if onboarding and onboarding.connected_form_slug == "raddish" or "raddish" in app.company.name.lower():
-        if request.method == "POST":
-            submitted = {key: value for key, value in request.POST.items() if key not in {"csrfmiddlewaretoken", "final_submit"}}
-            required_values = [submitted.get("full_name", "").strip(), submitted.get("email", "").strip(), submitted.get("position_applied", "").strip(), submitted.get("declaration_confirmed", "").strip()]
-            if not all(required_values) or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", submitted.get("email", "").strip()):
-                messages.error(request, "Please provide your name, a valid email, position applied for, and accept the declaration.")
-                return render(request, "core/raddish.html", {"application": app, "saved_data": submitted,
-                    "personal_fields": [("position_applied", "Application for employment as"), ("full_name", "Full name"), ("email", "Email"), ("home_address", "Home address"), ("correspondence_address", "Correspondence address"), ("home_telephone", "Home telephone"), ("correspondence_telephone", "Correspondence telephone"), ("date_of_birth", "Date of birth"), ("age", "Age"), ("marital_status", "Marital status"), ("nationality", "Nationality"), ("religion", "Religion"), ("nric_no", "NRIC No."), ("passport_no", "Passport No."), ("epf_no", "EPF No."), ("socso_no", "SOCSO No.")],
-                    "family_fields": [("spouse_details", "Spouse â€” name, age, occupation"), ("father_details", "Father â€” name, age, occupation"), ("mother_details", "Mother â€” name, age, occupation"), ("children_details", "Children â€” names, ages, occupation")], "education_fields": [("school_institution", "School / institution / college / university"), ("education_dates", "Dates joined and graduated"), ("highest_qualification", "Highest standard / qualification / grade")], "other_fields": [("serious_offence", "Ever convicted of a serious offence? If yes, give details"), ("dismissed_from_employment", "Ever dismissed from employment? If yes, give reasons"), ("serious_illness", "Any serious illness? If yes, indicate nature"), ("available_start_date", "If successful, when can you start?"), ("expected_salary", "Expected salary")]})
-            app.data = {"raddish_application": submitted}
-            app.status = "submitted"
-            app.submitted_at = timezone.now()
-            app.save(update_fields=["data", "status", "submitted_at", "updated_at"])
-            invitation.completed_at = timezone.now()
-            invitation.save(update_fields=["completed_at"])
-            _audit_event(request, app, "application_submitted")
-            _notify_hr_company(app.company, "Employment application submitted", f"A candidate submitted the {app.company.name} employment form.", app, reverse("received_applications"))
-            messages.success(request, "Your employment application has been submitted successfully.")
-            return render(request, "core/submitted-application.html", {"candidate_submission": True, "application": app})
-        return render(request, "core/raddish.html", {
-            "application": app,
-            "saved_data": (app.data or {}).get("raddish_application", {}) if isinstance(app.data, dict) else {},
-            "personal_fields": [("position_applied", "Application for employment as"), ("full_name", "Full name"), ("email", "Email"), ("home_address", "Home address"), ("correspondence_address", "Correspondence address"), ("home_telephone", "Home telephone"), ("correspondence_telephone", "Correspondence telephone"), ("date_of_birth", "Date of birth"), ("age", "Age"), ("marital_status", "Marital status"), ("nationality", "Nationality"), ("religion", "Religion"), ("nric_no", "NRIC No."), ("passport_no", "Passport No."), ("epf_no", "EPF No."), ("socso_no", "SOCSO No.")],
-            "family_fields": [("spouse_details", "Spouse â€” name, age, occupation"), ("father_details", "Father â€” name, age, occupation"), ("mother_details", "Mother â€” name, age, occupation"), ("children_details", "Children â€” names, ages, occupation")],
-            "education_fields": [("school_institution", "School / institution / college / university"), ("education_dates", "Dates joined and graduated"), ("highest_qualification", "Highest standard / qualification / grade")],
-            "other_fields": [("serious_offence", "Ever convicted of a serious offence? If yes, give details"), ("dismissed_from_employment", "Ever dismissed from employment? If yes, give reasons"), ("serious_illness", "Any serious illness? If yes, indicate nature"), ("available_start_date", "If successful, when can you start?"), ("expected_salary", "Expected salary")],
-        })
+    form_slug = application_form_slug(app)
+    if form_slug in {"raddish", "nevigate"}:
+        return _dynamic_candidate_application(request, app, invitation, form_slug)
 
     if is_insitemy_application(app):
         template = "core/insitemy.html"
@@ -2823,14 +3013,16 @@ def _forward_and_hr_access_steps(app, events, user=None, scope_forward=False):
         forward_description = f"The agent forwarded this application to {recipient}."
     else:
         forward_description = "The agent forwarded this application to HR."
-    return [
-        _audit_step(
+    steps = []
+    if forward_event:
+        steps.append(_audit_step(
             "Forwarding to HR by Agent",
             "bi-share",
             "blue",
-            forward_event.created_at if forward_event else None,
+            forward_event.created_at,
             forward_description,
-        ),
+        ))
+    return steps + [
         _audit_step(
             "Application viewed / downloaded by HR Access",
             "bi-eye",
@@ -3070,7 +3262,7 @@ def submitted_applications(request):
         # agent has explicitly forwarded to HR.
         apps = apps.filter(
             audit_trails__user=request.user,
-            audit_trails__action="forwarded",
+            audit_trails__action="forward_confirmed",
             archived=False,
         ).distinct()
 
@@ -3160,13 +3352,16 @@ def received_applications(request):
     elif role == "agent":
         # Only show applications that this agent actually invited the candidate
         # to complete. Applications created by another route stay hidden.
-        apps = apps.filter(invitation__invited_by=request.user)
+        forwarded_ids = AuditTrail.objects.filter(user=request.user, action="forward_confirmed").values("application_id")
+        apps = apps.filter(invitation__invited_by=request.user).exclude(pk__in=forwarded_ids)
 
     for app in apps:
         if app.candidate:
             app.candidate.full_name = normalize_person_name(app.candidate.full_name)
 
         app.hr_access_request = None
+        if role == "agent":
+            app.forward_hr_email = _forward_hr_email(app, request.user)
         if role == "hr":
             app.hr_access_request = (
                 ApplicationAccessRequest.objects
@@ -3461,6 +3656,8 @@ def _application_pdf_response(app):
     context.update({
         "application": app,
         "uploaded_files": list(app.files.all().order_by("-uploaded_at")),
+        "form_slug": application_form_slug(app),
+        "submitted_fields": _dynamic_form_fields(app),
     })
     return build_application_pdf(app, context)
 
@@ -3762,6 +3959,9 @@ def application_detail(request, pk):
         if not candidate or app.candidate_id != candidate.pk:
             raise Http404
 
+    if role not in {"candidate", "agent", "hr", "administration"}:
+        raise Http404
+
     # Record HR and Agent activity only after access checks succeed.
     if role == "hr":
         _record_hr_audit(
@@ -3769,7 +3969,7 @@ def application_detail(request, pk):
             app,
             (
                 "hr_downloaded"
-                if request.GET.get("download", "").lower() == "pdf"
+                if request.GET.get("download", "").lower() in {"pdf", "zip", "1"}
                 else "hr_viewed"
             ),
         )
@@ -3780,7 +3980,7 @@ def application_detail(request, pk):
             app,
             (
                 "agent_downloaded"
-                if request.GET.get("download", "").lower() == "pdf"
+                if request.GET.get("download", "").lower() in {"pdf", "zip", "1"}
                 else "agent_viewed"
             ),
         )
@@ -3791,9 +3991,47 @@ def application_detail(request, pk):
             app.candidate.full_name
         )
 
+    if request.GET.get("file"):
+        uploaded = get_object_or_404(app.files, pk=request.GET["file"]) if request.GET["file"].isdigit() else None
+        if not uploaded:
+            raise Http404
+        name = Path(uploaded.file.name).name
+        content_type = {".pdf": "application/pdf", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}.get(Path(name).suffix.lower(), "application/octet-stream")
+        try:
+            response = FileResponse(uploaded.file.open("rb"), as_attachment=request.GET.get("download") == "1" or content_type == "application/octet-stream", filename=name, content_type=content_type)
+        except (OSError, ValueError):
+            raise Http404("Uploaded file is not available.")
+        response["X-Content-Type-Options"] = "nosniff"
+        response["Cache-Control"] = "private, no-store"
+        response["Content-Security-Policy"] = "sandbox"
+        return response
+
+    if request.GET.get("download", "").lower() == "zip":
+        buffer = BytesIO()
+        with ZipFile(buffer, "w", ZIP_DEFLATED) as archive:
+            archive.writestr(f"application_{app.pk}.pdf", _application_pdf_response(app).content)
+            for uploaded in app.files.all():
+                try:
+                    with uploaded.file.open("rb") as source:
+                        archive.writestr(f"documents/{uploaded.pk}_{Path(uploaded.file.name).name}", source.read())
+                except (OSError, ValueError):
+                    raise Http404("An uploaded file is missing. Please contact support.")
+        response = HttpResponse(buffer.getvalue(), content_type="application/zip")
+        response["Content-Disposition"] = f'attachment; filename="application_{app.pk}_with_documents.zip"'
+        response["Cache-Control"] = "private, no-store"
+        return response
+
     # PDF download.
     if request.GET.get("download", "").lower() == "pdf":
         return _application_pdf_response(app)
+
+    if application_form_slug(app) in {"raddish", "nevigate"}:
+        return render(request, "core/application-dynamic-detail.html", {
+            "application": app,
+            "form_title": f"{app.company.name} Employment Application",
+            "submitted_fields": _dynamic_form_fields(app),
+            "uploaded_files": app.files.all().order_by("uploaded_at"),
+        })
 
     # Select the application template based on company name.
     company_name = (
@@ -3802,16 +4040,10 @@ def application_detail(request, pk):
         else ""
     )
 
-    if "nevigate" in company_name:
-        template = "core/Nevigate-application.html"
-
-    elif "raddish" in company_name:
-        template = "core/raddish_application.html"
-
-    elif "insite" in company_name:
+    if is_insitemy_application(app):
         template = "core/insitemy-application.html"
 
-    elif "macro" in company_name:
+    elif is_macro_kiosk_application(app):
         template = "core/macrokiosk-application.html"
 
     else:
@@ -3981,13 +4213,15 @@ def forward_application_to_hr(request, pk):
     )
 
     try:
-        send_mail(
+        sent = send_mail(
             subject,
             body,
             settings.DEFAULT_FROM_EMAIL,
             [recipient_email],
             fail_silently=False,
         )
+        if sent != 1:
+            raise RuntimeError("The email backend did not accept the forwarded application.")
         forward_invite.sent_at = timezone.now()
         forward_invite.save(update_fields=["sent_at"])
         EmailLog.objects.create(
@@ -4003,6 +4237,7 @@ def forward_application_to_hr(request, pk):
             target_url=reverse("submitted_applications"),
         )
         _audit_event(request, app, "forwarded")
+        _audit_event(request, app, "forward_confirmed")
         messages.success(request, f"This application is shared to HR ({recipient_email}).")
     except Exception as exc:
         forward_invite.active = False

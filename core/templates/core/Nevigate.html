@@ -26,7 +26,7 @@
 .macro-save-done{opacity:.75;pointer-events:none}
 </style><link rel="stylesheet" href="{% static 'core/assets/icons/bootstrap-icons/bootstrap-icons.min.css' %}">
 </head>
-<body><form id="applicationForm" method="post" enctype="multipart/form-data" style="display:none">{% csrf_token %}<input type="hidden" name="action" id="formAction" value="submit"></form>
+<body><form id="applicationForm" method="post" enctype="multipart/form-data" style="display:none">{% csrf_token %}<input form="applicationForm" type="hidden" name="action" id="formAction" value="submit"></form>
 {% if messages %}<div class="position-fixed top-0 end-0 p-3" style="z-index:9999">{% for message in messages %}<div class="alert alert-info shadow-sm">{{ message }}</div>{% endfor %}</div>{% endif %}
 <div class="wrapper">
 <!-- Sidebar -->
@@ -111,6 +111,9 @@
           </div>
           <!-- center body -->
           <div class="content-section">
+            {% if form_errors %}<div class="alert alert-danger" role="alert"><ul class="mb-0">{% for error in form_errors %}<li>{{ error }}</li>{% endfor %}</ul><p class="mb-0 mt-2">Please correct the errors and select any new files again.</p></div>{% endif %}
+            {% for message in messages %}<div class="alert alert-info" role="alert">{{ message }}</div>{% endfor %}
+            {% if uploaded_files %}<div class="alert alert-secondary"><strong>Saved documents:</strong>{% for uploaded in uploaded_files %}<div><a href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener">{{ uploaded.file.name }}</a></div>{% endfor %}</div>{% endif %}
             <div class="row">
               <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
                 <div class="custom-horizontal-tabs">
@@ -167,19 +170,19 @@
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="payslips" class="form-label mb-0"><sup class="text-danger">*</sup>Position applied for</label>
-                                      <input type="text" class="form-control" id="others" name="others" placeholder="Position applied for">
+                                      <input form="applicationForm" type="text" class="form-control" id="others" name="position_applied" placeholder="Position applied for">
                                     </div>
                                   </div>
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="payslips" class="form-label mb-0"><sup class="text-danger">*</sup>Head Office / Branch </label>
-                                      <input type="text" class="form-control" id="others" name="others" placeholder="Head Office / Branch ">
+                                      <input form="applicationForm" type="text" class="form-control" id="others" name="others" placeholder="Head Office / Branch ">
                                     </div>
                                   </div>
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
                                     <div>
                                       <label for="payslips" class="form-label mb-0"><sup class="text-danger">*</sup>Company Name</label>
-                                      <input type="text" class="form-control" id="others" name="others" placeholder="Company Name">
+                                      <input form="applicationForm" type="text" class="form-control" id="others" name="others" placeholder="Company Name">
                                     </div>
                                   </div>
                                 </div>
@@ -204,80 +207,80 @@
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <label for="payslips" class="form-label mb-0"><sup class="text-danger">*</sup>Upload Passport Size Photo</label>
                                     <div class="input-group">
-                                      <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                      <input form="applicationForm" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                     </div>
                                   </div>
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Name as in NRIC</label>
-                                      <input type="text" class="form-control" id="name" name="name" placeholder="Name as in NRIC">
+                                      <input form="applicationForm" type="text" class="form-control" id="name" name="name" placeholder="Name as in NRIC">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup>Identity Card No. </label>
-                                      <input type="text" class="form-control" id="nric" name="nric" placeholder="Identity Card No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="nric" name="nric" placeholder="Identity Card No.">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="passportnumber" class="form-label mb-0"><sup class="text-danger">*</sup>Passport No. </label>
-                                      <input type="text" class="form-control" id="passportnumber" name="passportnumber" placeholder="Passport No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="passportnumber" name="passportnumber" placeholder="Passport No.">
                                     </div>
                                   </div>
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="address" class="form-label mb-0"><sup class="text-danger">*</sup>Residence Address</label>
-                                      <input type="text" class="form-control" id="address" name="address" placeholder="Residence Address">
+                                      <input form="applicationForm" type="text" class="form-control" id="address" name="address" placeholder="Residence Address">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="email" class="form-label mb-0"><sup class="text-danger">*</sup>Email Address </label>
-                                      <input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
+                                      <input form="applicationForm" type="email" class="form-control" id="email" name="email" placeholder="Email Address">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="address" class="form-label mb-0"><sup class="text-danger">*</sup>Residence Contact No.</label>
-                                      <input type="text" class="form-control" id="address" name="address" placeholder="Residence Contact No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="address" name="address" placeholder="Residence Contact No.">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="telephone" class="form-label mb-0"><sup class="text-danger">*</sup>Mobile Number</label>
-                                      <input type="text" class="form-control" id="telephone" name="Telephone" placeholder="Mobile Number">
+                                      <input form="applicationForm" type="text" class="form-control" id="telephone" name="Telephone" placeholder="Mobile Number">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="dob" class="form-label mb-0"><sup class="text-danger">*</sup>Date of Birth </label>
-                                      <input type="date" class="form-control" id="dob" name="dob" placeholder="Date of Birth">
+                                      <input form="applicationForm" type="date" class="form-control" id="dob" name="dob" placeholder="Date of Birth">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="dob" class="form-label mb-0"><sup class="text-danger">*</sup>Place of Birth </label>
-                                      <input type="text" class="form-control" id="dob" name="dob" placeholder="Place of Birth">
+                                      <input form="applicationForm" type="text" class="form-control" id="dob" name="dob" placeholder="Place of Birth">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="age" class="form-label mb-0"><sup class="text-danger">*</sup>Race </label>
-                                      <input type="text" class="form-control" id="age" name="age" placeholder="Race">
+                                      <input form="applicationForm" type="text" class="form-control" id="age" name="age" placeholder="Race">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="nationality" class="form-label mb-0"><sup class="text-danger">*</sup>Religion </label>
-                                      <input type="text" class="form-control" id="nationality" name="nationality" placeholder="Religion">
+                                      <input form="applicationForm" type="text" class="form-control" id="nationality" name="nationality" placeholder="Religion">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="marital" class="form-label mb-0"><sup class="text-danger">*</sup>Gender </label>
-                                      <select class="form-select" aria-label="marital">
+                                      <select form="applicationForm" class="form-select" aria-label="marital">
                                         <option selected>Please Select</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -287,7 +290,7 @@
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="marital" class="form-label mb-0"><sup class="text-danger">*</sup>Marital Status </label>
-                                      <select class="form-select" aria-label="marital">
+                                      <select form="applicationForm" class="form-select" aria-label="marital">
                                         <option selected>Please Select</option>
                                         <option value="Single">Single</option>
                                         <option value="Married">Married</option>
@@ -299,31 +302,31 @@
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="religion" class="form-label mb-0"><sup class="text-danger">*</sup>EPF No.</label>
-                                      <input type="text" class="form-control" id="religion" name="religion" placeholder="EPF No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="religion" name="religion" placeholder="EPF No.">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="race" class="form-label mb-0"><sup class="text-danger">*</sup>Income Tax No. </label>
-                                      <input type="text" class="form-control" id="race" name="race" placeholder="Income Tax No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="race" name="race" placeholder="Income Tax No.">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="socsonumber" class="form-label mb-0"><sup class="text-danger">*</sup>SOCSO No. </label>
-                                      <input type="text" class="form-control" id="socsonumber" name="socsonumber" placeholder="SOCSO No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="socsonumber" name="socsonumber" placeholder="SOCSO No.">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="epfnumber" class="form-label mb-0"><sup class="text-danger">*</sup>Height (cm) </label>
-                                      <input type="text" class="form-control" id="epfnumber" name="epfnumber" placeholder="Heigh (cm)">
+                                      <input form="applicationForm" type="text" class="form-control" id="epfnumber" name="epfnumber" placeholder="Heigh (cm)">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="epfnumber" class="form-label mb-0"><sup class="text-danger">*</sup>Weight (kg) </label>
-                                      <input type="text" class="form-control" id="epfnumber" name="epfnumber" placeholder="Weight (kg)">
+                                      <input form="applicationForm" type="text" class="form-control" id="epfnumber" name="epfnumber" placeholder="Weight (kg)">
                                     </div>
                                   </div>
                                 </div>
@@ -347,25 +350,25 @@
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sister" class="form-label mb-0"><sup class="text-danger">*</sup>Spouse</label>
-                                      <input type="text" class="form-control" id="sister" name="sister" placeholder="Spouse">
+                                      <input form="applicationForm" type="text" class="form-control" id="sister" name="sister" placeholder="Spouse">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="agesis" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
+                                      <input form="applicationForm" type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Contact Number</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
                                     </div>
                                   </div>
                                 </div>
@@ -373,25 +376,25 @@
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sister" class="form-label mb-0"><sup class="text-danger">*</sup>Father</label>
-                                      <input type="text" class="form-control" id="sister" name="sister" placeholder="Father">
+                                      <input form="applicationForm" type="text" class="form-control" id="sister" name="sister" placeholder="Father">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="agesis" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
+                                      <input form="applicationForm" type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Contact Number</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
                                     </div>
                                   </div>
                                 </div>
@@ -399,25 +402,25 @@
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sister" class="form-label mb-0"><sup class="text-danger">*</sup>Mother</label>
-                                      <input type="text" class="form-control" id="sister" name="sister" placeholder="Mother">
+                                      <input form="applicationForm" type="text" class="form-control" id="sister" name="sister" placeholder="Mother">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="agesis" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
+                                      <input form="applicationForm" type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Contact Number</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
                                     </div>
                                   </div>
                                 </div>
@@ -425,25 +428,25 @@
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sister" class="form-label mb-0"><sup class="text-danger">*</sup>Childrens</label>
-                                      <input type="text" class="form-control" id="sister" name="sister" placeholder="Childrens">
+                                      <input form="applicationForm" type="text" class="form-control" id="sister" name="sister" placeholder="Childrens">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="agesis" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
+                                      <input form="applicationForm" type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Contact Number</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
                                     </div>
                                   </div>
                                 </div>
@@ -451,25 +454,25 @@
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sister" class="form-label mb-0"><sup class="text-danger">*</sup>Siblings</label>
-                                      <input type="text" class="form-control" id="sister" name="sister" placeholder="Siblings">
+                                      <input form="applicationForm" type="text" class="form-control" id="sister" name="sister" placeholder="Siblings">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="agesis" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
+                                      <input form="applicationForm" type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Contact Number</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
+                                      <input form="applicationForm" type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Contact Number">
                                     </div>
                                   </div>
                                 </div>
@@ -515,31 +518,31 @@
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="yearfrom" class="form-label mb-0"><sup class="text-danger">*</sup>Month / Year From</label>
-                                        <input type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Month / Year From">
+                                        <input form="applicationForm" type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Month / Year From">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="yearto" class="form-label mb-0"><sup class="text-danger">*</sup>Month / Year To</label>
-                                        <input type="date" class="form-control" id="yearto" name="yearto" placeholder="Month / Year To">
+                                        <input form="applicationForm" type="date" class="form-control" id="yearto" name="yearto" placeholder="Month / Year To">
                                       </div>
                                     </div>
                                     <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>School, College, University Attended</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="School, College, University Attended">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="School, College, University Attended">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="qualification" class="form-label mb-0"><sup class="text-danger">*</sup>Highest Qualification</label>
-                                        <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Highest Qualification">
+                                        <input form="applicationForm" type="text" class="form-control" id="qualification" name="qualification" placeholder="Highest Qualification">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="qualification" class="form-label mb-0"><sup class="text-danger">*</sup>Course Studied</label>
-                                        <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Course Studied">
+                                        <input form="applicationForm" type="text" class="form-control" id="qualification" name="qualification" placeholder="Course Studied">
                                       </div>
                                     </div>
                                   </div>
@@ -551,34 +554,34 @@
                                   <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Are you currently pursuing further education?</label>
                                   <div class="mb-2">
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                      <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                       <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                      <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                       <label class="form-check-label" for="inlineCheckbox2">No</label>
                                     </div>
                                   </div>
                                   <div>
                                     <label for="medical" class="form-label mb-0">If yes, please stated course studying & university:</label>
-                                    <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If yes, please stated course studying & university:">
+                                    <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If yes, please stated course studying & university:">
                                   </div>
                                 </div>
                                 <div class="bg-silver p-4 rounded mb-0">
                                   <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Do you intend to pursue other courses/qualifications in the future?</label>
                                   <div class="mb-2">
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                      <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                       <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                      <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                       <label class="form-check-label" for="inlineCheckbox2">No</label>
                                     </div>
                                   </div>
                                   <div>
                                     <label for="medical" class="form-label mb-0">If yes, please stated course studying & university:</label>
-                                    <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Please give reasons:">
+                                    <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Please give reasons:">
                                   </div>
                                 </div>
                               </div>
@@ -602,31 +605,31 @@
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="yearfrom" class="form-label mb-0"><sup class="text-danger">*</sup>Month / Year From</label>
-                                        <input type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Month / Year From">
+                                        <input form="applicationForm" type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Month / Year From">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="yearto" class="form-label mb-0"><sup class="text-danger">*</sup>Month / Year To</label>
-                                        <input type="date" class="form-control" id="yearto" name="yearto" placeholder="Month / Year To">
+                                        <input form="applicationForm" type="date" class="form-control" id="yearto" name="yearto" placeholder="Month / Year To">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Title of Course</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Title of Course">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Title of Course">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>College Attended</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="College Attended">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="College Attended">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Year of Qualification</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Year of Qualification">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Year of Qualification">
                                       </div>
                                     </div>
                                   </div>
@@ -666,15 +669,15 @@
                                             <th scope="row"> <div>Microsoft Word</div></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Moderate </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Poor </label>
                                                 </div>
                                               </div></td>
@@ -683,15 +686,15 @@
                                             <th scope="row"> <div>Microsoft Excel</div></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Moderate </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Poor </label>
                                                 </div>
                                               </div></td>
@@ -700,15 +703,15 @@
                                             <th scope="row"> <div>Microsoft Power Point</div></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Moderate </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Poor </label>
                                                 </div>
                                               </div></td>
@@ -717,15 +720,15 @@
                                             <th scope="row"> <div>Microsoft Access</div></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Moderate </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Poor </label>
                                                 </div>
                                               </div></td>
@@ -734,15 +737,15 @@
                                             <th scope="row"> <div>Email / Internet</div></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Moderate </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Poor </label>
                                                 </div>
                                               </div></td>
@@ -754,7 +757,7 @@
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
                                     <div>
                                       <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Please stated your software experience: (Especially for Audit/Tax/Secretarial)</label>
-                                      <textarea class="form-control" id="message" rows="5" placeholder="Please stated your software experience: (Especially for Audit/Tax/Secretarial)"></textarea>
+                                      <textarea form="applicationForm" class="form-control" id="message" rows="5" placeholder="Please stated your software experience: (Especially for Audit/Tax/Secretarial)"></textarea>
                                     </div>
                                   </div>
                                 </div>
@@ -779,25 +782,25 @@
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Particulars</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Particulars">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Particulars">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Position Held</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Position Held">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Position Held">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                       <div>
                                         <label for="yearfrom" class="form-label mb-0"><sup class="text-danger">*</sup>Month / Year From</label>
-                                        <input type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Month / Year From">
+                                        <input form="applicationForm" type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Month / Year From">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                       <div>
                                         <label for="yearto" class="form-label mb-0"><sup class="text-danger">*</sup>Month / Year To</label>
-                                        <input type="date" class="form-control" id="yearto" name="yearto" placeholder="Month / Year To">
+                                        <input form="applicationForm" type="date" class="form-control" id="yearto" name="yearto" placeholder="Month / Year To">
                                       </div>
                                     </div>
                                   </div>
@@ -825,7 +828,7 @@
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
                                     <div>
                                       <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Activities / Interest / Hobbies</label>
-                                      <input type="text" class="form-control" id="height" name="height" placeholder="Activities / Interest / Hobbies">
+                                      <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Activities / Interest / Hobbies">
                                     </div>
                                   </div>
                                 </div>
@@ -858,156 +861,156 @@
                                         </thead>
                                         <tbody>
                                           <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
+                                            <th scope="row"> <input form="applicationForm" type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Average </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Limited </label>
                                                 </div>
                                               </div></td>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Average </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Limited </label>
                                                 </div>
                                               </div></td>
                                           </tr>
                                           <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
+                                            <th scope="row"> <input form="applicationForm" type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Average </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Limited </label>
                                                 </div>
                                               </div></td>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Average </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Limited </label>
                                                 </div>
                                               </div></td>
                                           </tr>
                                           <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
+                                            <th scope="row"> <input form="applicationForm" type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Average </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Limited </label>
                                                 </div>
                                               </div></td>
                                             <td><div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Good </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Average </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
+                                                </div>
+                                              </div></td>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row"> <input form="applicationForm" type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
+                                            <td><div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
+                                                </div>
+                                              </div></td>
+                                            <td><div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
+                                                </div>
+                                              </div></td>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row"> <input form="applicationForm" type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Enter Language"></th>
+                                            <td><div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Limited </label>
+                                                </div>
+                                              </div></td>
+                                            <td><div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                  <label class="form-check-label" for="flexCheckDefault"> Average </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                   <label class="form-check-label" for="flexCheckDefault"> Limited </label>
                                                 </div>
                                               </div></td>
@@ -1039,19 +1042,19 @@
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Year</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Year">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Year">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Title / Description / Basis for the Awards</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Title / Description / Basis for the Awards">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Title / Description / Basis for the Awards">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Organization / Country</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Organization / Country">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Organization / Country">
                                       </div>
                                     </div>
                                   </div>
@@ -1098,49 +1101,49 @@
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="datefrom" class="form-label mb-0"><sup class="text-danger">*</sup>Date From</label>
-                                        <input type="date" class="form-control" id="datefrom" name="datefrom" placeholder="Date From">
+                                        <input form="applicationForm" type="date" class="form-control" id="datefrom" name="datefrom" placeholder="Date From">
                                       </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="dateto" class="form-label mb-0"><sup class="text-danger">*</sup> Date To</label>
-                                        <input type="date" class="form-control" id="dateto" name="dateto" placeholder="Date To">
+                                        <input form="applicationForm" type="date" class="form-control" id="dateto" name="dateto" placeholder="Date To">
                                       </div>
                                     </div>
                                     <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Company Name / Principal Activities</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Company Name">
+                                        <input form="applicationForm" type="text" class="form-control" id="height" name="height" placeholder="Company Name">
                                       </div>
                                     </div>
                                     <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="location" class="form-label mb-0"><sup class="text-danger">*</sup>Address</label>
-                                        <input type="text" class="form-control" id="location" name="location" placeholder="Address">
+                                        <input form="applicationForm" type="text" class="form-control" id="location" name="location" placeholder="Address">
                                       </div>
                                     </div>
                                     <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="superior" class="form-label mb-0"><sup class="text-danger">*</sup>Designation</label>
-                                        <input type="text" class="form-control" id="superior" name="superior" placeholder="Designation">
+                                        <input form="applicationForm" type="text" class="form-control" id="superior" name="superior" placeholder="Designation">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="ssalary" class="form-label mb-0"><sup class="text-danger">*</sup>Starting Salary</label>
-                                        <input type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Starting Salary">
+                                        <input form="applicationForm" type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Starting Salary">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="ssalary" class="form-label mb-0"><sup class="text-danger">*</sup>Last Drawn Salary</label>
-                                        <input type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Last Drawn Salary">
+                                        <input form="applicationForm" type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Last Drawn Salary">
                                       </div>
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                       <div>
                                         <label for="esalary" class="form-label mb-0"><sup class="text-danger">*</sup>Reasons For Leaving</label>
-                                        <input type="text" class="form-control" id="esalary" name="esalary" placeholder="Reasons For Leaving">
+                                        <input form="applicationForm" type="text" class="form-control" id="esalary" name="esalary" placeholder="Reasons For Leaving">
                                       </div>
                                     </div>
                                   </div>
@@ -1168,13 +1171,13 @@
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ssalary" class="form-label mb-0"><sup class="text-danger">*</sup>Resignation Notice Period</label>
-                                      <input type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Resignation Notice Period">
+                                      <input form="applicationForm" type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Resignation Notice Period">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ssalary" class="form-label mb-0"><sup class="text-danger">*</sup>Earliest Commencement Date</label>
-                                      <input type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Earliest Commencement Date">
+                                      <input form="applicationForm" type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Earliest Commencement Date">
                                     </div>
                                   </div>
                                 </div>
@@ -1223,37 +1226,37 @@
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1name" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
-                                      <input type="text" class="form-control" id="ref1name" name="ref1name" placeholder="Name">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1name" name="ref1name" placeholder="Name">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1pos" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="ref1pos" name="ref1pos" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1pos" name="ref1pos" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1com" class="form-label mb-0"><sup class="text-danger">*</sup>Company Name</label>
-                                      <input type="text" class="form-control" id="ref1com" name="ref1com" placeholder="Company Name">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1com" name="ref1com" placeholder="Company Name">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1email" class="form-label mb-0"><sup class="text-danger">*</sup>Email Address</label>
-                                      <input type="email" class="form-control" id="ref1email" name="ref1email" placeholder="Email Address">
+                                      <input form="applicationForm" type="email" class="form-control" id="ref1email" name="ref1email" placeholder="Email Address">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>Phone Number</label>
-                                      <input type="tel" class="form-control" id="ref1phn" name="ref1phn" placeholder="Phone Number">
+                                      <input form="applicationForm" type="tel" class="form-control" id="ref1phn" name="ref1phn" placeholder="Phone Number">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>No. of years of Acquaintance</label>
-                                      <input type="text" class="form-control" id="ref1phn" name="ref1phn" placeholder="No. of years of Acquaintance">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1phn" name="ref1phn" placeholder="No. of years of Acquaintance">
                                     </div>
                                   </div>
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -1264,37 +1267,37 @@
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1name" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
-                                      <input type="text" class="form-control" id="ref1name" name="ref1name" placeholder="Name">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1name" name="ref1name" placeholder="Name">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1pos" class="form-label mb-0"><sup class="text-danger">*</sup>Occupation</label>
-                                      <input type="text" class="form-control" id="ref1pos" name="ref1pos" placeholder="Occupation">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1pos" name="ref1pos" placeholder="Occupation">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1com" class="form-label mb-0"><sup class="text-danger">*</sup>Company Name</label>
-                                      <input type="text" class="form-control" id="ref1com" name="ref1com" placeholder="Company Name">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1com" name="ref1com" placeholder="Company Name">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1email" class="form-label mb-0"><sup class="text-danger">*</sup>Email Address</label>
-                                      <input type="email" class="form-control" id="ref1email" name="ref1email" placeholder="Email Address">
+                                      <input form="applicationForm" type="email" class="form-control" id="ref1email" name="ref1email" placeholder="Email Address">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>Phone Number</label>
-                                      <input type="tel" class="form-control" id="ref1phn" name="ref1phn" placeholder="Phone Number">
+                                      <input form="applicationForm" type="tel" class="form-control" id="ref1phn" name="ref1phn" placeholder="Phone Number">
                                     </div>
                                   </div>
                                   <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div>
                                       <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>No. of years of Acquaintance</label>
-                                      <input type="text" class="form-control" id="ref1phn" name="ref1phn" placeholder="No. of years of Acquaintance">
+                                      <input form="applicationForm" type="text" class="form-control" id="ref1phn" name="ref1phn" placeholder="No. of years of Acquaintance">
                                     </div>
                                   </div>
                                 </div>
@@ -1335,30 +1338,30 @@
                                 <div class="mb-3">
                                   <label for="payslips" class="form-label mb-0">Upload Personality Test Result</label>
                                   <div class="input-group">
-                                    <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                    <input form="applicationForm" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                   </div>
                                 </div>
                                 <div class="mb-3">
                                   <label for="resume" class="form-label mb-0">Upload Updated Resume</label>
                                   <div class="input-group">
-                                    <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                    <input form="applicationForm" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                   </div>
                                 </div>
                                 <div class="mb-3">
                                   <label for="payslips" class="form-label mb-0">Upload MyKad/NRIC/Passport</label>
                                   <div class="input-group">
-                                    <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                    <input form="applicationForm" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                   </div>
                                 </div>
                                 <div class="mb-3">
                                   <div class="mb-3">
                                     <label for="payslips" class="form-label mb-0">Upload Academic Certificate</label>
                                     <div class="input-group">
-                                      <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                      <input form="applicationForm" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                     </div>
                                   </div>
                                   <div class="text-end">
@@ -1369,8 +1372,8 @@
                                   <div class="mb-3">
                                     <label for="payslips" class="form-label mb-0">Last 3 Months Payslips</label>
                                     <div class="input-group">
-                                      <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                      <input form="applicationForm" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                     </div>
                                   </div>
                                   <div class="text-end">
@@ -1398,23 +1401,23 @@
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
                                     <div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                         <label class="form-check-label" for="flexCheckDefault"> Recent passport size photograph </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                         <label class="form-check-label" for="flexCheckDefault"> Resume </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                         <label class="form-check-label" for="flexCheckDefault">Testimonials / References (Photocopy) </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                         <label class="form-check-label" for="flexCheckDefault">Degree / Diploma / Certificates </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <input form="applicationForm" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                         <label class="form-check-label" for="flexCheckDefault"> Transcripts of Secondary / University Results </label>
                                       </div>
                                     </div>
@@ -1459,7 +1462,7 @@
                                     <div class="bg-silver p-4 rounded mb-4">
                                       <div>
                                         <label for="medical" class="form-label mb-0">Remuneation / Salary expected</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Remuneation / Salary expected">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Remuneation / Salary expected">
                                       </div>
                                     </div>
                                   </div>
@@ -1467,7 +1470,7 @@
                                     <div class="bg-silver p-4 rounded mb-4">
                                       <div>
                                         <label for="medical" class="form-label mb-0">Career goals</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Career goals">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Career goals">
                                       </div>
                                     </div>
                                   </div>
@@ -1475,7 +1478,7 @@
                                     <div class="bg-silver p-4 rounded mb-4">
                                       <div>
                                         <label for="medical" class="form-label mb-0">Names of friends or relatives working in this Company</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Names of friends or relatives working in this Company">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Names of friends or relatives working in this Company">
                                       </div>
                                     </div>
                                   </div>
@@ -1483,7 +1486,7 @@
                                     <div class="bg-silver p-4 rounded mb-4">
                                       <div>
                                         <label for="medical" class="form-label mb-0">Other useful information to support your application</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Other useful information to support your application">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Other useful information to support your application">
                                       </div>
                                     </div>
                                   </div>
@@ -1492,17 +1495,17 @@
                                       <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Do you have your own transport?</label>
                                       <div class="mb-2">
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                           <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                           <label class="form-check-label" for="inlineCheckbox2">No</label>
                                         </div>
                                       </div>
                                       <div>
                                         <label for="medical" class="form-label mb-0">Type: car / motorcycle</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Type: car / motorcycle">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Type: car / motorcycle">
                                       </div>
                                     </div>
                                   </div>
@@ -1511,17 +1514,17 @@
                                       <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Are you willing to travel outstation or being allocated?</label>
                                       <div class="mb-2">
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                           <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                           <label class="form-check-label" for="inlineCheckbox2">No</label>
                                         </div>
                                       </div>
                                       <div>
                                         <label for="medical" class="form-label mb-0">If no, please give reasons</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
                                       </div>
                                     </div>
                                   </div>
@@ -1530,17 +1533,17 @@
                                       <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Have you have any criminal record and or bankruptcy action?</label>
                                       <div class="mb-2">
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                           <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                           <label class="form-check-label" for="inlineCheckbox2">No</label>
                                         </div>
                                       </div>
                                       <div>
                                         <label for="medical" class="form-label mb-0">If yes, please give reasons</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
                                       </div>
                                     </div>
                                   </div>
@@ -1549,17 +1552,17 @@
                                       <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Have you ever been issued warning letter, suspended & dismissed from work?</label>
                                       <div class="mb-2">
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                           <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                           <label class="form-check-label" for="inlineCheckbox2">No</label>
                                         </div>
                                       </div>
                                       <div>
                                         <label for="medical" class="form-label mb-0">If yes, please give reasons</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
                                       </div>
                                     </div>
                                   </div>
@@ -1568,17 +1571,17 @@
                                       <label for="condition" class="form-label mb-0"><sup class="text-danger">*</sup>Are you currently undergoing long term medical treatment?</label>
                                       <div class="mb-2">
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                           <label class="form-check-label" for="inlineCheckbox1">Yes</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                          <input form="applicationForm" class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
                                           <label class="form-check-label" for="inlineCheckbox2">No</label>
                                         </div>
                                       </div>
                                       <div>
                                         <label for="medical" class="form-label mb-0">If yes, please give the detail</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
+                                        <input form="applicationForm" type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If YES, please elaborate">
                                       </div>
                                     </div>
                                   </div>
@@ -1601,7 +1604,7 @@
                               <div class="col-xxl-7 col-xl-7 col-lg-7 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
                                 <div class="row">
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
-                                    <div class="alert alert-success mb-0" role="alert"> Your application has been successfully submitted and is under review. We will contact you if further information is needed or to provide updates on the next steps. Thank you for your interest.</div>
+                                    <div class="alert alert-success mb-0" role="alert"> Please review your information and declaration before submitting. Use Save to keep a draft; only Submit sends the completed application for review.</div>
                                   </div>
                                   <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
                                     <p class="text-extra-small font-weight-400 mb-0">I certify that the above information is correct and can be treated as part of any subsequent contract of my employment made between the employer and me. <br>
@@ -1612,25 +1615,25 @@
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                     <div class="mb-3">
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Signature of the applicant</label>
+                                      <label for="applicant_signature" class="form-label mb-0"><sup class="text-danger">*</sup>Signature of the applicant</label>
                                       <div class="input-group">
-                                        <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                        <button class="brand-button-alt" type="button" id="inputGroupFileAddon04" data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                        <input form="applicationForm" type="file" name="applicant_signature" class="form-control" id="applicant_signature" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                        <button class="brand-button-alt" type="button" id="inputGroupFileAddon04" data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                       </div>
                                     </div>
                                     <div>
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Candidate's Name</label>
-                                      <input type="text" class="form-control" id="name" name="name" placeholder="Candidate's Name">
+                                      <label for="declaration_name" class="form-label mb-0"><sup class="text-danger">*</sup>Candidate's Name</label>
+                                      <input form="applicationForm" type="text" class="form-control" id="declaration_name" name="declaration_name" placeholder="Candidate's Name">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                     <div class="mb-3">
                                       <label for="date" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
-                                      <input type="date" class="form-control" id="date" name="date" placeholder="Date">
+                                      <input form="applicationForm" type="date" class="form-control" id="declaration_date" name="declaration_date" placeholder="Date">
                                     </div>
                                     <div>
                                       <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup> NRIC/Passport No.</label>
-                                      <input type="text" class="form-control" id="nric" name="nric" placeholder="NRIC/Passport No.">
+                                      <input form="applicationForm" type="text" class="form-control" id="nric" name="declaration_nric" placeholder="NRIC/Passport No.">
                                     </div>
                                   </div>
                                 </div>
@@ -1679,25 +1682,25 @@
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div class="mb-3">
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup> Signature</label>
+                                      <label for="pdpa_signature" class="form-label mb-0"><sup class="text-danger">*</sup> Signature</label>
                                       <div class="input-group">
-                                        <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                        <button class="brand-button-alt" type="button" id="inputGroupFileAddon04" data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
+                                        <input form="applicationForm" type="file" name="pdpa_signature" class="form-control" id="pdpa_signature" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                        <button class="brand-button-alt" type="button" id="inputGroupFileAddon04" data-bs-toggle="modal" data-bs-target="#chooseModal">Saved Files</button>
                                       </div>
                                     </div>
                                     <div>
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
-                                      <input type="text" class="form-control" id="name" name="name" placeholder="Candidate's Name">
+                                      <label for="pdpa_name" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
+                                      <input form="applicationForm" type="text" class="form-control" id="pdpa_name" name="pdpa_name" placeholder="Candidate's Name">
                                     </div>
                                   </div>
                                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                     <div class="mb-3">
                                       <label for="date" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
-                                      <input type="date" class="form-control" id="date" name="date" placeholder="Date">
+                                      <input form="applicationForm" type="date" class="form-control" id="pdpa_date" name="pdpa_date" placeholder="Date">
                                     </div>
                                     <div>
-                                      <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup>NRIC No.</label>
-                                      <input type="text" class="form-control" id="nric" name="nric" placeholder="NRIC/Passport No.">
+                                      <label for="pdpa_nric" class="form-label mb-0"><sup class="text-danger">*</sup>NRIC No.</label>
+                                      <input form="applicationForm" type="text" class="form-control" id="pdpa_nric" name="pdpa_nric" placeholder="NRIC/Passport No.">
                                     </div>
                                   </div>
                                 </div>
@@ -1715,6 +1718,8 @@
                                   <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
                                 </div>
                                 <div>
+                                  <div class="form-check mb-2"><input form="applicationForm" type="checkbox" class="form-check-input" name="declaration_confirmed" id="declaration_confirmed" value="true"><label class="form-check-label" for="declaration_confirmed">I confirm the applicant declaration above.</label></div>
+                                  <div class="form-check mb-3"><input form="applicationForm" type="checkbox" class="form-check-input" name="pdpa_confirmed" id="pdpa_confirmed" value="true"><label class="form-check-label" for="pdpa_confirmed">I agree to the PDPA consent above.</label></div>
                                   <button type="submit" class="brand-button">Submit</button>
                                 </div>
                               </div>
@@ -1809,30 +1814,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>8948225654</td>
-                      <td>Curriculam Vitae</td>
-                      <td>.docx</td>
-                      <td><div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div></td>
-                    </tr>
-                    <tr>
-                      <td>8872427322</td>
-                      <td>Passport</td>
-                      <td>.pdf</td>
-                      <td><div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div></td>
-                    </tr>
-                    <tr>
-                      <td>9656886319</td>
-                      <td>Jan Salary Slip</td>
-                      <td>.jpg</td>
-                      <td><div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div></td>
-                    </tr>
+                    {% for uploaded in uploaded_files %}
+                    <tr><td>{{ uploaded.pk }}</td><td>{{ uploaded.file.name }}</td><td>{{ uploaded.field_name }}</td><td><a href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener">View saved file</a></td></tr>
+                    {% empty %}<tr><td colspan="4">No files saved yet. Choose files from your device and save your draft first.</td></tr>{% endfor %}
                   </tbody>
                 </table>
               </div>
@@ -1841,7 +1825,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="brand-button me-1" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="brand-button-alt">Confirm </button>
+          <button type="button" class="brand-button-alt" data-bs-dismiss="modal">Done</button>
         </div>
       </div>
     </div>
@@ -1858,9 +1842,42 @@
 (function () {
   const master = document.getElementById('applicationForm');
   if (!master) return;
-  const controls = Array.from(document.querySelectorAll('input, select, textarea'));
+  const repeatCounts = {};
+  const repeatedValues = JSON.parse(document.getElementById('saved-form-data').textContent || '{}');
+  const repeatSaved = repeatedValues._repeat_counts || {};
+  Object.keys(repeatedValues).forEach(key => {
+    const match = key.match(/^(repeat\d+)_row(\d+)_/);
+    if (match) repeatSaved[match[1]] = Math.max(Number(repeatSaved[match[1]]) || 0, Number(match[2]));
+  });
+  const repeatGroups = Array.from(document.querySelectorAll('button')).filter(button => button.textContent.trim() === 'Add More').map((button, index) => {
+    const source = button.parentElement.previousElementSibling;
+    const key = 'repeat' + index;
+    repeatCounts[key] = 0;
+    const addRow = () => {
+      if (!source || repeatCounts[key] >= 20) return [];
+      const clone = source.cloneNode(true);
+      const number = ++repeatCounts[key];
+      const fields = Array.from(clone.querySelectorAll('input, select, textarea'));
+      fields.forEach((el, fieldIndex) => {
+        el.name = key + '_row' + number + '_' + (el.name || 'field' + fieldIndex);
+        el.id = el.name;
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+        else el.value = '';
+      });
+      button.parentElement.before(clone);
+      return fields;
+    };
+    for (let row = 0; row < Math.min(Number(repeatSaved[key]) || 0, 20); row++) addRow();
+    return {button, addRow};
+  });
+  const repeatInput = document.createElement('input');
+  repeatInput.type = 'hidden'; repeatInput.name = '_repeat_counts'; repeatInput.value = JSON.stringify(repeatCounts);
+  master.appendChild(repeatInput);
+  const controls = Array.from(document.querySelectorAll('[form="applicationForm"]'));
+  const occurrences = {};
+  const fieldLabels = {};
   let unnamedUpload = 0;
-  controls.forEach((el) => {
+  const registerControl = (el) => {
     if (el.type === 'hidden' && el.name === 'csrfmiddlewaretoken') return;
     if (!el.name) {
       const label = el.closest('.mb-3, .form-group, div')?.querySelector('label');
@@ -1869,8 +1886,36 @@
       el.name = (el.type === 'file' ? 'upload_' : 'field_') +
         (base || 'field') + '_' + (++unnamedUpload);
     }
+    if (el.type !== 'radio' && el.type !== 'hidden') {
+      const original = el.name;
+      occurrences[original] = (occurrences[original] || 0) + 1;
+      if (occurrences[original] > 1) el.name = original + '__' + occurrences[original];
+    }
+    const container = el.closest('.mb-3, .form-check, .form-group') || el.parentElement;
+    const label = container?.querySelector('label');
+    const row = el.closest('tr');
+    const context = row?.querySelector('th')?.innerText.trim() || el.closest('.card')?.querySelector('.card-header')?.innerText.trim();
+    fieldLabels[el.name] = [context, label?.innerText.trim() || el.placeholder || el.name].filter(Boolean).join(' - ');
+    if (el.type === 'checkbox' && !el.value) el.value = 'true';
+    if (el.type === 'file') {
+      el.multiple = !el.name.includes('signature');
+      el.accept = '.pdf,.doc,.docx,.jpg,.jpeg,.png,.webp';
+    }
     if (el.name) el.setAttribute('form', 'applicationForm');
-  });
+  };
+  controls.forEach(registerControl);
+  const labelInput = document.createElement('input');
+  labelInput.type = 'hidden';
+  labelInput.name = '_field_labels';
+  labelInput.value = JSON.stringify(fieldLabels);
+  master.appendChild(labelInput);
+  repeatGroups.forEach(({button, addRow}) => button.addEventListener('click', () => {
+    const fields = addRow();
+    fields.forEach(registerControl);
+    controls.push(...fields);
+    repeatInput.value = JSON.stringify(repeatCounts);
+    labelInput.value = JSON.stringify(fieldLabels);
+  }));
 
   // Restore values saved by the server without trying to populate file inputs.
   let saved = {};
@@ -1904,7 +1949,10 @@
   const buttons = Array.from(document.querySelectorAll('button'));
   buttons.forEach((button) => {
     const label = button.innerText.replace(/\s+/g, ' ').trim().toLowerCase();
-    if (label === 'save' || label.includes('save draft')) {
+    if (label === 'upload more') {
+      button.textContent = 'Choose Multiple Files';
+      button.addEventListener('click', () => button.parentElement.previousElementSibling?.querySelector('input[type="file"]')?.click());
+    } else if (label === 'save' || label.includes('save draft')) {
       button.type = 'submit';
       button.setAttribute('form', 'applicationForm');
       button.name = 'action';
@@ -1923,9 +1971,15 @@
     }
   });
 
-  master.addEventListener('submit', function () {
+  master.addEventListener('submit', function (event) {
+    master.querySelectorAll('[data-unchecked]').forEach(el => el.remove());
+    controls.filter(el => el.type === 'checkbox' && !el.checked).forEach(el => {
+      const blank = document.createElement('input');
+      blank.type = 'hidden'; blank.name = el.name; blank.value = ''; blank.dataset.unchecked = 'true';
+      master.appendChild(blank);
+    });
     // Do not send the hidden action field when the final-submit button is used.
-    const active = document.activeElement;
+    const active = event.submitter;
     if (active && active.name === 'final_submit') {
       document.getElementById('formAction').disabled = true;
     } else {

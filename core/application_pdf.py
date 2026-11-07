@@ -664,7 +664,19 @@ def build_application_pdf(app, ctx):
         ),
     ]
 
-    if "nevigate" in company_lower:
+    if ctx.get("form_slug") in {"raddish", "nevigate"}:
+        story.append(Paragraph("Submitted Application", styles["section"]))
+        for field in ctx.get("submitted_fields", []):
+            story.append(Paragraph(_escape(field["label"]), styles["label"]))
+            story.append(Paragraph(_escape(field["value"]), styles["value"]))
+            story.append(Spacer(1, 4))
+        story.append(Paragraph("Uploaded Documents and Images", styles["section"]))
+        for uploaded in ctx.get("uploaded_files", []):
+            story.append(Paragraph(_escape(_uploaded_name(uploaded)), styles["label"]))
+            story.append(_file_flowable(styles, uploaded))
+            story.append(Spacer(1, 6))
+
+    elif "nevigate" in company_lower:
         story.extend(
             _build_nevigate(styles, app, ctx)
         )
@@ -686,6 +698,8 @@ def build_application_pdf(app, ctx):
     )
 
     pdf_bytes = buffer.getvalue()
+    if ctx.get("form_slug") in {"raddish", "nevigate"}:
+        pdf_bytes = _append_uploaded_pdfs(pdf_bytes, ctx.get("uploaded_files", []))
 
     response = HttpResponse(
         pdf_bytes,

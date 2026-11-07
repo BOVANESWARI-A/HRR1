@@ -523,6 +523,7 @@ class AuditTrail(models.Model):
         ("view", "Application Viewed"),
         ("download", "Application Downloaded"),
         ("forwarded", "Forwarded to HR by Agent"),
+        ("forward_confirmed", "Forward Confirmed by Agent"),
         ("hr_viewed", "Application Viewed by HR"),
         ("hr_downloaded", "Application Downloaded by HR"),
         ("agent_viewed", "Application Viewed by Agent"),

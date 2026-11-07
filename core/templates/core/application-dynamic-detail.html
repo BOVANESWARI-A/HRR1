@@ -61,6 +61,7 @@
                 <div class="d-flex gap-2 align-items-center">
                   <span class="badge bg-secondary">{{ application.get_status_display }}</span>
                   <a class="btn btn-dark btn-sm" href="{% url 'application_detail' application.pk %}?download=pdf"><i class="bi bi-download"></i> Download PDF</a>
+                  <a class="btn btn-outline-dark btn-sm" href="{% url 'application_detail' application.pk %}?download=zip"><i class="bi bi-file-earmark-zip"></i> Download Form &amp; All Files</a>
                 </div>
               </div>
               <div class="card-body">
@@ -86,8 +87,8 @@
                       <small class="text-muted">{{ uploaded.field_name|default:"Uploaded document" }} · {{ uploaded.uploaded_at|date:"d M Y, h:i A" }}</small>
                     </div>
                     <div class="file-actions">
-                      <a class="file-action" href="{{ uploaded.file.url }}" target="_blank" rel="noopener"><i class="bi bi-eye"></i> View</a>
-                      <a class="file-action" href="{{ uploaded.file.url }}" download><i class="bi bi-download"></i> Download</a>
+                      <a class="file-action" href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener"><i class="bi bi-eye"></i> View</a>
+                      <a class="file-action" href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}&amp;download=1" download><i class="bi bi-download"></i> Download</a>
                     </div>
                   </div>
                 {% empty %}
@@ -96,7 +97,11 @@
               </div>
             </div>
             <div class="my-3 d-flex gap-2 flex-wrap">
+              {% if role == 'candidate' %}
+              <a href="{% url 'submitted_applications' %}" class="btn btn-dark"><i class="bi bi-arrow-left"></i> Back to Submitted Applications</a>
+              {% else %}
               <a href="{% url 'received_applications' %}" class="btn btn-dark"><i class="bi bi-arrow-left"></i> Back to Received Applications</a>
+              {% endif %}
               <a href="{% url 'application_detail' application.pk %}?download=pdf" class="btn btn-outline-dark"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
             </div>
           </section>

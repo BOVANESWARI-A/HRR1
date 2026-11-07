@@ -676,7 +676,7 @@
 
                                                                     {% if role == "agent" %}
 <li data-bs-toggle="tooltip" data-bs-placement="top" title="Forward to HR">
- <button type="button" class="btn btn-link p-0 border-0 forward-application-btn" data-application-id="{{ app.id }}" aria-label="Forward to HR"><i class="bi bi-share"></i></button>
+ <button type="button" class="btn btn-link p-0 border-0 forward-application-btn" data-application-id="{{ app.id }}" data-company-email="{{ app.forward_hr_email }}" data-company-name="{{ app.company.name }}" data-candidate-name="{{ app.candidate.full_name|default:app.candidate.email }}" aria-label="Forward to HR"><i class="bi bi-share"></i></button>
 </li>
 {% endif %}
 <li data-bs-toggle="tooltip" data-bs-placement="top" title="Archive">
@@ -983,24 +983,10 @@ document.addEventListener("DOMContentLoaded", function () {
       setTimeout(() => row.classList.remove("table-warning"), 5000);
     }
   }
-  document.querySelectorAll(".forward-application-btn").forEach(function (button) {
-    button.addEventListener("click", function () {
-      const email = window.prompt("Enter the HR email address to forward this application to:");
-      if (!email) return;
-      const value = email.trim();
-      if (!value) return;
-      const form = document.createElement("form");
-      form.method = "post";
-      form.action = "{% url 'forward_application_to_hr' 0 %}".replace("/0/", "/" + button.dataset.applicationId + "/");
-      form.innerHTML = '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">' +
-                       '<input type="hidden" name="recipient_email" value="' + value.replace(/"/g, "&quot;") + '">' +
-                       '<input type="hidden" name="next" value="' + window.location.pathname + '">';
-      document.body.appendChild(form);
-      form.submit();
-    });
-  });
+
 });
 </script>
+{% include "core/includes/forward-modal.html" %}
 </body>
 
 </html>

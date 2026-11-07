@@ -1,0 +1,63 @@
+{% if role == "agent" %}
+<div class="custom-modal">
+  <div class="modal fade" id="forwardApplicationModal" tabindex="-1" aria-labelledby="forwardApplicationTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <form method="post" id="forwardApplicationForm">
+          {% csrf_token %}
+          <input type="hidden" name="next" id="forwardReturnUrl">
+          <div class="modal-header">
+            <h5 class="modal-title" id="forwardApplicationTitle"><i class="bi bi-send me-2"></i>Forward Application to HR</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+            <p class="text-muted mb-3">Review the recipient before sharing this application.</p>
+            <div class="bg-light rounded p-3 mb-4">
+              <div class="mb-2"><span class="text-muted">Candidate:</span> <strong id="forwardCandidateName"></strong></div>
+              <div><span class="text-muted">Company:</span> <strong id="forwardCompanyName"></strong></div>
+            </div>
+            <label for="forwardRecipientEmail" class="form-label">HR email address <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="forwardRecipientEmail" name="recipient_email" placeholder="hr@company.com" autocomplete="email" required aria-describedby="forwardEmailHelp">
+            <div class="form-text mt-2" id="forwardEmailHelp">The registered HR email is prefilled when available. You can correct it before forwarding.</div>
+            <div class="alert alert-info mt-3 mb-0 small">After the email is sent successfully, this application will move to Submitted Applications.</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="brand-button-alt" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="brand-button" id="confirmForwardButton"><i class="bi bi-send me-1"></i>Confirm &amp; Forward</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const modalElement = document.getElementById("forwardApplicationModal");
+  const form = document.getElementById("forwardApplicationForm");
+  const email = document.getElementById("forwardRecipientEmail");
+  const submit = document.getElementById("confirmForwardButton");
+  document.querySelectorAll(".forward-application-btn").forEach(function (button) {
+    button.addEventListener("click", function () {
+      form.reset();
+      submit.disabled = false;
+      form.action = "{% url 'forward_application_to_hr' 0 %}".replace("/0/", "/" + button.dataset.applicationId + "/");
+      document.getElementById("forwardReturnUrl").value = window.location.pathname;
+      document.getElementById("forwardCandidateName").textContent = button.dataset.candidateName || "Candidate";
+      document.getElementById("forwardCompanyName").textContent = button.dataset.companyName || "Company";
+      email.value = button.dataset.companyEmail || "";
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
+    });
+  });
+  modalElement.addEventListener("shown.bs.modal", function () { email.focus(); });
+  form.addEventListener("submit", function (event) {
+    email.value = email.value.trim();
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      form.reportValidity();
+      return;
+    }
+    submit.disabled = true;
+  });
+});
+</script>
+{% endif %}
