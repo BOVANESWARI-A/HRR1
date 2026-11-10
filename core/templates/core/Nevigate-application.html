@@ -1310,13 +1310,12 @@
       const formLabel = familyLabels[key];
       const idx = familyOrder[formLabel];
       const parts = [take(formLabel, 0), take('age', idx), take('occupation', idx), take('contact number', idx)].filter(Boolean);
-      if (parts.length) valueP.textContent = parts.join(', ');
+      valueP.textContent = parts.length ? parts.join(', ') : '-';
       return;
     }
     const occ = seen[key] || 0;
     seen[key] = occ + 1;
-    const value = take(key, occ);
-    if (value) valueP.textContent = value;
+    valueP.textContent = take(key, occ) || '-';
   });
 })();
 </script>

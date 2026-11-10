@@ -406,6 +406,18 @@ class HistoricalAutofillTests(TestCase):
         self.assertEqual(result["reference"]["ref1name"], "Referee")
         self.assertEqual(result["employment_expectations"]["notice_period"], "30 days")
 
+    def test_age_is_computed_from_dob_or_adjusted_for_elapsed_years(self):
+        from datetime import timedelta
+        old = self.previous({"personal_information": {"age": "25"}})
+        JobApplication.objects.filter(pk=old.pk).update(submitted_at=timezone.now() - timedelta(days=740))
+        result = self.defaults()
+        self.assertEqual(result["personal_information"]["age"], "27")
+        self.previous({"personal_information": {"age": "40", "dob": "1990-06-01"}})
+        result = self.defaults()
+        today = timezone.now().date()
+        expected = today.year - 1990 - ((today.month, today.day) < (6, 1))
+        self.assertEqual(result["personal_information"]["age"], str(expected))
+
     def test_maps_macro_fields_by_meaning_not_shared_field_name(self):
         self.previous({"macro_section_1": {"name": "Macro Name", "nationality_4": "01234567", "address": "Permanent", "address_2": "Current"}, "macro_section_2": {"height": "Employer Ltd"}, "macro_section_4": {"lastsalary_2": "9000", "expectedsalary": "Benefits", "ref1name_2": "Second Referee"}}, company=self.macro)
         result = self.defaults()

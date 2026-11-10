@@ -1919,11 +1919,19 @@ def _candidate_defaults(app):
         prefill_timestamp=Coalesce("submitted_at", "updated_at"),
     ).order_by("-prefill_timestamp", "-pk")
     groups = _prefill_field_groups()
+    identity_section = {"insitemy": "personal_information", "macro_kiosk": "macro_section_1", "raddish": "raddish_application", "nevigate": "nevigate_application"}.get(form_type)
+    age_source_dates = {}
     for old in previous:
         if not isinstance(old.data, dict):
             continue
         old_type = _prefill_form_type(old)
         safe = _prefill_safe_data(old.data)
+        if old_type == form_type and identity_section:
+            source_section = safe.get(identity_section, {})
+            if isinstance(source_section, dict):
+                for key, value in source_section.items():
+                    if key.startswith("age") and _prefill_has_value(value) and key not in age_source_dates:
+                        age_source_dates[key] = old.prefill_timestamp
         if old_type == form_type:
             _prefill_merge(defaults, {key: value for key, value in safe.items() if key in sections.get(form_type, set())})
             review_fields = {
@@ -1965,8 +1973,33 @@ def _candidate_defaults(app):
                     if needs_nric != is_nric:
                         continue
                 _prefill_merge(defaults, {destination_section: {destination_field: value}})
-    identity_section = {"insitemy": "personal_information", "macro_kiosk": "macro_section_1", "raddish": "raddish_application", "nevigate": "nevigate_application"}.get(form_type)
     if identity_section:
+        section_defaults = defaults.get(identity_section)
+        if isinstance(section_defaults, dict):
+            from datetime import datetime as _dt, date as _date
+            dob_age = None
+            dob_text = str(section_defaults.get("dob", "") or "").strip()
+            born = None
+            for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+                try:
+                    born = _dt.strptime(dob_text, fmt).date()
+                    break
+                except (ValueError, TypeError):
+                    continue
+            if born is not None:
+                today = _date.today()
+                dob_age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+                if 0 <= dob_age <= 120:
+                    section_defaults["age"] = str(dob_age)
+            if dob_age is None:
+                for key, source_date in age_source_dates.items():
+                    value = section_defaults.get(key)
+                    if value in (None, "") or not str(value).strip().isdigit() or not source_date:
+                        continue
+                    today = _date.today()
+                    elapsed = today.year - source_date.year - ((today.month, today.day) < (source_date.month, source_date.day))
+                    if elapsed > 0:
+                        section_defaults[key] = str(int(str(value).strip()) + elapsed)
         identity = {"name": normalize_person_name(app.candidate.full_name), "email": app.candidate.email}
         if form_type == "insitemy":
             identity["phone"] = app.candidate.phone
@@ -2181,20 +2214,58 @@ def _dynamic_form_fields(app):
     return fields
 
 
+def _dynamic_section_image(title):
+    lowered = (title or "").lower()
+    if "family" in lowered:
+        return "family.png"
+    if "language" in lowered:
+        return "language.png"
+    if "education" in lowered or "academic" in lowered:
+        return "college.png"
+    if "qualification" in lowered or "training" in lowered:
+        return "education.png"
+    if "membership" in lowered or "societies" in lowered or "club" in lowered:
+        return "membership.png"
+    if "computer" in lowered or "software" in lowered or "skill" in lowered:
+        return "computer.png"
+    if "leisure" in lowered or "activit" in lowered or "interest" in lowered or "hobb" in lowered:
+        return "hobbies.png"
+    if "award" in lowered:
+        return "trophy.png"
+    if "reference" in lowered:
+        return "reference-details.png"
+    if "document" in lowered or "attachment" in lowered:
+        return "document-submission.png"
+    if "declaration" in lowered or "consent" in lowered or "pdpa" in lowered:
+        return "declaration.png"
+    if "employment" in lowered or "job role" in lowered or "responsibilit" in lowered or "experience" in lowered:
+        return "experience.png"
+    if "notice" in lowered:
+        return "calendar.png"
+    if "application for" in lowered or "position" in lowered:
+        return "position-applied.png"
+    if "personal" in lowered or "particular" in lowered:
+        return "personal-details.png"
+    return "others.png"
+
+
 def _dynamic_field_groups(app):
-    """Group submitted fields into the form's card sections, in DOM order."""
-    groups = []
-    current = None
+    """Group submitted fields by card section, in first-seen order.
+
+    The stored label context can repeat non-consecutively (fields inside
+    nested cards or table rows pick the nearest element), so group by the
+    normalized title instead of consecutive runs.
+    """
+    groups = {}
+    order = []
     for field in _dynamic_form_fields(app):
-        context = field["context"]
-        if context and (current is None or current["title"] != context):
-            current = {"title": context, "fields": []}
-            groups.append(current)
-        elif current is None:
-            current = {"title": "Application Details", "fields": []}
-            groups.append(current)
-        current["fields"].append(field)
-    return groups
+        context = (field["context"] or "").split("\n")[0].strip()
+        title = context or "Application Details"
+        if title not in groups:
+            groups[title] = {"title": title, "image": _dynamic_section_image(title), "fields": []}
+            order.append(title)
+        groups[title]["fields"].append(field)
+    return [groups[title] for title in order]
 
 
 def _dynamic_candidate_application(request, app, invitation, slug):

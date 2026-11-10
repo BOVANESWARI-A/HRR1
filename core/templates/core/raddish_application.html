@@ -1,6 +1,5 @@
 {% load static %}
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -18,19 +17,14 @@
 <script src="{% static 'core/assets/js/css3-mediaqueries.js' %}" type="text/javascript" defer></script>
 <script src="{% static 'core/assets/js/respond.min.js' %}" type="text/javascript" defer></script>
 <![endif]-->
-<style id="macro-enterprise-validation-style">
-#myTab .macro-step-locked{opacity:.45;cursor:not-allowed;pointer-events:none}
-#myTab .macro-step-locked:after{content:"  🔒";font-size:.78em}
-.macro-invalid{border-color:#dc3545!important;box-shadow:0 0 0 .12rem rgba(220,53,69,.12)!important}
-.macro-field-error{color:#dc3545;font-size:.78rem;margin-top:.25rem}
-.macro-save-done{opacity:.75;pointer-events:none}
-</style><link rel="stylesheet" href="{% static 'core/assets/icons/bootstrap-icons/bootstrap-icons.min.css' %}">
+<link rel="stylesheet" href="{% static 'core/assets/icons/bootstrap-icons/bootstrap-icons.min.css' %}">
 </head>
-<body><form id="applicationForm" method="post" enctype="multipart/form-data" style="display:none">{% csrf_token %}<input type="hidden" name="action" id="formAction" value="submit"></form>
+<body>
 {% if messages %}<div class="position-fixed top-0 end-0 p-3" style="z-index:9999">{% for message in messages %}<div class="alert alert-info shadow-sm">{{ message }}</div>{% endfor %}</div>{% endif %}
 <div class="wrapper">
 <!-- Sidebar -->
 {% include "core/sidebar.html" %}
+<!-- Sidebar -->
 <!-- Main -->
 <div class="flex-grow-1" id="main-content">
 <!-- Header -->
@@ -93,394 +87,287 @@
 </div>
 </div></header>
 <!-- Header -->
- <!-- Content Body -->
+    <!-- Content Body -->
     <div class="content-wrapper">
       <div class="container-fluid px-4">
         <div class="py-4">
-        <section class="page-container"> 
-          <!-- Title -->
-          <div class="pagetitle pt-2 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div>
-            <p class="text-medium font-weight-500">Job Application</p>
-            <p class="text-extra-small font-weight-400 text-muted">Submitted application for {{ application.candidate.full_name|default:application.candidate.email }}{% if position %} - {{ position }}{% endif %}.</p>
+          <section class="page-container">
+            <!-- Title -->
+            <div class="pagetitle pt-2 mb-3">
+              <p class="text-medium font-weight-500">View Application</p>
             </div>
-            <div class="d-flex gap-2">
-              <a href="{% url 'application_detail' application.pk %}?download=pdf" class="brand-button-alt btn-sm" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a>
-              <a href="{% url 'application_detail' application.pk %}?download=zip" class="brand-button-alt btn-sm"><i class="bi bi-file-earmark-zip"></i>&nbsp;&nbsp;All Files</a>
-            </div>
-          </div>
-          <!-- progress bar -->
-          <div class="MyProgress mb-3">
-            <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-              <div class="progress-bar bg-green" style="width: 14.5%"></div>
-            </div>
-          </div>
-          <!-- center body -->
-          <div class="content-section">
-            <div class="row">
-              <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
-                <div class="custom-horizontal-tabs">
-                  <ul class="nav nav-tabs nav-justified mb-0" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link active" id="job-tab-1" data-bs-toggle="tab" data-bs-target="#home-tab-1" type="button" role="tab" aria-controls="home-tab-1" aria-selected="true">Personal<br>
-                      Information</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="job-tab-2" data-bs-toggle="tab" data-bs-target="#home-tab-2" type="button" role="tab" aria-controls="home-tab-2" aria-selected="false">Education<br>
-                      Qualification</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="job-tab-3" data-bs-toggle="tab" data-bs-target="#home-tab-3" type="button" role="tab" aria-controls="home-tab-3" aria-selected="false">Employment<br>
-                      History</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="job-tab-4" data-bs-toggle="tab" data-bs-target="#home-tab-4" type="button" role="tab" aria-controls="home-tab-4" aria-selected="false">Reference <br>
-                      Details</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="job-tab-5" data-bs-toggle="tab" data-bs-target="#home-tab-5" type="button" role="tab" aria-controls="home-tab-5" aria-selected="false">Document <br>
-                      Submission</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="job-tab-6" data-bs-toggle="tab" data-bs-target="#home-tab-6" type="button" role="tab" aria-controls="home-tab-6" aria-selected="false">Other <br>
-                      Information</button>
-                    </li>
-                  </ul>
-                  <div class="tab-content" id="myTabContent">
-                    
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <p class="text-medium font-weight-600">Personal Details</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please provide your personal details, including your full name, contact information, date of birth, and any other relevant information required for the application process.</p>
+            <!-- center body -->
+            <div class="content-section">
+              <div class="row">
+                <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
+                  <div class="card card-box">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                          <p class="text-medium font-weight-600"><span>#{{ application.pk }}</span>{% if position %} - <span>{{ position }}</span>{% endif %}</p>
+                          <p class="text-extra-small font-weight-400 text-muted">{{ application.candidate.full_name|default:application.candidate.email }}</p>
+                        </div>
+                        <div class="d-flex gap-2"><a href="{% url 'application_detail' application.pk %}?download=pdf" class="brand-button-alt btn-sm" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;PDF</a><a href="{% url 'application_detail' application.pk %}?download=zip" class="brand-button-alt btn-sm"><i class="bi bi-file-earmark-zip"></i>&nbsp;&nbsp;All Files</a> </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <div class="d-flex gap-4 align-items-center justify-content-between">
+                        <div>
+                          <p class="text-extra-small font-weight-500">Personal Information</p>
+                        </div>
+                        <div>
+                          {% if photo_file %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ photo_file.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;Photo</a>{% endif %}
                         </div>
                       </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Application for employment as</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/personal-details.png' %}" alt="Stalwart Business Solutions" width="120"></div>
                         </div>
-                        <div class="card-body">
-                          
-                            <div class="row align-items-center">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/position-applied.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Analyst Programmer (Java / .Net) </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Product / Project Manager </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Business Manager / Sales / Marketing </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">Finance / HR / Admin </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> RPA Developer </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Consultant </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">Designer </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">Others </label>
-                                      </div>
-                                      <div class="pt-2">
-                                        <input type="text" class="form-control" id="others" name="others" placeholder="Others">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Personal Particulars</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/personal-details.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <label for="payslips" class="form-label mb-0"><sup class="text-danger">*</sup>Upload Passport Size Photo</label>
-                                    <div class="input-group">
-                                      <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Full Name</label>
-                                      <input type="text" class="form-control" id="name" name="name" placeholder="Name">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="email" class="form-label mb-0"><sup class="text-danger">*</sup>Email Address </label>
-                                      <input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="address" class="form-label mb-0"><sup class="text-danger">*</sup>Home Address</label>
-                                      <input type="text" class="form-control" id="address" name="address" placeholder="Home Address">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="address" class="form-label mb-0"><sup class="text-danger">*</sup>Correspondence Address</label>
-                                      <input type="text" class="form-control" id="address" name="address" placeholder="Current Home Address">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="telephone" class="form-label mb-0"><sup class="text-danger">*</sup>Home Telephone </label>
-                                      <input type="text" class="form-control" id="telephone" name="Telephone" placeholder="Telephone">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="telephone" class="form-label mb-0"><sup class="text-danger">*</sup>Correspondence Telephone </label>
-                                      <input type="text" class="form-control" id="telephone" name="Telephone" placeholder="Correspondence Telephone">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="dob" class="form-label mb-0"><sup class="text-danger">*</sup>Date of Birth </label>
-                                      <input type="date" class="form-control" id="dob" name="dob" placeholder="Date of Birth">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="age" class="form-label mb-0"><sup class="text-danger">*</sup>Age </label>
-                                      <input type="text" class="form-control" id="age" name="age" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="marital" class="form-label mb-0"><sup class="text-danger">*</sup>Marital Status </label>
-                                      <select class="form-select" aria-label="marital">
-                                        <option selected>Please Select</option>
-                                        <option value="Single">Single</option>
-                                        <option value="Married">Married</option>
-                                        <option value="Widow">Widow</option>
-                                        <option value="Divorsed">Divorsed</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="nationality" class="form-label mb-0"><sup class="text-danger">*</sup>Nationality </label>
-                                      <input type="text" class="form-control" id="nationality" name="nationality" placeholder="Nationality">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="religion" class="form-label mb-0"><sup class="text-danger">*</sup>Religion</label>
-                                      <input type="text" class="form-control" id="religion" name="religion" placeholder="Religion">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="race" class="form-label mb-0"><sup class="text-danger">*</sup>Race </label>
-                                      <input type="text" class="form-control" id="race" name="race" placeholder="Race">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup>NRIC No. </label>
-                                      <input type="text" class="form-control" id="nric" name="nric" placeholder="NRIC No.">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="passportnumber" class="form-label mb-0"><sup class="text-danger">*</sup>Passport No. </label>
-                                      <input type="text" class="form-control" id="passportnumber" name="passportnumber" placeholder="Passport No.">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="epfnumber" class="form-label mb-0"><sup class="text-danger">*</sup>EPF No. </label>
-                                      <input type="text" class="form-control" id="epfnumber" name="epfnumber" placeholder="EPF No.">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="socsonumber" class="form-label mb-0"><sup class="text-danger">*</sup>SOCSO No. </label>
-                                      <input type="text" class="form-control" id="socsonumber" name="socsonumber" placeholder="SOCSO No.">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Family Information</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/family.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="father" class="form-label mb-0"><sup class="text-danger">*</sup>Father</label>
-                                      <input type="text" class="form-control" id="father" name="father" placeholder="Father">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="agefather" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agefather" name="agefather" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="fatoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Previous / Current Occupation</label>
-                                      <input type="text" class="form-control" id="fatoccup" name="fatoccup" placeholder="Previous / Current Occupation">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="mother" class="form-label mb-0"><sup class="text-danger">*</sup>Mother</label>
-                                      <input type="text" class="form-control" id="mother" name="mother" placeholder="Mother">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="agefather" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agefather" name="agefather" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="motoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Previous / Current Occupation</label>
-                                      <input type="text" class="form-control" id="motoccup" name="motoccup" placeholder="Previous / Current Occupation">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="spouse" class="form-label mb-0"><sup class="text-danger">*</sup>Spouse</label>
-                                      <input type="text" class="form-control" id="spouse" name="spouse" placeholder="Spouse">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="agespouse" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agespouse" name="agespouse" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="spooccup" class="form-label mb-0"><sup class="text-danger">*</sup>Previous / Current Occupation</label>
-                                      <input type="text" class="form-control" id="spooccup" name="spooccup" placeholder="Previous / Current Occupation">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="children" class="form-label mb-0"><sup class="text-danger">*</sup>Children</label>
-                                      <input type="text" class="form-control" id="children" name="children" placeholder="Children">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="agechildren" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agechildren" name="agechildren" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="childrenoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Previous / Current Occupation</label>
-                                      <input type="text" class="form-control" id="childrenoccup" name="childrenoccup" placeholder="Previous / Current Occupation">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="brother" class="form-label mb-0"><sup class="text-danger">*</sup>Brother</label>
-                                      <input type="text" class="form-control" id="brother" name="brother" placeholder="Brother">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="agebro" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agebro" name="agebro" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="brooccup" class="form-label mb-0"><sup class="text-danger">*</sup>Previous / Current Occupation</label>
-                                      <input type="text" class="form-control" id="brooccup" name="brooccup" placeholder="Previous / Current Occupation">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="sister" class="form-label mb-0"><sup class="text-danger">*</sup>Sister</label>
-                                      <input type="text" class="form-control" id="sister" name="sister" placeholder="Sister">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="agesis" class="form-label mb-0"><sup class="text-danger">*</sup>Age</label>
-                                      <input type="text" class="form-control" id="agesis" name="agesis" placeholder="Age">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Previous / Current Occupation</label>
-                                      <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Previous / Current Occupation">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
                           <div class="row">
-                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                              <div class="d-flex align-items-center justify-content-between">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Full Name</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="bg-light rounded p-2">
+                                <p class="text-tiny text-secondary font-weight-500 mb-0">&nbsp;&nbsp;Home Address</p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Address</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="bg-light rounded p-2">
+                                <p class="text-tiny text-secondary font-weight-500 mb-0">&nbsp;&nbsp;Correspondence Address</p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Address</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="width-100pct height-2px bg-light-50"></div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Home Telephone </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Correspondence Telephone </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="width-100pct height-2px bg-light-50"></div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date of Birth</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Age</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Marital Status</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Nationality</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="width-100pct height-2px bg-light-50"></div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Religion</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Race</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="width-100pct height-2px bg-light-50"></div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">NRIC No. </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Passport No. </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">EPF No. </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">SOCSO No. </p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Family Information (Parents, Brothers. Sisters, Spouse, Children)</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/family.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Father</p>
+                                <p class="text-extra-small font-weight-600 text-muted" data-family="father"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Mother</p>
+                                <p class="text-extra-small font-weight-600 text-muted" data-family="mother"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Spouse</p>
+                                <p class="text-extra-small font-weight-600 text-muted" data-family="spouse"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Children</p>
+                                <p class="text-extra-small font-weight-600 text-muted" data-family="children"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Brothers</p>
+                                <p class="text-extra-small font-weight-600 text-muted" data-family="brothers"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Sisters</p>
+                                <p class="text-extra-small font-weight-600 text-muted" data-family="sisters"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Education</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/college.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0" id="educationBlocks">
+                          <div class="bg-silver p-4 rounded mb-3">
+                            <div class="row">
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div>
-                                  <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">College / University</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Highest Standard Passed<br>
+                                    (Certificate, Diploma, Degree / Grade)</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year From</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="bg-silver p-4 rounded mb-3">
+                            <div class="row">
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">College / University</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Highest Standard Passed<br>
+                                    (Certificate, Diploma, Degree / Grade)</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year From</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
                                 </div>
                               </div>
                             </div>
@@ -488,337 +375,57 @@
                         </div>
                       </div>
                     </div>
-                    
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <p class="text-medium font-weight-600">Education Qualification</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please list your degrees, fields of study, institutions attended, and graduation dates for each qualification.</p>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Other Academic or Professional Qualifications (Including training courses attended)</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/education.png' %}" alt="Stalwart Business Solutions" width="120"></div>
                         </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Education</p>
-                        </div>
-                        <div class="card-body">
-                          
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="bg-silver p-4 rounded mb-3">
                             <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/college.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="bg-silver p-4 rounded mb-3">
-                                  <div class="row">
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>School / College / University</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="School / College /University">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="qualification" class="form-label mb-0"><sup class="text-danger">*</sup>Highest Standard Passed (Certificate, Diploma, Degree /  Grade)</label>
-                                        <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Highest Standard Passed (Certificate, Diploma, Degree /  Grade)">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
-                                      <div>
-                                        <label for="yearfrom" class="form-label mb-0"><sup class="text-danger">*</sup>Date Joined</label>
-                                        <input type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Date Joined">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
-                                      <div>
-                                        <label for="yearto" class="form-label mb-0"><sup class="text-danger">*</sup>Date Graduated</label>
-                                        <input type="date" class="form-control" id="yearto" name="yearto" placeholder="Date Graduated">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="text-end">
-                                  <button type="button" class="btn btn-sm btn-outline-dark">Add More</button>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Other Academic or Professional Qualifications (Including training courses attended)</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/education.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="bg-silver p-4 rounded mb-3">
-                                  <div class="row">
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Particulars</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Particulars">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
-                                      <div>
-                                        <label for="yearfrom" class="form-label mb-0"><sup class="text-danger">*</sup>Year From</label>
-                                        <input type="date" class="form-control" id="yearfrom" name="yearfrom" placeholder="Year From">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
-                                      <div>
-                                        <label for="yearto" class="form-label mb-0"><sup class="text-danger">*</sup>Year To</label>
-                                        <input type="date" class="form-control" id="yearto" name="yearto" placeholder="Year To">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="text-end">
-                                  <button type="button" class="btn btn-sm btn-outline-dark">Add More</button>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Professional Memberships (Technical, Professional or Occupation Training etc...) </p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/membership.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="bg-silver p-4 rounded mb-3">
-                                  <div class="row">
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Name of the Professional Body</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Name of the Professional Body">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="sisoccup" class="form-label mb-0"><sup class="text-danger">*</sup>Membership Position</label>
-                                        <input type="text" class="form-control" id="sisoccup" name="sisoccup" placeholder="Membership Position">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="yearto" class="form-label mb-0"><sup class="text-danger">*</sup>Date Admitted</label>
-                                        <input type="date" class="form-control" id="yearto" name="yearto" placeholder="Date Admitted">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="text-end mb-0">
-                                  <button type="button" class="btn btn-sm btn-outline-dark">Add More</button>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Language Proficiency</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/language.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <table class="table table-borderless table-hover table-striped mb-0">
-                                        <thead>
-                                          <tr>
-                                            <th scope="col">Languages</th>
-                                            <th scope="col">Oral</th>
-                                            <th scope="col">Written</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr>
-                                            <th scope="row">Bahasa Malaysia</th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">English</th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">Madarin</th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Others (If any, Please Specify)"></th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row"> <input type="text" class="form-control form-control-sm" id="others" name="others" placeholder="Others (If any, Please Specify)"></th>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                            <td><div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Fair </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Good </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                  <label class="form-check-label" for="flexCheckDefault"> Excellent </label>
-                                                </div>
-                                              </div></td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                              <div class="d-flex align-items-center justify-content-between">
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                 <div>
-                                  <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Particulars</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year From</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="bg-silver p-4 rounded mb-3">
+                            <div class="row">
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Particulars</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year From</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Year To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
                                 </div>
                               </div>
                             </div>
@@ -826,152 +433,57 @@
                         </div>
                       </div>
                     </div>
-                    
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <p class="text-medium font-weight-600">Employment History</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please provide a summary of your past job titles, responsibilities, company names, and employment dates for each position.</p>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Professional Memberships (Technical, Professional or Occupation Training etc...) </p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/membership.png' %}" alt="Stalwart Business Solutions" width="120"></div>
                         </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="bg-silver p-4 rounded mb-3">
                             <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/experience.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="bg-silver p-4 rounded mb-3">
-                                  <div class="row">
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="datefrom" class="form-label mb-0"><sup class="text-danger">*</sup>Date From</label>
-                                        <input type="date" class="form-control" id="datefrom" name="datefrom" placeholder="Date From">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="dateto" class="form-label mb-0"><sup class="text-danger">*</sup> Date To</label>
-                                        <input type="date" class="form-control" id="dateto" name="dateto" placeholder="Date To">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="height" class="form-label mb-0"><sup class="text-danger">*</sup>Name of Employer</label>
-                                        <input type="text" class="form-control" id="height" name="height" placeholder="Name of Employer">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="location" class="form-label mb-0"><sup class="text-danger">*</sup>Address</label>
-                                        <input type="text" class="form-control" id="location" name="location" placeholder="Address">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="superior" class="form-label mb-0"><sup class="text-danger">*</sup>Job Titles, Nature of Work, Accountabilities</label>
-                                        <input type="text" class="form-control" id="superior" name="superior" placeholder="Job Titles, Nature of Work, Accountabilities">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="ssalary" class="form-label mb-0"><sup class="text-danger">*</sup>Last Drawn Salary</label>
-                                        <input type="text" class="form-control" id="ssalary" name="ssalary" placeholder="Last Drawn Salary">
-                                      </div>
-                                    </div>
-                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                      <div>
-                                        <label for="esalary" class="form-label mb-0"><sup class="text-danger">*</sup>Reasons For Leaving</label>
-                                        <input type="text" class="form-control" id="esalary" name="esalary" placeholder="Reasons For Leaving">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="text-end">
-                                  <button type="button" class="btn btn-sm btn-outline-dark">Add More</button>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Briefly Describe Your Current / Most Recent Job Role & Responsibilities</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/project-briefing.png' %}" alt="Stalwart Business Solutions" width="100"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div>
-                                      <textarea class="form-control" id="message" rows="5" placeholder="Briefly Describe Your Current / Most Recent Job Role & Responsibilities"></textarea>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Leisure Acivities</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/hobbies.png' %}" alt="Stalwart Business Solutions" width="100"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div>
-                                      <textarea class="form-control" id="message" rows="5" placeholder="Please Enter Your Leisure Acivities"></textarea>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Additional Information</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please state any relevant information which will support your application.</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/others.png' %}" alt="Stalwart Business Solutions" width="100"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div>
-                                      <textarea class="form-control" id="message" rows="5" placeholder="Please Enter Additional Information"></textarea>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                              <div class="d-flex align-items-center justify-content-between">
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
                                 <div>
-                                  <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of the Professional Body</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Membership Position</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date Admitted To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="bg-silver p-4 rounded mb-3">
+                            <div class="row">
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of the Professional Body</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Membership Position</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date Admitted To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
                                 </div>
                               </div>
                             </div>
@@ -979,117 +491,161 @@
                         </div>
                       </div>
                     </div>
-                    
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <p class="text-medium font-weight-600">References Details</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please provide the names, contact information, and relationship of at least two professional references who can vouch for your skills and experience.</p>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Language Proficiency</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/language.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <table class="table table-borderless table-hover table-striped mb-0" id="languageTable">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Languages</th>
+                                      <th scope="col">Oral</th>
+                                      <th scope="col">Written</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row">Bahasa Malaysia</th>
+                                      <td><div></div></td>
+                                      <td><div></div></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">English</th>
+                                      <td><div></div></td>
+                                      <td><div></div></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">Madarin</th>
+                                      <td><div></div></td>
+                                      <td><div></div></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" data-others="0">Tamil</th>
+                                      <td><div></div></td>
+                                      <td><div></div></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" data-others="1">Telugu</th>
+                                      <td><div></div></td>
+                                      <td><div></div></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Employment History</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/experience.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="bg-silver p-4 rounded mb-3">
                             <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/reference-details.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date From</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
                               </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div class="bg-light rounded p-2">
-                                      <p class="text-tiny text-secondary font-weight-500 mb-0">&nbsp;&nbsp;Reference 1</p>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1name" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
-                                      <input type="text" class="form-control" id="ref1name" name="ref1name" placeholder="Name">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1pos" class="form-label mb-0"><sup class="text-danger">*</sup>Job Title</label>
-                                      <input type="text" class="form-control" id="ref1pos" name="ref1pos" placeholder="Job Title">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1com" class="form-label mb-0"><sup class="text-danger">*</sup>Employer</label>
-                                      <input type="text" class="form-control" id="ref1com" name="ref1com" placeholder="Employer">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1email" class="form-label mb-0"><sup class="text-danger">*</sup>Email Address</label>
-                                      <input type="email" class="form-control" id="ref1email" name="ref1email" placeholder="Email Address">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>Phone Number</label>
-                                      <input type="tel" class="form-control" id="ref1phn" name="ref1phn" placeholder="Phone Number">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>Relationship</label>
-                                      <input type="text" class="form-control" id="ref1phn" name="ref1phn" placeholder="Relationship">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div class="bg-light rounded p-2">
-                                      <p class="text-tiny text-secondary font-weight-500 mb-0">&nbsp;&nbsp;Reference 2</p>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1name" class="form-label mb-0"><sup class="text-danger">*</sup>Name</label>
-                                      <input type="text" class="form-control" id="ref1name" name="ref1name" placeholder="Name">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1pos" class="form-label mb-0"><sup class="text-danger">*</sup>Job Title</label>
-                                      <input type="text" class="form-control" id="ref1pos" name="ref1pos" placeholder="Job Title">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1com" class="form-label mb-0"><sup class="text-danger">*</sup>Employer</label>
-                                      <input type="text" class="form-control" id="ref1com" name="ref1com" placeholder="Employer">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1email" class="form-label mb-0"><sup class="text-danger">*</sup>Email Address</label>
-                                      <input type="email" class="form-control" id="ref1email" name="ref1email" placeholder="Email Address">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>Phone Number</label>
-                                      <input type="tel" class="form-control" id="ref1phn" name="ref1phn" placeholder="Phone Number">
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                                    <div>
-                                      <label for="ref1phn" class="form-label mb-0"><sup class="text-danger">*</sup>Relationship</label>
-                                      <input type="text" class="form-control" id="ref1phn" name="ref1phn" placeholder="Relationship">
-                                    </div>
-                                  </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Employer</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Address</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Job Titles, Nature of Work, Accountabilities</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Last Drawn Salary</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Last Reasons For Leaving</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
                                 </div>
                               </div>
                             </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                              <div class="d-flex align-items-center justify-content-between">
+                          </div>
+                          <div class="bg-silver p-4 rounded mb-3">
+                            <div class="row">
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div>
-                                  <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date From</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Date To</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name of Employer</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Address</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Job Titles, Nature of Work, Accountabilities</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Last Drawn Salary</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
+                                </div>
+                              </div>
+                              <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
+                                <div>
+                                  <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Last Reasons For Leaving</p>
+                                  <p class="text-extra-small font-weight-600 text-muted"></p>
                                 </div>
                               </div>
                             </div>
@@ -1097,256 +653,179 @@
                         </div>
                       </div>
                     </div>
-                      
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <p class="text-medium font-weight-600">Documents Submission</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please ensure all required documents are submitted with your application, including your resume, cover letter, and any relevant certifications. Please upload a file not exceeding 1 MB in size.</p>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Briefly Describe Your Current / Most Recent Job Role & Responsibilities</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/project-briefing.png' %}" alt="Stalwart Business Solutions" width="100"></div>
                         </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/document-submission.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="mb-3">
-                                  <label for="payslips" class="form-label mb-0">Upload Personality Test Result</label>
-                                  <div class="input-group">
-                                    <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                  </div>
-                                </div>
-                                <div class="mb-3">
-                                  <label for="resume" class="form-label mb-0">Upload Updated Resume</label>
-                                  <div class="input-group">
-                                    <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                  </div>
-                                </div>
-                                <div class="mb-3">
-                                  <label for="payslips" class="form-label mb-0">Upload MyKad/NRIC/Passport</label>
-                                  <div class="input-group">
-                                    <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                    <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                  </div>
-                                </div>
-                                <div class="mb-3">
-                                  <div class="mb-3">
-                                    <label for="payslips" class="form-label mb-0">Upload Academic Certificate</label>
-                                    <div class="input-group">
-                                      <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                    </div>
-                                  </div>
-                                  <div class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-dark">Upload More</button>
-                                  </div>
-                                </div>
-                                <div class="mb-3">
-                                  <div class="mb-3">
-                                    <label for="payslips" class="form-label mb-0">Last 3 Months Payslips</label>
-                                    <div class="input-group">
-                                      <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                      <button class="brand-button-alt" type="button" id="inputGroupFileAddon04"  data-bs-toggle="modal" data-bs-target="#chooseModal">Upload from Media</button>
-                                    </div>
-                                  </div>
-                                  <div class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-dark">Upload More</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                       <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-500">Please tick and attached the following:</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Documents attached are non-returnable</p>
-                        </div>
-                        <div class="card-body">
-                          
-                            <div class="row align-items-center">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/checked.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Recent passport size photograph </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Resume </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">Testimonials / References (Photocopy) </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">Degree / Diploma / Certificates </label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault"> Transcripts of Secondary / University Results </label>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          
-                        </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
                           <div class="row">
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                              <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                  <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
-                                </div>
+                              <div>
+                                <p class="text-extra-small font-weight-500 text-muted" data-answer="jobrole"></p>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    
-                      <div class="card card-box">
-                        <div class="card-body">
-                          <p class="text-medium font-weight-600">Other Information</p>
-                          <p class="text-extra-small font-weight-400 text-muted">Please provide any additional information relevant to your job application, including your background, employment history, availability, and salary expectations. 
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Leisure Acivities</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/jogging.png' %}" alt="Stalwart Business Solutions" width="100"></div>
                         </div>
-                      </div>
-                      <div class="card card-box">
-                        <div class="card-body">
-                          
-                            <div class="row">
-                              <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div><img src="{% static 'core/assets/images/others.png' %}" alt="Stalwart Business Solutions" width="120"></div>
-                              </div>
-                              <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row align-items-center">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-4">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">What do you know about Raddish Technology S/B?</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="What do you know about Raddish Technology S/B?">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-4">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">Have you any friends or relatives with Raddish Technology S/B? If yes, State name, designation and dept.</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Have you any friends or relatives with Raddish Technology S/B? If yes, State name, designation and dept.">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-4">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">Have you at any time been convicted or found guilty of any serious offence by any court? if yes, state offence or reasons.</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Have you at any time been convicted or found guilty of any serious offence by any court? if yes, state offence or reasons.">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-4">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">Have you ever been dismissed from any employment? if yes, state reasons.</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Have you ever been dismissed from any employment? if yes, state reasons.">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-4">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">Have you any serious illness? if yes, indicate nature of illness.</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="Have you any serious illness? if yes, indicate nature of illness.">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-4">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">If you are successful for this position, when are you able to start?</label>
-                                        <input type="date" class="form-control" id="elaborate" name="elaborate" placeholder="If you are successful for this position, when are you able to start?">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                                    <div class="bg-silver p-4 rounded mb-0">
-                                      <div>
-                                        <label for="medical" class="form-label mb-0">If you are successful appointed, what is your expected salary?</label>
-                                        <input type="text" class="form-control" id="elaborate" name="elaborate" placeholder="If you are successful appointed, what is your expected salary?">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
+                              <div>
+                                <p class="text-extra-small font-weight-500 text-muted" data-answer="leisure"></p>
                               </div>
                             </div>
-                          
+                          </div>
                         </div>
                       </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-600">Applicant Declaration</p>
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Additional Information</p>
+                      <p class="text-extra-small font-weight-400">Please state any relevant information which will support your application.</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/information.png' %}" alt="Stalwart Business Solutions" width="100"></div>
                         </div>
-                        <div class="card-body p-5">
-                          
-                            <div class="row align-items-center">
-                              <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="text-center"><img src="{% static 'core/assets/images/declaration.png' %}" alt="Stalwart Business Solutions" width="450"></div>
-                              </div>
-                              <div class="col-xxl-7 col-xl-7 col-lg-7 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                                <div class="row">
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
-                                    <div class="alert alert-success mb-0" role="alert"> Your application has been successfully submitted and is under review. We will contact you if further information is needed or to provide updates on the next steps. Thank you for your interest.</div>
-                                  </div>
-                                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
-                                    <p class="text-small font-weight-600 mb-2">Declaration</p>
-                                    <p class="text-extra-small font-weight-400 mb-0">I hereby confirm that the information stated above is true and accurate. I understand that false information may be grounds for not hiring me or for immediate termination of employment at any point in the future if I am hired.</p>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
-                                    <div class="mb-3">
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Signature of the applicant</label>
-                                      {% if files_by_field.applicant_signature %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ files_by_field.applicant_signature.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;View Signature</a>{% else %}<p class="text-extra-small text-muted mb-0">No signature uploaded.</p>{% endif %}
-                                    </div>
-                                    <div>
-                                      <label for="name" class="form-label mb-0"><sup class="text-danger">*</sup>Candidate's Name</label>
-                                      <input type="text" class="form-control" id="name" name="declaration_name" placeholder="Candidate's Name" value="{{ form_saved_data.declaration_name }}" disabled>
-                                    </div>
-                                  </div>
-                                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-0">
-                                    <div class="mb-3">
-                                      <label for="date" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
-                                      <input type="date" class="form-control" id="date" name="declaration_date" placeholder="Date" value="{{ form_saved_data.declaration_date }}" disabled>
-                                    </div>
-                                    <div>
-                                      <label for="nric" class="form-label mb-0"><sup class="text-danger">*</sup> NRIC/Passport No.</label>
-                                      <input type="text" class="form-control" id="nric" name="declaration_nric" placeholder="NRIC/Passport No." value="{{ form_saved_data.declaration_nric }}" disabled>
-                                    </div>
-                                  </div>
-                                </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
+                              <div>
+                                <p class="text-extra-small font-weight-500 text-muted" data-answer="additional"></p>
                               </div>
                             </div>
-                          
+                          </div>
                         </div>
                       </div>
-                      <div class="card card-box">
-                        <div class="card-header">
-                          <p class="text-extra-small font-weight-600">Uploaded Documents and Images</p>
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-600">References Details</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/reference-details.png' %}" alt="Stalwart Business Solutions" width="120"></div>
                         </div>
-                        <div class="card-body">
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="bg-light rounded p-2">
+                                <p class="text-tiny text-secondary font-weight-500 mb-0">&nbsp;&nbsp;Reference 1</p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Job Title</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Employer</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Relationship</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="bg-light rounded p-2">
+                                <p class="text-tiny text-secondary font-weight-500 mb-0">&nbsp;&nbsp;Reference 2</p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Name</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Job Title</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Employer</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Email Address</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Phone Number</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-tiny theme-color-1 font-weight-500 text-uppercase mb-0">Relationship</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-600">Documents Submission</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/document-submission.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
                           <div class="row">
                             {% for uploaded in uploaded_files %}
                             <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
@@ -1360,17 +839,99 @@
                           </div>
                         </div>
                       </div>
-                      <div class="card card-box">
-                        <div class="card-body">
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-500">Other Information</p>
+                      <p class="text-extra-small font-weight-400">Please provide any additional information relevant to your job application, including your background, employment history, availability, and salary expectations.</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div><img src="{% static 'core/assets/images/others.png' %}" alt="Stalwart Business Solutions" width="120"></div>
+                        </div>
+                        <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
                           <div class="row">
-                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-                              <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                  <button type="button" class="brand-button-alt"><i class="bi bi-floppy"></i>&nbsp;&nbsp;Save</button>
-                                </div>
-                                <div>
-                                  <button type="submit" class="brand-button">Submit</button>
-                                </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">What do you know about Raddish Technology S/B?</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">Have you any friends or relatives with Raddish Technology S/B? If yes, State name, designation and dept.</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">Have you at any time been convicted or found guilty of any serious offence by any court? if yes, state offence or reasons.</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">Have you ever been dismissed from any employment? if yes, state reasons.</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">Have you any serious illness? if yes, indicate nature of illness.</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">If you are successful for this position, when are you able to start?</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div>
+                                <p class="text-extra-small text-dark-85 font-weight-500 mb-0">If you are successful appointed, what is your expected salary?</p>
+                                <p class="text-extra-small font-weight-600 text-muted"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card card-box">
+                    <div class="card-header">
+                      <p class="text-extra-small font-weight-600">Applicant Declaration</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="text-center"><img src="{% static 'core/assets/images/declaration.png' %}" alt="Stalwart Business Solutions" width="450"></div>
+                        </div>
+                        <div class="col-xxl-7 col-xl-7 col-lg-7 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
+                          <div class="row">
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-4">
+                              <p class="text-extra-small font-weight-400 mb-0">I hereby confirm that the information stated above is true and accurate. I understand that false information may be grounds for not hiring me or for immediate termination of employment at any point in the future if I am hired.</p>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="mb-3">
+                                <label for="applicationForm" class="form-label mb-0"><sup class="text-danger">*</sup>Signature of the applicant</label>
+                                {% if files_by_field.applicant_signature %}<a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ files_by_field.applicant_signature.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;Download Signature</a>{% else %}<p class="text-extra-small text-muted mb-0">No signature uploaded.</p>{% endif %}
+                              </div>
+                              <div>
+                                <label for="appname" class="form-label mb-0"><sup class="text-danger">*</sup>Candidate's Name</label>
+                                <input type="text" class="form-control" id="appname" name="appname" placeholder="Applicant's Name" value="{{ form_saved_data.declaration_name|default:'-' }}" disabled>
+                              </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
+                              <div class="mb-3">
+                                <label for="dateapplied" class="form-label mb-0"><sup class="text-danger">*</sup>Date</label>
+                                <input type="date" class="form-control" id="dateapplied" name="dateapplied" placeholder="Date" value="{{ form_saved_data.declaration_date }}" disabled>{% if not form_saved_data.declaration_date %}<p class="text-extra-small text-muted mb-0">-</p>{% endif %}
+                              </div>
+                              <div>
+                                <label for="appplace" class="form-label mb-0"><sup class="text-danger">*</sup>NRIC/Passport No.</label>
+                                <input type="text" class="form-control" id="appplace" name="appplace" placeholder="Applicant's Place" value="{{ form_saved_data.declaration_nric|default:'-' }}" disabled>
                               </div>
                             </div>
                           </div>
@@ -1381,38 +942,36 @@
                 </div>
               </div>
             </div>
-          </div>
-          </div>
-          <!-- center body --> 
-          <!-- Footer -->
-          <footer id="footer" class="footer">
-            <div class="container-fluid px-4">
-              <div class="row">
-                <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                      <p class="text-extra-small font-weight-400"> &copy; <span id="current-year"></span> Stalwart Business Solutions.</p>
-                    </div>
-                    <div>
-                      <p class="text-extra-small font-weight-400 backtotop" id="toTop">To top
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
-                        </svg>
-                      </p>
+            <!-- center body -->
+            <!-- Footer -->
+            <footer id="footer" class="footer">
+              <div class="container-fluid px-4">
+                <div class="row">
+                  <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div>
+                        <p class="text-extra-small font-weight-400"> &copy; <span id="current-year"></span> Stalwart Business Solutions.</p>
+                      </div>
+                      <div>
+                        <p class="text-extra-small font-weight-400 backtotop" id="toTop">To top
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
+                          </svg>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </footer>
-          <!-- Footer --> 
-        </section>
+            </footer>
+            <!-- Footer -->
+          </section>
+        </div>
       </div>
     </div>
   </div>
 </div>
-</div>
-<!-- Main --> 
+<!-- Main -->
 <!-- logout -->
 <div class="custom-modal">
   <div class="modal fade" id="logoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
@@ -1439,209 +998,133 @@
     </div>
   </div>
 </div>
-<!-- logout --> 
-<!-- choose file -->
-<div class="custom-modal">
-  <div class="modal fade" id="chooseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="chooseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="chooseModalLabel">Choose File</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
-              <div class="table-responsive-lg">
-                <table class="table table-borderless table-striped table-hover text-nowrap w-100 align-middle mb-0" id="data-table-1">
-                  <thead class="table-dark">
-                    <tr>
-                      <th scope="col">Doc #</th>
-                      <th scope="col">Document Name</th>
-                      <th scope="col">Document Type</th>
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>8948225654</td>
-                      <td>Curriculam Vitae</td>
-                      <td>.docx</td>
-                      <td><div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div></td>
-                    </tr>
-                    <tr>
-                      <td>8872427322</td>
-                      <td>Passport</td>
-                      <td>.pdf</td>
-                      <td><div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div></td>
-                    </tr>
-                    <tr>
-                      <td>9656886319</td>
-                      <td>Jan Salary Slip</td>
-                      <td>.jpg</td>
-                      <td><div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="brand-button me-1" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="brand-button-alt">Confirm </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- choose file --> 
-<!-- js --> 
-<script src="{% static 'core/assets/js/bundle.js' %}" type="text/javascript"></script> 
-<script src="{% static 'core/assets/js/scripts.js' %}" type="text/javascript"></script> 
+<!-- logout -->
 <!-- js -->
-
+<script src="{% static 'core/assets/js/bundle.js' %}" type="text/javascript"></script>
+<script src="{% static 'core/assets/js/scripts.js' %}" type="text/javascript"></script>
+<!-- js -->
 {{ form_saved_data|json_script:"saved-form-data" }}
 <script>
 (function () {
-  const master = document.getElementById('applicationForm');
-  if (!master) return;
-  const repeatedValues = JSON.parse(document.getElementById('saved-form-data')?.textContent || '{}');
-  const repeatSaved = repeatedValues._repeat_counts || {};
-  // Recover the highest repeat index used, in case _repeat_counts is missing.
-  Object.keys(repeatedValues).forEach((key) => {
-    const match = key.match(/^(repeat\d+)_row(\d+)_/);
-    if (match) repeatSaved[match[1]] = Math.max(Number(repeatSaved[match[1]]) || 0, Number(match[2]));
-  });
-  const repeatCounts = {};
-  const repeatGroups = Array.from(document.querySelectorAll('button')).filter(button => button.textContent.trim() === 'Add More').map((button, index) => {
-    const source = button.parentElement.previousElementSibling;
-    const key = 'repeat' + index;
-    repeatCounts[key] = 0;
-    const addRow = () => {
-      if (!source || repeatCounts[key] >= 20) return [];
-      const clone = source.cloneNode(true);
-      const number = ++repeatCounts[key];
-      const fields = Array.from(clone.querySelectorAll('input, select, textarea'));
-      fields.forEach((el, fieldIndex) => {
-        el.name = key + '_row' + number + '_' + (el.name || 'field' + fieldIndex);
-        el.id = el.name;
-        if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
-        else el.value = '';
-      });
-      button.parentElement.before(clone);
-      return fields;
-    };
-    for (let row = 0; row < Math.min(Number(repeatSaved[key]) || 0, 20); row++) addRow();
-    return {button, addRow};
-  });
-  const controls = Array.from(document.querySelectorAll('input, select, textarea')).filter(el => !el.closest('#applicationForm'));
-  const occurrences = {};
-  let unnamedUpload = 0;
-  controls.forEach((el) => {
-    if (el.type === 'hidden' && el.name === 'csrfmiddlewaretoken') return;
-    if (!el.name) {
-      const label = el.closest('.mb-3, .form-group, div')?.querySelector('label');
-      const base = (label?.innerText || el.getAttribute('aria-label') || el.id || 'field')
-        .toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-      el.name = (el.type === 'file' ? 'upload_' : 'field_') +
-        (base || 'field') + '_' + (++unnamedUpload);
-    }
-    if (el.type !== 'radio' && el.type !== 'hidden') {
-      const original = el.name;
-      occurrences[original] = (occurrences[original] || 0) + 1;
-      if (occurrences[original] > 1) el.name = original + '__' + occurrences[original];
-    }
-  });
-
-  // Restore values saved by the server without trying to populate file inputs.
   let saved = {};
-  try {
-    saved = repeatedValues;
-  } catch (e) { saved = {}; }
-  const byName = {};
-  controls.forEach((el) => {
-    if (!el.name || el.type === 'file' || el.type === 'submit' || el.type === 'button') return;
-    (byName[el.name] ||= []).push(el);
+  try { saved = JSON.parse(document.getElementById('saved-form-data')?.textContent || '{}'); } catch (e) { saved = {}; }
+  const fieldLabels = saved._field_labels || {};
+  const norm = (t) => (t || '').replace(/\*+/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  const shortLabel = (l) => { const i = l.lastIndexOf(' - '); return i >= 0 ? l.slice(i + 3) : l; };
+  const byLabel = {};
+  Object.keys(saved).forEach((k) => {
+    if (k.startsWith('_')) return;
+    const v = saved[k];
+    const stored = fieldLabels[k];
+    const short = stored ? norm(shortLabel(stored)) : norm(k.replace(/__/g, ' ').replace(/_/g, ' '));
+    (byLabel[short] ||= []).push(v);
+    if (stored) (byLabel[norm(stored)] ||= []).push(v);
   });
-  Object.entries(byName).forEach(([name, els]) => {
-    let val = saved[name];
-    if (val === undefined || val === null) return;
-    const vals = Array.isArray(val) ? val : [val];
-    els.forEach((el, idx) => {
-      const v = vals[Math.min(idx, vals.length - 1)];
-      if (el.type === 'checkbox' || el.type === 'radio') {
-        el.checked = vals.map(String).includes(String(el.value)) || String(v) === 'true';
-      } else if (el.tagName === 'SELECT') {
-        const option = Array.from(el.options).find(o => o.value === String(v) || o.text.trim() === String(v));
-        if (option) el.value = option.value;
-      } else {
-        el.value = String(v);
-      }
-    });
+  const aliases = {
+    'college / university': 'school / college / university',
+    'date admitted to': 'date admitted',
+    'last reasons for leaving': 'reasons for leaving',
+    'brothers': 'brother',
+    'sisters': 'sister',
+    'nric no.': 'nric no.',
+  };
+  const cardAliases = {
+    'education': { 'year from': 'date joined', 'year to': 'date graduated' },
+  };
+  const display = (v) => {
+    if (Array.isArray(v)) return v.map(display).filter(Boolean).join(', ');
+    if (v === undefined || v === null || v === '') return '';
+    if (v === 'true' || v === true) return 'Yes';
+    return String(v);
+  };
+  const cardTitle = (el) => norm(el.closest('.card')?.querySelector('.card-header')?.innerText);
+  const consumed = {};
+  const takeFrom = (key) => {
+    const list = byLabel[key];
+    if (!list || !list.length) return undefined;
+    const occ = consumed[key] || 0;
+    consumed[key] = occ + 1;
+    return display(list[Math.min(occ, list.length - 1)]);
+  };
+  const peek = (key, occ) => {
+    const list = byLabel[key];
+    if (!list || !list.length) return '';
+    return display(list[Math.min(occ || 0, list.length - 1)]);
+  };
+  const resolve = (labelEl) => {
+    const ctx = cardTitle(labelEl);
+    let key = norm(labelEl.textContent);
+    const scoped = cardAliases[ctx] || {};
+    const candidates = [];
+    if (ctx) {
+      candidates.push(ctx + ' - ' + key);
+      if (scoped[key]) candidates.push(ctx + ' - ' + scoped[key]);
+      if (aliases[key]) candidates.push(ctx + ' - ' + aliases[key]);
+    }
+    candidates.push(key);
+    if (scoped[key]) candidates.push(scoped[key]);
+    if (aliases[key]) candidates.push(aliases[key]);
+    for (const c of candidates) {
+      const v = takeFrom(c);
+      if (v !== undefined) return v;
+    }
+    return '';
+  };
+  const EMPTY = '-';
+  // Family rows: "name, age, occupation"
+  const familyIdx = { father: 0, mother: 1, spouse: 2, children: 3, brothers: 4, sisters: 5 };
+  document.querySelectorAll('[data-family]').forEach((el) => {
+    const member = el.dataset.family;
+    const idx = familyIdx[member];
+    const nameKey = member === 'brothers' ? 'family information - brother'
+      : member === 'sisters' ? 'family information - sister'
+      : 'family information - ' + member;
+    const parts = [
+      peek(nameKey, 0),
+      peek('family information - age', idx),
+      peek('family information - previous / current occupation', idx),
+    ].filter(Boolean);
+    el.textContent = parts.join(', ') || EMPTY;
   });
-
-  // Read-only submitted view: disable every control and hide editing buttons.
-  controls.forEach((el) => {
-    el.disabled = true;
-    el.readOnly = true;
-  });
-  const buttons = Array.from(document.querySelectorAll('button'));
-  buttons.forEach((button) => {
-    const label = button.innerText.replace(/\s+/g, ' ').trim().toLowerCase();
-    if (label === 'save' || label.includes('save draft') || label === 'submit' || label === 'submit application') {
-      button.closest('.card')?.style.setProperty('display', 'none');
-    } else if (label === 'add more' || label === 'upload more' || label.includes('upload')) {
-      button.style.display = 'none';
+  // Free-text answer cards.
+  const answerKeys = {
+    jobrole: ['briefly describe your current / most recent job role & responsibilities'],
+    leisure: ['please enter your leisure acivities', 'leisure acivities'],
+    additional: ['please enter additional information'],
+  };
+  document.querySelectorAll('[data-answer]').forEach((el) => {
+    el.textContent = EMPTY;
+    for (const key of answerKeys[el.dataset.answer] || []) {
+      const v = peek(key, 0);
+      if (v) { el.textContent = v; return; }
     }
   });
-
-  // Make the section tabs useful even though the supplied HTML has no .tab-pane
-  // elements. Clicking a tab scrolls to that section and updates the progress bar.
-  const tabButtons = Array.from(document.querySelectorAll('#myTab button[data-bs-target]'));
-  const keywords = ['personal details', 'education', 'employment', 'reference', 'document', 'additional information', 'consent form'];
-  tabButtons.forEach((tab, idx) => {
-    tab.addEventListener('click', function (event) {
-      event.preventDefault();
-      const cards = Array.from(document.querySelectorAll('.content-section .card'));
-      let target = null;
-      const tabLabel = tab.innerText.toLowerCase().replace(/\\s+/g, ' ').trim();
-      const key = tabLabel.includes('other information') ? 'other information' :
-        tabLabel.includes('consent') ? 'consent form' :
-        tabLabel.includes('reference') ? 'reference' :
-        tabLabel.includes('document') ? 'document' :
-        tabLabel.includes('employment') ? 'employment' :
-        tabLabel.includes('education') ? 'education' :
-        tabLabel.includes('additional') ? 'additional information' : 'personal details';
-      target = cards.find(card => card.innerText.toLowerCase().includes(key) &&
-        (idx === 0 ? card.innerText.toLowerCase().includes('personal details') :
-         idx === 1 ? card.innerText.toLowerCase().includes('education') :
-         idx === 2 ? card.innerText.toLowerCase().includes('employment') :
-         idx === 3 ? card.innerText.toLowerCase().includes('reference') :
-         idx === 4 ? card.innerText.toLowerCase().includes('document') :
-         idx === 5 ? card.innerText.toLowerCase().includes('additional information') :
-                     card.innerText.toLowerCase().includes('consent form')));
-      if (!target) {
-        const headings = Array.from(document.querySelectorAll('.content-section p, .content-section .card-header'));
-        const heading = headings.find(el => el.innerText.toLowerCase().includes(key));
-        target = heading?.closest('.card');
-      }
-      if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
-      tabButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-      tab.classList.add('active');
-      tab.setAttribute('aria-selected', 'true');
-      const bar = document.querySelector('.progress-bar');
-      if (bar) bar.style.width = (((idx + 1) / tabButtons.length) * 100) + '%';
+  // Language proficiency table.
+  const langRows = document.querySelectorAll('#languageTable tbody tr');
+  const levels = ['fair', 'good', 'excellent'];
+  langRows.forEach((row, r) => {
+    const th = row.querySelector('th');
+    const named = r < 3;
+    const lang = named ? norm(th.textContent) : 'language proficiency';
+    if (!named) {
+      const other = peek('others (if any, please specify)', r - 3);
+      th.textContent = other || EMPTY;
+    }
+    const base = r < 3 ? 0 : (r - 3) * 2;
+    row.querySelectorAll('td').forEach((td, c) => {
+      const cell = td.querySelector('div') || td;
+      const occ = base + c;
+      const picked = levels.filter((lv) => peek(lang + ' - ' + lv, occ)).join(', ');
+      cell.textContent = picked || EMPTY;
     });
+  });
+  // Generic label -> value binding for everything else.
+  document.querySelectorAll('p.text-tiny.theme-color-1, p.text-dark-85').forEach((labelP) => {
+    const valueP = labelP.parentElement && labelP.parentElement.querySelector('p.text-muted');
+    if (!valueP || valueP.hasAttribute('data-family')) return;
+    valueP.textContent = resolve(labelP) || EMPTY;
   });
 })();
 </script>
-
 </body>
 </html>
