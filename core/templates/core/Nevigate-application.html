@@ -633,7 +633,7 @@
                           <div class="row">
                             <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-0 mb-lg-0">
                               <div>
-                                <p class="text-extra-small font-weight-500 text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in orci nibh. Donec nisi orci, maximus sit amet euismod ut, finibus eget felis. Quisque ullamcorper lectus eu ipsum sagittis finibus.</p>
+                                <p class="text-extra-small font-weight-500 text-muted" data-answer="hobbies"></p>
                               </div>
                             </div>
                           </div>
@@ -1321,6 +1321,9 @@
       });
     });
   }
+  document.querySelectorAll('[data-answer="hobbies"]').forEach((el) => {
+    el.textContent = take('activities / interest / hobbies', 0) || '-';
+  });
   const seen = {};
   document.querySelectorAll('p.text-tiny.theme-color-1, p.text-dark-85').forEach((labelP) => {
     const valueP = labelP.parentElement && labelP.parentElement.querySelector('p.text-muted');
