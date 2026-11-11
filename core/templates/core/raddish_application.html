@@ -1100,21 +1100,28 @@
     }
   });
   // Language proficiency table.
-  const langRows = document.querySelectorAll('#languageTable tbody tr');
+  const ordered = Object.keys(saved)
+    .filter((k) => !k.startsWith('_'))
+    .map((k) => ({ key: k, label: norm(fieldLabels[k] || ''), value: display(saved[k]) }));
+  const langNames = ordered.filter((e) => e.key.startsWith('others') && e.label.startsWith('language proficiency'));
   const levels = ['fair', 'good', 'excellent'];
-  langRows.forEach((row, r) => {
+  const langPools = {};
+  levels.forEach((lv) => {
+    ['bahasa malaysia', 'english', 'madarin', 'language proficiency'].forEach((ctx) => {
+      langPools[ctx + ' - ' + lv] = ordered
+        .filter((e) => e.key.startsWith('field_') && e.label === ctx + ' - ' + lv)
+        .map((e) => e.value);
+    });
+  });
+  document.querySelectorAll('#languageTable tbody tr').forEach((row, r) => {
     const th = row.querySelector('th');
     const named = r < 3;
     const lang = named ? norm(th.textContent) : 'language proficiency';
-    if (!named) {
-      const other = peek('others (if any, please specify)', r - 3);
-      th.textContent = other || EMPTY;
-    }
-    const base = r < 3 ? 0 : (r - 3) * 2;
+    if (!named) th.textContent = (langNames[r - 3] && langNames[r - 3].value) || EMPTY;
     row.querySelectorAll('td').forEach((td, c) => {
       const cell = td.querySelector('div') || td;
-      const occ = base + c;
-      const picked = levels.filter((lv) => peek(lang + ' - ' + lv, occ)).join(', ');
+      const occ = named ? c : (r - 3) * 2 + c;
+      const picked = levels.filter((lv) => (langPools[lang + ' - ' + lv] || [])[occ]).join(', ');
       cell.textContent = picked || EMPTY;
     });
   });

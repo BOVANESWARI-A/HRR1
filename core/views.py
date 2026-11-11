@@ -2210,7 +2210,7 @@ def _dynamic_form_fields(app):
             context, label = (part.strip() for part in label.split(" - ", 1))
         if display == "true":
             display = "Yes"
-        fields.append({"label": label, "value": display, "context": context})
+        fields.append({"key": key, "label": label, "value": display, "context": context})
     return fields
 
 
@@ -2258,9 +2258,18 @@ def _dynamic_field_groups(app):
     """
     groups = {}
     order = []
+    language_contexts = {"bahasa malaysia", "english", "madarin", "mandarin", "tamil", "telugu", "language / dialects", "language proficiency"}
+    generic_language = {"language / dialects", "language proficiency"}
     for field in _dynamic_form_fields(app):
         context = (field["context"] or "").split("\n")[0].strip()
         title = context or "Application Details"
+        if context.lower() in language_contexts:
+            field = dict(field)
+            if field["key"].startswith("others"):
+                field["label"] = "Language / Dialect"
+            else:
+                field["label"] = f"{context} - {field['label']}"
+            title = "Language Proficiency"
         if title not in groups:
             groups[title] = {"title": title, "image": _dynamic_section_image(title), "fields": []}
             order.append(title)

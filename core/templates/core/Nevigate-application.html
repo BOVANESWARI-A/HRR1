@@ -655,7 +655,7 @@
                             <div class="row">
                               <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
                                 <div>
-                                  <table class="table table-borderless table-hover table-striped mb-0">
+                                  <table class="table table-borderless table-hover table-striped mb-0" id="languageTable">
                                     <thead>
                                       <tr>
                                         <th scope="col">Language / Dialects</th>
@@ -665,29 +665,29 @@
                                     </thead>
                                     <tbody>
                                       <tr>
-                                        <th scope="row">Bahasa Malaysia</th>
-                                        <td><div> Good </div></td>
-                                        <td><div> Good </div></td>
+                                        <th scope="row"></th>
+                                        <td><div></div></td>
+                                        <td><div></div></td>
                                       </tr>
                                       <tr>
-                                        <th scope="row">English</th>
-                                        <td><div> Good </div></td>
-                                        <td><div> Good </div></td>
+                                        <th scope="row"></th>
+                                        <td><div></div></td>
+                                        <td><div></div></td>
                                       </tr>
                                       <tr>
-                                        <th scope="row">Madarin</th>
-                                        <td><div> Average </div></td>
-                                        <td><div> Average </div></td>
+                                        <th scope="row"></th>
+                                        <td><div></div></td>
+                                        <td><div></div></td>
                                       </tr>
                                       <tr>
-                                        <th scope="row"> Tamil</th>
-                                        <td><div> Good </div></td>
-                                        <td><div> Good </div></td>
+                                        <th scope="row"></th>
+                                        <td><div></div></td>
+                                        <td><div></div></td>
                                       </tr>
                                       <tr>
-                                        <th scope="row"> Telugu</th>
-                                        <td><div> Limited </div></td>
-                                        <td><div> Limited </div></td>
+                                        <th scope="row"></th>
+                                        <td><div></div></td>
+                                        <td><div></div></td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -1300,6 +1300,27 @@
     const list = byLabel[label] || [];
     return display(list[Math.min(occ || 0, Math.max(list.length - 1, 0))]);
   };
+  // Language / Dialects table.
+  const ordered = Object.keys(saved)
+    .filter((k) => !k.startsWith('_'))
+    .map((k) => ({ key: k, label: norm(fieldLabels[k] || ''), value: display(saved[k]) }));
+  const langNames = ordered.filter((e) => e.key.startsWith('others') && e.label.startsWith('language / dialects'));
+  const langTable = document.getElementById('languageTable');
+  if (langTable) {
+    const levels = ['good', 'average', 'limited'];
+    const pools = levels.map((lv) => ordered
+      .filter((e) => e.key.startsWith('field_') && e.label === 'language / dialects - ' + lv)
+      .map((e) => e.value));
+    langTable.querySelectorAll('tbody tr').forEach((row, r) => {
+      const th = row.querySelector('th');
+      if (th) th.textContent = (langNames[r] && langNames[r].value) || '-';
+      row.querySelectorAll('td').forEach((td, c) => {
+        const cell = td.querySelector('div') || td;
+        const picked = levels.filter((lv, i) => pools[i][r * 2 + c]).join(', ');
+        cell.textContent = picked || '-';
+      });
+    });
+  }
   const seen = {};
   document.querySelectorAll('p.text-tiny.theme-color-1, p.text-dark-85').forEach((labelP) => {
     const valueP = labelP.parentElement && labelP.parentElement.querySelector('p.text-muted');
