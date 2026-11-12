@@ -826,17 +826,24 @@
                           <div><img src="{% static 'core/assets/images/document-submission.png' %}" alt="Stalwart Business Solutions" width="120"></div>
                         </div>
                         <div class="col-xxl-9 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-xs-12 mb-4 mb-lg-0">
-                          <div class="row">
-                            {% for uploaded in uploaded_files %}
-                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 mb-3 mb-lg-3">
-                              <div>
-                                <a class="brand-button w-100" href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener"><i class="bi bi-download"></i>&nbsp;&nbsp;{{ uploaded.file.name|cut:"applications/"|truncatechars:30 }}</a>
+                          {% if uploaded_files %}
+                            <div class="list-group">
+                              {% for uploaded in uploaded_files %}
+                              <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <div>
+                                  <span><i class="bi bi-paperclip me-2"></i>{{ uploaded.field_name|default:"Document" }} — {{ uploaded.file.name|cut:"applications/" }}</span>
+                                  <span class="text-muted small d-block">{{ uploaded.uploaded_at|date:"d M Y H:i" }}</span>
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                  <a href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> View</a>
+                                  <a href="{% url 'application_detail' application.pk %}?file={{ uploaded.pk }}&download=1" class="btn btn-sm btn-outline-secondary"><i class="bi bi-download"></i> Download</a>
+                                </div>
                               </div>
+                              {% endfor %}
                             </div>
-                            {% empty %}
-                            <div class="col-xxl-12"><p class="text-muted mb-0">No files were uploaded with this application.</p></div>
-                            {% endfor %}
-                          </div>
+                          {% else %}
+                            <p class="text-muted mb-0">No files were uploaded with this application.</p>
+                          {% endif %}
                         </div>
                       </div>
                     </div>
